@@ -2,445 +2,153 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>FENT DEALER</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #111111;
-  --bg-panel: #161616;
-  --bg-card: #1c1c1c;
-  --accent-primary: #c8a951;
-  --accent-danger: #8b1a1a;
-  --accent-warning: #b85c00;
-  --accent-safe: #1a4a2e;
-  --text-primary: #e8e0d0;
-  --text-secondary: #7a7060;
-  --text-muted: #3a3530;
-  --border: #2a2520;
-  --heat-color: #c8a951;
+:root{
+  --bg-primary:#0a0a0a;--bg-secondary:#111111;--bg-panel:#161616;--bg-card:#1c1c1c;
+  --accent-primary:#c8a951;--accent-danger:#8b1a1a;--accent-warning:#b85c00;--accent-safe:#1a4a2e;
+  --text-primary:#e8e0d0;--text-secondary:#7a7060;--text-muted:#3a3530;--border:#2a2520;
+  --heat-color:#c8a951;--scene-h:200px;--topbar-h:44px;--ticker-h:26px;--nav-h:52px;
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;overflow:hidden;}
-body{
-  background:var(--bg-primary);
-  color:var(--text-primary);
-  font-family:'IBM Plex Mono',monospace;
-  font-size:13px;
-  position:relative;
-}
-body::before{
-  content:'';
-  position:fixed;
-  top:0;left:0;right:0;bottom:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
-  pointer-events:none;
-  z-index:9999;
-}
-
-/* TOP BAR */
-#topbar{
-  position:fixed;top:0;left:0;right:0;height:42px;
-  background:var(--bg-secondary);
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;
-  z-index:1000;padding:0 12px;gap:16px;
-}
-#topbar-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:22px;letter-spacing:2px;
-  color:var(--accent-primary);
-  white-space:nowrap;
-  flex-shrink:0;
-}
-#topbar-stats{
-  display:flex;gap:16px;align-items:center;flex:1;justify-content:center;flex-wrap:nowrap;
-}
-.stat-item{font-size:11px;color:var(--text-secondary);white-space:nowrap;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{height:100%;overflow:hidden;}
+body{height:100%;overflow:hidden;background:var(--bg-primary);color:var(--text-primary);font-family:'IBM Plex Mono',monospace;font-size:13px;position:relative;touch-action:manipulation;-webkit-text-size-adjust:100%;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);pointer-events:none;z-index:9999;}
+#topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:var(--bg-secondary);border-bottom:1px solid var(--border);display:flex;align-items:center;z-index:1000;padding:0 10px;gap:8px;}
+#topbar-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent-primary);white-space:nowrap;flex-shrink:0;}
+#topbar-stats{display:flex;gap:10px;align-items:center;flex:1;justify-content:center;overflow:hidden;}
+.stat-item{font-size:10px;color:var(--text-secondary);white-space:nowrap;}
 .stat-item span{color:var(--text-primary);font-weight:600;}
-#topbar-actions{display:flex;gap:6px;flex-shrink:0;}
-.topbar-btn{
-  background:none;border:1px solid var(--border);
-  color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;
-  font-size:10px;padding:4px 10px;cursor:pointer;
-  letter-spacing:1px;text-transform:uppercase;
-  transition:all .15s;
-}
-.topbar-btn:hover{border-color:var(--accent-primary);color:var(--accent-primary);}
-#save-flash{
-  font-size:9px;color:var(--accent-primary);opacity:0;
-  transition:opacity .3s;letter-spacing:1px;
-  position:absolute;right:220px;top:50%;transform:translateY(-50%);
-}
-
-/* SIDEBAR */
-#sidebar{
-  position:fixed;top:42px;left:0;bottom:28px;width:130px;
-  background:var(--bg-secondary);
-  border-right:1px solid var(--border);
-  z-index:100;overflow:hidden;
-}
-.tab-btn{
-  width:100%;padding:14px 16px;
-  background:none;border:none;border-bottom:1px solid var(--border);
-  border-left:3px solid transparent;
-  color:var(--text-secondary);
-  font-family:'Bebas Neue',sans-serif;
-  font-size:15px;letter-spacing:1.5px;
-  text-align:left;cursor:pointer;
-  transition:all .15s;display:flex;align-items:center;gap:8px;
-}
-.tab-btn:hover{color:var(--text-primary);background:var(--bg-panel);}
-.tab-btn.active{
-  color:var(--accent-primary);
-  border-left-color:var(--accent-primary);
-  background:var(--bg-panel);
-}
-.tab-icon{font-size:14px;}
-
-/* MAIN CONTENT */
-#main{
-  position:fixed;top:42px;left:130px;right:0;bottom:28px;
-  overflow-y:auto;background:var(--bg-primary);
-  padding:20px;
-}
-.tab-panel{display:none;}
-.tab-panel.active{display:block;}
-
-/* BOTTOM TICKER */
-#ticker{
-  position:fixed;bottom:0;left:0;right:0;height:28px;
-  background:var(--bg-secondary);border-top:1px solid var(--border);
-  z-index:1000;overflow:hidden;display:flex;align-items:center;
-}
-#ticker-inner{
-  white-space:nowrap;
-  color:var(--accent-primary);
-  font-size:11px;
-  letter-spacing:.5px;
-  animation:ticker-scroll 60s linear infinite;
-  padding-left:100%;
-}
-@keyframes ticker-scroll{
-  0%{transform:translateX(0);}
-  100%{transform:translateX(-100%);}
-}
-
-/* COMMON COMPONENTS */
-.section-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:20px;letter-spacing:2px;
-  color:var(--accent-primary);
-  border-bottom:1px solid var(--border);
-  padding-bottom:8px;margin-bottom:16px;
-}
-.panel{
-  background:var(--bg-panel);
-  border:1px solid var(--border);
-  padding:16px;margin-bottom:16px;
-}
-.card{
-  background:var(--bg-card);
-  border:1px solid var(--border);
-  padding:14px;margin-bottom:10px;
-}
-.btn{
-  background:none;
-  border:1px solid var(--accent-primary);
-  color:var(--accent-primary);
-  font-family:'IBM Plex Mono',monospace;
-  font-size:11px;padding:7px 16px;
-  cursor:pointer;letter-spacing:1px;
-  text-transform:uppercase;transition:all .15s;
-  display:inline-block;
-}
-.btn:hover:not(:disabled){background:var(--accent-primary);color:#000;}
+#topbar-actions{display:flex;gap:4px;flex-shrink:0;}
+.topbar-btn{background:none;border:1px solid var(--border);color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;font-size:9px;padding:4px 7px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;-webkit-appearance:none;border-radius:0;}
+#save-flash{font-size:9px;color:var(--accent-primary);opacity:0;transition:opacity .3s;letter-spacing:1px;position:absolute;right:180px;top:50%;transform:translateY(-50%);}
+#scene-wrap{position:fixed;top:var(--topbar-h);left:0;right:0;height:var(--scene-h);z-index:50;overflow:hidden;cursor:pointer;user-select:none;}
+#scene-canvas{display:block;width:100%;height:100%;}
+#tap-reward{position:absolute;pointer-events:none;font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent-primary);text-shadow:0 0 8px rgba(200,169,81,.8);opacity:0;z-index:60;}
+#bottom-nav{position:fixed;bottom:var(--ticker-h);left:0;right:0;height:var(--nav-h);background:var(--bg-secondary);border-top:1px solid var(--border);display:flex;z-index:1000;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+#bottom-nav::-webkit-scrollbar{display:none;}
+.tab-btn{flex:0 0 auto;min-width:58px;padding:6px 6px;background:none;border:none;border-top:2px solid transparent;color:var(--text-secondary);font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.tab-btn.active{color:var(--accent-primary);border-top-color:var(--accent-primary);}
+.tab-icon{font-size:15px;}
+#main{position:fixed;top:calc(var(--topbar-h) + var(--scene-h));left:0;right:0;bottom:calc(var(--nav-h) + var(--ticker-h));overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg-primary);padding:12px;}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+#ticker{position:fixed;bottom:0;left:0;right:0;height:var(--ticker-h);background:var(--bg-secondary);border-top:1px solid var(--border);z-index:1000;overflow:hidden;display:flex;align-items:center;}
+#ticker-inner{white-space:nowrap;color:var(--accent-primary);font-size:10px;letter-spacing:.5px;display:inline-block;padding-left:100%;animation:ticker-scroll 50s linear infinite;}
+@keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-100vw);}}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent-primary);border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:12px;}
+.panel{background:var(--bg-panel);border:1px solid var(--border);padding:12px;margin-bottom:12px;}
+.card{background:var(--bg-card);border:1px solid var(--border);padding:12px;margin-bottom:8px;}
+.btn{background:none;border:1px solid var(--accent-primary);color:var(--accent-primary);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:8px 14px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;display:inline-block;-webkit-appearance:none;border-radius:0;}
+.btn:active:not(:disabled){background:var(--accent-primary);color:#000;}
 .btn:disabled{opacity:.3;cursor:not-allowed;border-color:var(--text-muted);color:var(--text-muted);}
-.btn-danger{border-color:var(--accent-danger);color:var(--accent-danger);}
-.btn-danger:hover:not(:disabled){background:var(--accent-danger);color:#fff;}
-.btn-warn{border-color:var(--accent-warning);color:var(--accent-warning);}
-.btn-warn:hover:not(:disabled){background:var(--accent-warning);color:#000;}
+.btn-danger{border-color:var(--accent-danger);color:var(--accent-danger);}.btn-danger:active:not(:disabled){background:var(--accent-danger);color:#fff;}
+.btn-warn{border-color:var(--accent-warning);color:var(--accent-warning);}.btn-warn:active:not(:disabled){background:var(--accent-warning);color:#000;}
+.btn-sm{font-size:10px;padding:5px 10px;}
 .label{font-size:10px;color:var(--text-secondary);letter-spacing:1px;text-transform:uppercase;}
-.value{font-size:14px;color:var(--text-primary);font-weight:600;}
-.mono{font-family:'IBM Plex Mono',monospace;}
-.positive{color:#4a9;} .negative{color:#c55;}
-.gold{color:var(--accent-primary);}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.flex{display:flex;} .flex-col{flex-direction:column;}
-.gap-8{gap:8px;} .gap-12{gap:12px;} .gap-16{gap:16px;}
-.align-center{align-items:center;} .justify-between{justify-content:space-between;}
-.mt-8{margin-top:8px;} .mt-12{margin-top:12px;} .mt-16{margin-top:16px;}
-.mb-8{margin-bottom:8px;} .mb-12{margin-bottom:12px;}
-progress-bar-wrap{display:block;background:var(--bg-secondary);border:1px solid var(--border);height:10px;width:100%;}
-
-/* HEAT BAR */
-#heat-bar-outer{
-  height:20px;background:var(--bg-secondary);
-  border:1px solid var(--border);width:100%;position:relative;overflow:hidden;
-}
-#heat-bar-inner{
-  height:100%;transition:width .5s,background .5s;
-  background:var(--heat-color);
-}
-
-/* PURITY DIAL */
-#purity-dial-wrap{text-align:center;margin:0 auto;width:160px;}
-#purity-dial{width:160px;height:160px;}
-
-/* SYNTHESIS PROGRESS */
-#synth-progress-wrap{
-  height:12px;background:var(--bg-secondary);border:1px solid var(--border);
-  overflow:hidden;margin-top:8px;
-}
-#synth-progress-bar{
-  height:100%;background:var(--accent-primary);
-  transition:width .5s;width:0%;
-}
-
-/* SLIDER */
-input[type=range]{
-  -webkit-appearance:none;appearance:none;
-  background:var(--bg-secondary);border:1px solid var(--border);
-  height:4px;width:100%;cursor:pointer;
-}
-input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none;
-  width:14px;height:14px;
-  background:var(--accent-primary);border:none;cursor:pointer;
-}
-input[type=text],input[type=number]{
-  background:var(--bg-secondary);border:1px solid var(--border);
-  color:var(--text-primary);font-family:'IBM Plex Mono',monospace;
-  font-size:13px;padding:6px 10px;width:100%;
-  outline:none;
-}
-input[type=text]:focus,input[type=number]:focus{border-color:var(--accent-primary);}
-
-/* MODALS */
-.modal-overlay{
-  position:fixed;top:0;left:0;right:0;bottom:0;
-  background:rgba(0,0,0,.85);
-  z-index:9000;display:flex;align-items:center;justify-content:center;
-  display:none;
-}
+.value{font-size:13px;color:var(--text-primary);font-weight:600;}
+.positive{color:#4a9;}.negative{color:#c55;}.gold{color:var(--accent-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.flex{display:flex;}.flex-col{flex-direction:column;}.flex-wrap{flex-wrap:wrap;}
+.gap-8{gap:8px;}.align-center{align-items:center;}.justify-between{justify-content:space-between;}
+.mt-8{margin-top:8px;}.mt-10{margin-top:10px;}.mb-8{margin-bottom:8px;}.mb-10{margin-bottom:10px;}
+.text-right{text-align:right;}.text-center{text-align:center;}.w100{width:100%;}
+input[type=range]{-webkit-appearance:none;appearance:none;background:var(--bg-secondary);border:1px solid var(--border);height:6px;width:100%;cursor:pointer;border-radius:0;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--accent-primary);border:none;cursor:pointer;border-radius:0;}
+input[type=text],input[type=number]{background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-primary);font-family:'IBM Plex Mono',monospace;font-size:13px;padding:8px 10px;width:100%;outline:none;border-radius:0;-webkit-appearance:none;}
+.tier-req{font-size:10px;color:var(--text-muted);letter-spacing:1px;}
+#heat-bar-outer,#heat-bar-outer2{height:16px;background:var(--bg-secondary);border:1px solid var(--border);width:100%;overflow:hidden;}
+#heat-bar-inner,#heat-bar-inner2{height:100%;transition:width .5s,background .5s;background:var(--heat-color);}
+#synth-progress-wrap{height:8px;background:var(--bg-secondary);border:1px solid var(--border);overflow:hidden;margin-top:6px;}
+#synth-progress-bar{height:100%;background:var(--accent-primary);transition:width .5s;width:0%;}
+#purity-dial{width:140px;height:140px;}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.88);z-index:9000;display:none;align-items:center;justify-content:center;padding:16px;}
 .modal-overlay.open{display:flex;}
-.modal-box{
-  background:var(--bg-card);border:1px solid var(--border);
-  max-width:560px;width:90%;max-height:80vh;overflow-y:auto;
-  padding:24px;position:relative;
-}
-.modal-title{
-  font-family:'Bebas Neue',sans-serif;font-size:28px;
-  letter-spacing:3px;color:var(--accent-primary);
-  margin-bottom:12px;
-}
+.modal-box{background:var(--bg-card);border:1px solid var(--border);width:100%;max-width:520px;max-height:85vh;overflow-y:auto;padding:20px;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--accent-primary);margin-bottom:10px;}
 .modal-body{font-size:12px;line-height:1.7;color:var(--text-secondary);}
-.modal-options{margin-top:20px;display:flex;flex-direction:column;gap:8px;}
-.modal-opt{
-  background:none;border:1px solid var(--border);
-  color:var(--text-primary);font-family:'IBM Plex Mono',monospace;
-  font-size:11px;padding:10px 14px;cursor:pointer;
-  text-align:left;transition:all .15s;line-height:1.5;
-}
-.modal-opt:hover{border-color:var(--accent-primary);color:var(--accent-primary);}
-.modal-opt.opt-b{border-color:var(--accent-danger);}
-.modal-opt.opt-b:hover{background:var(--accent-danger);color:#fff;}
+.modal-options{margin-top:16px;display:flex;flex-direction:column;gap:8px;}
+.modal-opt{background:none;border:1px solid var(--border);color:var(--text-primary);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:10px 12px;cursor:pointer;text-align:left;line-height:1.5;-webkit-appearance:none;border-radius:0;width:100%;}
+.modal-opt:active{border-color:var(--accent-primary);color:var(--accent-primary);}
+.modal-opt.opt-b{border-color:var(--accent-danger);}.modal-opt.opt-b:active{background:var(--accent-danger);color:#fff;}
 .modal-opt.opt-c{border-color:var(--text-muted);}
-.modal-opt.opt-c:hover{border-color:var(--text-secondary);color:var(--text-secondary);}
-
-/* NEW GAME */
-#newgame-overlay{
-  position:fixed;top:0;left:0;right:0;bottom:0;
-  background:var(--bg-primary);
-  z-index:9500;display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:20px;
-}
-#newgame-title{
-  font-family:'Bebas Neue',sans-serif;font-size:72px;
-  letter-spacing:8px;color:var(--accent-primary);
-  text-shadow:0 0 40px rgba(200,169,81,.3);
-}
-#newgame-sub{color:var(--text-secondary);font-size:11px;letter-spacing:2px;}
-#newgame-overlay input{max-width:320px;text-align:center;font-size:15px;padding:10px;}
-#newgame-overlay .btn{min-width:160px;padding:12px 24px;font-size:14px;letter-spacing:3px;}
-.prestige-info{color:var(--text-secondary);font-size:11px;max-width:320px;text-align:center;line-height:1.6;}
-
-/* VICTORY */
-#victory-overlay{
-  position:fixed;top:0;left:0;right:0;bottom:0;
-  background:rgba(0,0,0,.95);
-  z-index:9400;display:none;align-items:center;justify-content:center;
-  flex-direction:column;gap:20px;text-align:center;
-}
+#newgame-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg-primary);z-index:9500;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;padding:24px;}
+#newgame-title{font-family:'Bebas Neue',sans-serif;font-size:58px;letter-spacing:6px;color:var(--accent-primary);text-shadow:0 0 40px rgba(200,169,81,.3);text-align:center;}
+#newgame-sub{color:var(--text-secondary);font-size:10px;letter-spacing:2px;text-align:center;}
+#newgame-overlay input{max-width:300px;text-align:center;}
+.prestige-info{color:var(--text-secondary);font-size:11px;max-width:300px;text-align:center;line-height:1.6;}
+#victory-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);z-index:9400;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;text-align:center;padding:24px;}
 #victory-overlay.open{display:flex;}
-#victory-title{
-  font-family:'Bebas Neue',sans-serif;font-size:80px;
-  letter-spacing:10px;color:var(--accent-primary);
-}
-
-/* RAID OVERLAY */
-#raid-overlay{
-  position:fixed;top:0;left:0;right:0;bottom:0;
-  background:rgba(139,26,26,.85);
-  z-index:9300;display:none;align-items:center;justify-content:center;
-  flex-direction:column;gap:16px;
-}
+#victory-title{font-family:'Bebas Neue',sans-serif;font-size:60px;letter-spacing:8px;color:var(--accent-primary);}
+#raid-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(139,26,26,.88);z-index:9300;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:24px;}
 #raid-overlay.open{display:flex;}
-#raid-title{
-  font-family:'Bebas Neue',sans-serif;font-size:120px;
-  letter-spacing:20px;color:#fff;
-  animation:raid-pulse 0.5s ease-in-out infinite alternate;
-}
-@keyframes raid-pulse{
-  from{opacity:1;} to{opacity:.5;}
-}
-
-/* TURF CARDS */
-.turf-card{
-  background:var(--bg-card);border:1px solid var(--border);
-  padding:14px;position:relative;
-}
-.turf-status{
-  font-family:'Bebas Neue',sans-serif;font-size:11px;
-  letter-spacing:1.5px;padding:2px 8px;
-  display:inline-block;margin-bottom:6px;
-}
+#raid-title{font-family:'Bebas Neue',sans-serif;font-size:80px;letter-spacing:12px;color:#fff;animation:raid-pulse .5s ease-in-out infinite alternate;}
+@keyframes raid-pulse{from{opacity:1;}to{opacity:.4;}}
+.turf-card{background:var(--bg-card);border:1px solid var(--border);padding:12px;}
+.turf-status{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1.5px;padding:2px 6px;display:inline-block;margin-bottom:4px;}
 .turf-owned{background:var(--accent-safe);color:#6fa;border:1px solid #2a6a4a;}
-.turf-contested{background:var(--accent-warning);color:#fff;border:1px solid var(--accent-warning);}
 .turf-available{background:none;color:var(--accent-primary);border:1px solid var(--accent-primary);}
 .turf-locked{background:none;color:var(--text-muted);border:1px solid var(--text-muted);}
-
-/* RIVAL BAR */
-.rival-bar-wrap{height:6px;background:var(--bg-secondary);border:1px solid var(--border);}
+.rival-bar-wrap{height:5px;background:var(--bg-secondary);border:1px solid var(--border);}
 .rival-bar-inner{height:100%;background:var(--accent-danger);transition:width .5s;}
-
-/* HEADLINE CARDS */
-.headline-card{
-  background:var(--bg-card);border:1px solid var(--border);
-  padding:14px;margin-bottom:8px;position:relative;
-  filter:sepia(.3);
-}
-.headline-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
-  background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(0,0,0,.02) 3px,rgba(0,0,0,.02) 6px);
-  pointer-events:none;
-}
-.headline-source{font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
-.headline-text{font-size:12px;color:var(--text-secondary);line-height:1.5;}
-.redacted{
-  background:var(--text-muted);color:transparent;
-  user-select:none;padding:0 2px;
-}
-
-/* XP BAR */
-#xp-bar-wrap{
-  height:3px;background:var(--bg-primary);
-  border-bottom:1px solid var(--border);
-}
-#xp-bar-inner{height:100%;background:var(--accent-primary);transition:width .5s;}
-
-/* EVENT LOG ENTRY */
-.log-entry{
-  font-size:11px;padding:5px 0;
-  border-bottom:1px solid var(--border);
-  color:var(--text-secondary);
-  line-height:1.4;
-}
-.log-entry.pos{color:#6a9;} .log-entry.neg{color:#b55;} .log-entry.neu{color:var(--text-secondary);}
-.log-time{color:var(--text-muted);font-size:10px;margin-right:8px;}
-
-/* TRANSACTION LOG */
-.txn-entry{
-  font-size:11px;padding:5px 0;
-  border-bottom:1px solid var(--border);
-  display:flex;justify-content:space-between;
-  color:var(--text-secondary);
-}
-
-/* SLINGER LIVE FEED */
-.sale-entry{
-  font-size:11px;padding:3px 0;
-  color:var(--text-muted);border-bottom:1px solid #1a1a1a;
-}
-
-/* UPGRADE CARD */
-.upgrade-card{
-  background:var(--bg-card);border:1px solid var(--border);
-  padding:14px;
-}
-.upgrade-level-dot{
-  display:inline-block;width:8px;height:8px;
-  background:var(--text-muted);margin-right:3px;
-}
+.headline-card{background:var(--bg-card);border:1px solid var(--border);padding:12px;margin-bottom:6px;filter:sepia(.3);}
+.headline-source{font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
+.headline-text{font-size:11px;color:var(--text-secondary);line-height:1.5;}
+.upgrade-level-dot{display:inline-block;width:7px;height:7px;background:var(--text-muted);margin-right:2px;}
 .upgrade-level-dot.active{background:var(--accent-primary);}
-
-/* PRESTIGE DIAMONDS */
-#prestige-diamonds{font-size:11px;color:var(--accent-primary);letter-spacing:2px;}
-
-/* OPERATIONS TAB */
-.empire-tier-display{
-  text-align:center;padding:20px;
-  background:var(--bg-card);border:1px solid var(--border);
-}
-.empire-tier-name{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:36px;letter-spacing:4px;
-  color:var(--accent-primary);
-}
-.empire-tier-num{
-  font-size:11px;color:var(--text-muted);
-  letter-spacing:2px;text-transform:uppercase;
-}
-
-/* MISC */
-.w100{width:100%;} .text-right{text-align:right;} .text-center{text-align:center;}
-.inline-block{display:inline-block;}
-.tier-req{font-size:10px;color:var(--text-muted);letter-spacing:1px;}
+.log-entry{font-size:11px;padding:4px 0;border-bottom:1px solid var(--border);color:var(--text-secondary);line-height:1.4;}
+.log-entry.pos{color:#6a9;}.log-entry.neg{color:#b55;}
+.log-time{color:var(--text-muted);font-size:9px;margin-right:6px;}
+.txn-entry{font-size:10px;padding:4px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;color:var(--text-secondary);}
+.sale-entry{font-size:10px;padding:2px 0;color:var(--text-muted);border-bottom:1px solid #1a1a1a;}
+.empire-tier-display{text-align:center;padding:14px;background:var(--bg-card);border:1px solid var(--border);}
+.empire-tier-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--accent-primary);}
+.drip-category{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--text-secondary);margin:12px 0 6px;border-bottom:1px solid var(--border);padding-bottom:4px;}
+.drip-item{background:var(--bg-card);border:1px solid var(--border);padding:10px;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+.drip-item-icon{font-size:20px;width:28px;text-align:center;flex-shrink:0;}
+.drip-item-info{flex:1;}
+.drip-item-name{font-size:11px;color:var(--text-primary);}
+.drip-item-brand{font-size:9px;letter-spacing:1px;}
+.brand-normal{color:var(--text-muted);}
+.brand-luxury{color:#c8a951;font-style:italic;}
+.drip-item-price{font-size:11px;color:var(--accent-primary);}
+.drip-item-equipped{font-size:10px;color:#4a9;letter-spacing:1px;}
+#char-preview-wrap{text-align:center;padding:10px;background:var(--bg-card);border:1px solid var(--border);margin-bottom:12px;}
+#char-preview-canvas{image-rendering:pixelated;image-rendering:crisp-edges;}
+@supports(padding:max(0px)){#main{padding-bottom:max(12px,env(safe-area-inset-bottom));}#bottom-nav{padding-bottom:env(safe-area-inset-bottom);}}
 </style>
 </head>
 <body>
-
-<!-- NEW GAME OVERLAY -->
 <div id="newgame-overlay">
   <div id="newgame-title">FENT DEALER</div>
   <div id="newgame-sub">You know what you're doing. Get to work.</div>
-  <input type="text" id="ng-name" placeholder="What do they call you?" maxlength="24" style="max-width:320px;text-align:center;font-size:15px;padding:10px;">
+  <input type="text" id="ng-name" placeholder="What do they call you?" maxlength="24">
   <div id="ng-prestige-info" class="prestige-info" style="display:none;"></div>
-  <button class="btn" onclick="startNewGame()" style="min-width:160px;padding:12px 24px;font-size:14px;letter-spacing:3px;margin-top:8px;">BEGIN</button>
+  <button class="btn" onclick="startNewGame()" style="min-width:140px;padding:12px 20px;font-size:13px;letter-spacing:3px;margin-top:6px;">BEGIN</button>
 </div>
-
-<!-- RAID OVERLAY -->
 <div id="raid-overlay">
   <div id="raid-title">RAID</div>
-  <div id="raid-text" style="font-size:13px;color:#e8e0d0;text-align:center;max-width:400px;line-height:1.8;font-family:'IBM Plex Mono',monospace;"></div>
-  <button class="btn btn-danger" onclick="closeRaid()" style="margin-top:16px;">ACKNOWLEDGE</button>
+  <div id="raid-text" style="font-size:12px;color:#e8e0d0;text-align:center;max-width:360px;line-height:1.8;font-family:'IBM Plex Mono',monospace;"></div>
+  <button class="btn btn-danger" onclick="closeRaid()" style="margin-top:12px;">ACKNOWLEDGE</button>
 </div>
-
-<!-- VICTORY OVERLAY -->
 <div id="victory-overlay">
   <div id="victory-title">THE EMPIRE</div>
-  <div style="color:var(--text-secondary);font-size:13px;max-width:480px;line-height:1.8;text-align:center;">
-    The operation is complete. You built it from nothing.<br>Now burn it down and do it right.
-  </div>
-  <div style="display:flex;gap:16px;margin-top:16px;">
-    <button class="btn" onclick="closeVictory()">CONTINUE OPERATIONS</button>
+  <div style="color:var(--text-secondary);font-size:12px;max-width:400px;line-height:1.8;text-align:center;">The operation is complete. You built it from nothing.<br>Now burn it down and do it right.</div>
+  <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
+    <button class="btn" onclick="closeVictory()">CONTINUE</button>
     <button class="btn btn-warn" onclick="triggerPrestige()">PRESTIGE</button>
   </div>
 </div>
-
-<!-- PRESTIGE SCREEN -->
 <div id="prestige-overlay" class="modal-overlay">
-  <div class="modal-box" style="max-width:560px;">
+  <div class="modal-box">
     <div class="modal-title">CHOOSE YOUR EDGE</div>
-    <div class="modal-body">Select one advantage to carry into your next run. Everything else burns.</div>
+    <div class="modal-body">Select one advantage to carry into your next run.</div>
     <div id="prestige-options" class="modal-options"></div>
   </div>
 </div>
-
-<!-- MAJOR EVENT MODAL -->
 <div id="event-modal" class="modal-overlay">
   <div class="modal-box">
     <div id="event-modal-title" class="modal-title"></div>
@@ -448,976 +156,536 @@ input[type=text]:focus,input[type=number]:focus{border-color:var(--accent-primar
     <div id="event-modal-options" class="modal-options"></div>
   </div>
 </div>
-
-<!-- EXPORT MODAL -->
 <div id="export-modal" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-title">SAVE CODE</div>
-    <div class="modal-body" style="margin-bottom:12px;">Keep this somewhere safe.</div>
-    <textarea id="export-text" style="width:100%;height:100px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:8px;resize:none;" readonly></textarea>
-    <div style="margin-top:12px;display:flex;gap:8px;">
-      <button class="btn" onclick="copyExport()">COPY</button>
-      <button class="btn btn-danger" onclick="closeModal('export-modal')">CLOSE</button>
-    </div>
+    <textarea id="export-text" style="width:100%;height:90px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;font-size:10px;padding:8px;resize:none;" readonly></textarea>
+    <div style="margin-top:10px;display:flex;gap:8px;"><button class="btn btn-sm" onclick="copyExport()">COPY</button><button class="btn btn-danger btn-sm" onclick="closeModal('export-modal')">CLOSE</button></div>
   </div>
 </div>
-
-<!-- IMPORT MODAL -->
 <div id="import-modal" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-title">LOAD SAVE CODE</div>
-    <div class="modal-body" style="margin-bottom:12px;">Paste your save code below.</div>
-    <textarea id="import-text" style="width:100%;height:100px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:8px;resize:none;"></textarea>
-    <div style="margin-top:12px;display:flex;gap:8px;">
-      <button class="btn" onclick="doImport()">LOAD</button>
-      <button class="btn btn-danger" onclick="closeModal('import-modal')">CANCEL</button>
-    </div>
+    <textarea id="import-text" style="width:100%;height:90px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;font-size:10px;padding:8px;resize:none;"></textarea>
+    <div style="margin-top:10px;display:flex;gap:8px;"><button class="btn btn-sm" onclick="doImport()">LOAD</button><button class="btn btn-danger btn-sm" onclick="closeModal('import-modal')">CANCEL</button></div>
   </div>
 </div>
-
-<!-- XP BAR -->
-<div id="xp-bar-wrap" style="position:fixed;top:42px;left:0;right:0;z-index:999;">
-  <div id="xp-bar-inner" style="width:0%;"></div>
-</div>
-
-<!-- TOP BAR -->
+<div id="xp-bar-wrap" style="position:fixed;top:44px;left:0;right:0;height:3px;background:var(--bg-primary);z-index:999;"><div id="xp-bar-inner" style="height:100%;background:var(--accent-primary);transition:width .5s;width:0%;"></div></div>
 <div id="topbar">
   <div id="topbar-title">FENT DEALER</div>
   <div id="topbar-stats">
-    <div class="stat-item">CASH: <span id="stat-cash">$0</span></div>
-    <div class="stat-item">FENT: <span id="stat-fent">0g</span></div>
-    <div class="stat-item">PURITY: <span id="stat-purity">0%</span></div>
-    <div class="stat-item">HEAT: <span id="stat-heat">0</span></div>
-    <div class="stat-item">LVL: <span id="stat-lvl">1</span></div>
-    <div class="stat-item" id="prestige-stat" style="display:none;">◆: <span id="prestige-diamonds"></span></div>
+    <div class="stat-item">💰<span id="stat-cash">$0</span></div>
+    <div class="stat-item">📦<span id="stat-fent">0g</span></div>
+    <div class="stat-item">🌡<span id="stat-heat">0</span></div>
+    <div class="stat-item">Lv<span id="stat-lvl">1</span></div>
   </div>
   <div id="topbar-actions">
-    <span id="save-flash">SAVED</span>
+    <span id="save-flash">✓</span>
     <button class="topbar-btn" onclick="manualSave()">SAVE</button>
-    <button class="topbar-btn" onclick="openExport()">EXPORT</button>
-    <button class="topbar-btn" onclick="openModal('import-modal')">IMPORT</button>
+    <button class="topbar-btn" onclick="openExport()">EXP</button>
+    <button class="topbar-btn" onclick="openModal('import-modal')">IMP</button>
   </div>
 </div>
-
-<!-- SIDEBAR -->
-<div id="sidebar">
-  <button class="tab-btn active" onclick="switchTab('operations')" data-tab="operations"><span class="tab-icon">◉</span>OPERATIONS</button>
+<div id="scene-wrap"><canvas id="scene-canvas"></canvas><div id="tap-reward"></div></div>
+<div id="main">
+  <div id="tab-operations" class="tab-panel active">
+    <div class="section-title">OPERATIONS</div>
+    <div class="empire-tier-display mb-10"><div class="tier-req">EMPIRE TIER <span id="ops-tier-num">0</span></div><div class="empire-tier-name" id="ops-tier-name">STREET CORNER</div><div class="tier-req mt-8" id="ops-tier-next"></div></div>
+    <div class="panel"><div class="label mb-8">SYNTHESIS STATUS</div><div id="ops-synth-status" style="color:var(--text-muted);font-size:11px;">NO COOK IN PROGRESS</div><div id="synth-progress-wrap"><div id="synth-progress-bar"></div></div></div>
+    <div class="panel"><div class="label mb-8">HEAT LEVEL</div><div id="heat-bar-outer"><div id="heat-bar-inner"></div></div><div class="flex justify-between mt-8"><span id="ops-heat-num" style="font-size:11px;color:var(--text-secondary);">0/100</span><span id="ops-heat-state" style="font-size:10px;letter-spacing:1px;color:var(--text-muted);">COLD</span></div></div>
+    <div class="panel"><div class="label mb-8">QUICK STATS</div><div class="flex flex-col gap-8"><div class="flex justify-between"><span class="label">CASH/MIN</span><span id="ops-cpm" class="value positive">$0</span></div><div class="flex justify-between"><span class="label">STOCK</span><span id="ops-stock" class="value">0g</span></div><div class="flex justify-between"><span class="label">SLINGERS</span><span id="ops-slingers" class="value">0</span></div><div class="flex justify-between"><span class="label">TURF</span><span id="ops-turf" class="value">0</span></div><div class="flex justify-between"><span class="label">MARKET</span><span id="ops-market" class="value gold">NORMAL</span></div><div class="flex justify-between"><span class="label">PURITY</span><span id="ops-purity" class="value">20%</span></div></div></div>
+    <div class="panel" id="ops-advance-panel" style="display:none;"><div class="label mb-8">TIER ADVANCEMENT READY</div><div id="ops-advance-text" style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;"></div><button class="btn" onclick="advanceTier()">ADVANCE TIER</button></div>
+    <div class="panel"><div class="label mb-8">RECENT ACTIVITY</div><div id="ops-log" style="max-height:180px;overflow-y:auto;"></div></div>
+  </div>
+  <div id="tab-lab" class="tab-panel">
+    <div class="section-title">SYNTHESIS LAB</div>
+    <div class="text-center panel"><div class="label mb-8">PRODUCT PURITY</div>
+      <svg id="purity-dial" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><circle cx="70" cy="70" r="60" fill="none" stroke="#2a2520" stroke-width="7"/><path id="purity-arc" d="" fill="none" stroke="#c8a951" stroke-width="7" stroke-linecap="square"/><text x="70" y="76" text-anchor="middle" fill="#e8e0d0" font-family="'Bebas Neue',sans-serif" font-size="28" id="purity-pct-text">20%</text><text x="70" y="92" text-anchor="middle" fill="#7a7060" font-family="'IBM Plex Mono',monospace" font-size="8">PURITY</text></svg>
+      <div class="mt-8" style="font-size:11px;color:var(--text-secondary);">CEILING: <span id="lab-ceiling" class="gold">25%</span></div></div>
+    <div class="panel"><div class="flex justify-between align-center mb-8"><div class="label">SYNTHESIS</div><div id="lab-synth-time" style="font-size:11px;color:var(--text-secondary);"></div></div>
+      <div style="height:8px;background:var(--bg-secondary);border:1px solid var(--border);overflow:hidden;"><div id="synth-bar2-inner" style="height:100%;background:var(--accent-primary);transition:width .5s;width:0%;"></div></div>
+      <div class="flex justify-between mt-8"><div style="font-size:11px;color:var(--text-secondary);">BATCH: <span id="lab-batch-size" class="gold">50g</span></div><div style="font-size:11px;color:var(--text-secondary);">STOCK: <span id="lab-storage-used" class="gold">0</span>/<span id="lab-storage-cap">500</span>g</div></div>
+      <button id="cook-btn" class="btn w100 mt-10" onclick="startCook()">START COOK</button>
+      <div id="lab-last-batch" style="font-size:10px;color:var(--text-muted);margin-top:8px;"></div></div>
+    <div class="panel"><div class="label mb-8">HARDWARE</div><div id="hw-upgrade-info"></div><button id="hw-upgrade-btn" class="btn btn-sm mt-8" onclick="upgradeHardware()">UPGRADE</button></div>
+    <div class="panel"><div class="label mb-8">FORMULA</div><div id="formula-upgrade-info"></div><button id="formula-upgrade-btn" class="btn btn-sm mt-8" onclick="upgradeFormula()">UPGRADE</button></div>
+    <div class="panel"><div class="label mb-8">SOURCING</div><div id="sourcing-upgrade-info"></div><button id="sourcing-upgrade-btn" class="btn btn-sm mt-8" onclick="upgradeSourcing()">UPGRADE</button></div>
+    <div class="panel"><div class="label mb-8">STASH CAPACITY</div><div id="storage-upgrade-info"></div><button id="storage-upgrade-btn" class="btn btn-sm mt-8" onclick="upgradeStorage()">EXPAND</button></div>
+  </div>
+  <div id="tab-street" class="tab-panel">
+    <div class="section-title">STREET OPERATIONS</div>
+    <div class="panel"><div class="label mb-8">MARKET DEMAND</div><div id="demand-display" style="font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:3px;color:var(--accent-primary);">NORMAL</div><div id="demand-sub" style="font-size:10px;color:var(--text-muted);margin-top:2px;">1.0x MULTIPLIER</div></div>
+    <div class="panel"><div class="label mb-8">PRICING — <span id="price-display" class="gold">$12/g</span></div><input type="range" id="price-slider" min="1" max="500" value="12" oninput="updatePrice(this.value)"><div id="price-advice" style="font-size:10px;color:var(--text-muted);margin-top:4px;"></div></div>
+    <div class="panel"><div class="flex flex-col gap-8"><div class="flex justify-between"><span class="label">GRAMS MOVED</span><span id="st-grams-moved" class="value">0g</span></div><div class="flex justify-between"><span class="label">REVENUE</span><span id="st-revenue" class="value positive">$0</span></div><div class="flex justify-between"><span class="label">SELL RATE</span><span id="st-sell-rate" class="value">0g/min</span></div></div></div>
+    <div class="panel"><div class="label mb-8">TRANSACTION FEED</div><div id="sale-feed" style="max-height:200px;overflow-y:auto;"></div></div>
+  </div>
+  <div id="tab-crew" class="tab-panel">
+    <div class="section-title">CREW</div>
+    <div class="flex justify-between align-center mb-10"><div style="font-size:11px;color:var(--text-secondary);">PAYROLL: <span id="crew-payroll" class="gold">$0/wk</span></div><div style="font-size:11px;color:var(--text-secondary);">NEXT: <span id="crew-payroll-timer" class="value">—</span></div></div>
+    <div id="crew-cards"></div>
+  </div>
+  <div id="tab-turf" class="tab-panel">
+    <div class="section-title">TURF</div>
+    <div class="flex justify-between align-center mb-10"><div style="font-size:11px;color:var(--text-secondary);">INCOME: <span id="turf-total-income" class="gold">$0/min</span></div><div style="font-size:11px;color:var(--text-secondary);">HELD: <span id="turf-owned-count" class="value">0</span></div></div>
+    <div id="turf-grid" class="grid-2"></div>
+  </div>
+  <div id="tab-finances" class="tab-panel">
+    <div class="section-title">FINANCES</div>
+    <div class="panel"><div class="label mb-8">BALANCE</div><div id="fin-cash" style="font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--accent-primary);">$0</div><div class="grid-2 mt-10"><div><div class="label">CASH/MIN</div><div id="fin-cpm" class="value positive">$0</div></div><div class="text-right"><div class="label">TOTAL EARNED</div><div id="fin-total" class="value">$0</div></div><div><div class="label">PAYROLL/WK</div><div id="fin-payroll" class="value negative">$0</div></div><div class="text-right"><div class="label">OVERHEAD/MIN</div><div id="fin-overhead" class="value negative">$0</div></div></div></div>
+    <div class="section-title">FRONT BUSINESSES</div><div id="fronts-list"></div>
+    <div class="section-title mt-10">TRANSACTIONS</div><div id="txn-log" style="max-height:200px;overflow-y:auto;"></div>
+  </div>
+  <div id="tab-intel" class="tab-panel">
+    <div class="section-title">INTEL</div>
+    <div class="panel"><div class="flex justify-between align-center mb-8"><div class="label">HEAT</div><div id="heat-num" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--heat-color);">0</div></div><div id="heat-bar-outer2"><div id="heat-bar-inner2"></div></div><div id="heat-sources" style="margin-top:8px;font-size:10px;color:var(--text-muted);line-height:1.8;"></div><button class="btn btn-warn btn-sm mt-10" onclick="layLow()">LAY LOW</button></div>
+    <div class="panel"><div class="label mb-8">RIVAL CREWS</div><div id="rivals-list"></div></div>
+    <div class="panel" style="max-height:240px;overflow-y:auto;"><div class="label mb-8">EVENT LOG</div><div id="event-log"></div></div>
+    <div class="panel"><div class="label mb-8">INTEL REPORTS</div><div id="headlines-list"></div></div>
+  </div>
+  <div id="tab-drip" class="tab-panel">
+    <div class="section-title">THE DRIP STORE</div>
+    <div id="char-preview-wrap">
+      <canvas id="char-preview-canvas" width="64" height="96" style="width:64px;height:96px;image-rendering:pixelated;"></canvas>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="equipped-label">BASIC GEAR</div>
+      <div style="font-size:10px;color:var(--text-secondary);margin-top:4px;">TAP SCENE TO EARN. Character reflects your gear.</div>
+    </div>
+    <div id="drip-store-list"></div>
+  </div>
+</div>
+<div id="bottom-nav">
+  <button class="tab-btn active" onclick="switchTab('operations')" data-tab="operations"><span class="tab-icon">◉</span>OPS</button>
   <button class="tab-btn" onclick="switchTab('lab')" data-tab="lab"><span class="tab-icon">⚗</span>LAB</button>
   <button class="tab-btn" onclick="switchTab('street')" data-tab="street"><span class="tab-icon">◈</span>STREET</button>
   <button class="tab-btn" onclick="switchTab('crew')" data-tab="crew"><span class="tab-icon">◎</span>CREW</button>
   <button class="tab-btn" onclick="switchTab('turf')" data-tab="turf"><span class="tab-icon">▣</span>TURF</button>
-  <button class="tab-btn" onclick="switchTab('finances')" data-tab="finances"><span class="tab-icon">$</span>FINANCES</button>
+  <button class="tab-btn" onclick="switchTab('finances')" data-tab="finances"><span class="tab-icon">$</span>FIN</button>
   <button class="tab-btn" onclick="switchTab('intel')" data-tab="intel"><span class="tab-icon">◐</span>INTEL</button>
+  <button class="tab-btn" onclick="switchTab('drip')" data-tab="drip"><span class="tab-icon">👕</span>DRIP</button>
 </div>
-
-<!-- MAIN -->
-<div id="main">
-
-  <!-- OPERATIONS TAB -->
-  <div id="tab-operations" class="tab-panel active">
-    <div class="section-title">OPERATIONS</div>
-    <div class="grid-2">
-      <div>
-        <div class="empire-tier-display">
-          <div class="empire-tier-num">EMPIRE TIER <span id="ops-tier-num">0</span></div>
-          <div class="empire-tier-name" id="ops-tier-name">STREET CORNER</div>
-          <div class="tier-req mt-8" id="ops-tier-next"></div>
-        </div>
-        <div class="panel mt-12">
-          <div class="label mb-8">SYNTHESIS STATUS</div>
-          <div id="ops-synth-status" style="color:var(--text-muted);font-size:12px;">NO COOK IN PROGRESS</div>
-          <div id="synth-progress-wrap" style="display:none;">
-            <div id="synth-progress-bar"></div>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="label mb-8">HEAT LEVEL</div>
-          <div id="heat-bar-outer"><div id="heat-bar-inner" style="width:0%;"></div></div>
-          <div class="flex justify-between mt-8">
-            <span id="ops-heat-num" style="font-size:12px;color:var(--text-secondary);">0 / 100</span>
-            <span id="ops-heat-state" style="font-size:11px;letter-spacing:1px;color:var(--text-muted);">COLD</span>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="panel">
-          <div class="label mb-8">QUICK STATS</div>
-          <div class="flex flex-col gap-8">
-            <div class="flex justify-between"><span class="label">CASH/MIN</span><span id="ops-cpm" class="value positive">$0</span></div>
-            <div class="flex justify-between"><span class="label">FENT STOCK</span><span id="ops-stock" class="value">0g / 500g</span></div>
-            <div class="flex justify-between"><span class="label">ACTIVE SLINGERS</span><span id="ops-slingers" class="value">0</span></div>
-            <div class="flex justify-between"><span class="label">OWNED TURF</span><span id="ops-turf" class="value">0</span></div>
-            <div class="flex justify-between"><span class="label">MARKET STATE</span><span id="ops-market" class="value gold">NORMAL</span></div>
-            <div class="flex justify-between"><span class="label">PURITY</span><span id="ops-purity" class="value">20%</span></div>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="label mb-8">RECENT ACTIVITY</div>
-          <div id="ops-log" style="max-height:200px;overflow-y:auto;"></div>
-        </div>
-        <div class="panel" id="ops-advance-panel" style="display:none;">
-          <div class="label mb-8">TIER ADVANCEMENT AVAILABLE</div>
-          <div id="ops-advance-text" style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;"></div>
-          <button class="btn" onclick="advanceTier()">ADVANCE TIER</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- LAB TAB -->
-  <div id="tab-lab" class="tab-panel">
-    <div class="section-title">SYNTHESIS LAB</div>
-    <div class="grid-2">
-      <div>
-        <div class="panel text-center">
-          <div class="label mb-8">PRODUCT PURITY</div>
-          <div id="purity-dial-wrap">
-            <svg id="purity-dial" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="80" cy="80" r="70" fill="none" stroke="#2a2520" stroke-width="8"/>
-              <circle cx="80" cy="80" r="70" fill="none" stroke="#1c1c1c" stroke-width="6"/>
-              <path id="purity-arc" d="" fill="none" stroke="#c8a951" stroke-width="8" stroke-linecap="square"/>
-              <text x="80" y="88" text-anchor="middle" fill="#e8e0d0" font-family="'Bebas Neue',sans-serif" font-size="32" id="purity-pct-text">20%</text>
-              <text x="80" y="104" text-anchor="middle" fill="#7a7060" font-family="'IBM Plex Mono',monospace" font-size="9" id="purity-label-text">CURRENT PURITY</text>
-            </svg>
-          </div>
-          <div class="mt-8" style="font-size:11px;color:var(--text-secondary);">CEILING: <span id="lab-ceiling" class="gold">25%</span></div>
-        </div>
-        <div class="panel">
-          <div class="flex justify-between align-center mb-8">
-            <div class="label">SYNTHESIS</div>
-            <div id="lab-synth-time" style="font-size:12px;color:var(--text-secondary);"></div>
-          </div>
-          <div id="synth-progress-wrap2">
-            <div id="synth-progress-bar2" style="height:10px;background:var(--bg-secondary);border:1px solid var(--border);overflow:hidden;">
-              <div id="synth-bar2-inner" style="height:100%;background:var(--accent-primary);transition:width .5s;width:0%;"></div>
-            </div>
-          </div>
-          <div class="flex justify-between mt-8">
-            <div style="font-size:11px;color:var(--text-secondary);">BATCH: <span id="lab-batch-size" class="gold">50g</span></div>
-            <div style="font-size:11px;color:var(--text-secondary);">STORAGE: <span id="lab-storage-used" class="gold">0</span>/<span id="lab-storage-cap">500</span>g</div>
-          </div>
-          <div class="mt-12">
-            <button id="cook-btn" class="btn w100" onclick="startCook()">START COOK</button>
-          </div>
-          <div id="lab-last-batch" style="font-size:11px;color:var(--text-muted);margin-top:10px;"></div>
-        </div>
-      </div>
-      <div>
-        <div class="upgrade-card mb-8">
-          <div class="label mb-8">HARDWARE</div>
-          <div id="hw-upgrade-info"></div>
-          <button id="hw-upgrade-btn" class="btn mt-8" onclick="upgradeHardware()">UPGRADE HARDWARE</button>
-        </div>
-        <div class="upgrade-card mb-8">
-          <div class="label mb-8">FORMULA</div>
-          <div id="formula-upgrade-info"></div>
-          <button id="formula-upgrade-btn" class="btn mt-8" onclick="upgradeFormula()">UPGRADE FORMULA</button>
-        </div>
-        <div class="upgrade-card mb-8">
-          <div class="label mb-8">SOURCING</div>
-          <div id="sourcing-upgrade-info"></div>
-          <button id="sourcing-upgrade-btn" class="btn mt-8" onclick="upgradeSourcing()">UPGRADE SOURCING</button>
-        </div>
-        <div class="upgrade-card">
-          <div class="label mb-8">STASH HOUSE CAPACITY</div>
-          <div id="storage-upgrade-info"></div>
-          <button id="storage-upgrade-btn" class="btn mt-8" onclick="upgradeStorage()">EXPAND STASH</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- STREET TAB -->
-  <div id="tab-street" class="tab-panel">
-    <div class="section-title">STREET OPERATIONS</div>
-    <div class="grid-2">
-      <div>
-        <div class="panel">
-          <div class="label mb-8">MARKET DEMAND</div>
-          <div id="demand-display" style="font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:4px;color:var(--accent-primary);">NORMAL</div>
-          <div id="demand-sub" style="font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-top:4px;">DEMAND MULTIPLIER: 1.0x</div>
-        </div>
-        <div class="panel">
-          <div class="label mb-8">PRICING</div>
-          <div class="flex gap-12 align-center mb-8">
-            <input type="range" id="price-slider" min="1" max="500" value="12" oninput="updatePrice(this.value)" style="flex:1;">
-            <input type="number" id="price-input" min="1" max="500" value="12" oninput="updatePrice(this.value)" style="width:80px;text-align:center;">
-          </div>
-          <div class="flex justify-between">
-            <span class="label">PRICE/GRAM</span>
-            <span id="price-display" class="value gold">$12</span>
-          </div>
-          <div id="price-advice" style="font-size:10px;color:var(--text-muted);margin-top:6px;"></div>
-        </div>
-        <div class="panel">
-          <div class="label mb-8">SESSION STATS</div>
-          <div class="flex flex-col gap-8">
-            <div class="flex justify-between"><span class="label">GRAMS MOVED TODAY</span><span id="st-grams-moved" class="value">0g</span></div>
-            <div class="flex justify-between"><span class="label">REVENUE TODAY</span><span id="st-revenue" class="value positive">$0</span></div>
-            <div class="flex justify-between"><span class="label">SELL RATE</span><span id="st-sell-rate" class="value">0g/min</span></div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="panel">
-          <div class="label mb-8">ACTIVE SLINGERS</div>
-          <div id="st-slinger-breakdown" style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;"></div>
-        </div>
-        <div class="panel">
-          <div class="label mb-8">TRANSACTION FEED</div>
-          <div id="sale-feed" style="max-height:300px;overflow-y:auto;"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CREW TAB -->
-  <div id="tab-crew" class="tab-panel">
-    <div class="section-title">CREW MANAGEMENT</div>
-    <div class="flex justify-between align-center mb-12">
-      <div style="font-size:12px;color:var(--text-secondary);">PAYROLL: <span id="crew-payroll" class="gold">$0/week</span></div>
-      <div style="font-size:12px;color:var(--text-secondary);">NEXT PAYROLL: <span id="crew-payroll-timer" class="value">—</span></div>
-    </div>
-    <div id="crew-cards" class="grid-2"></div>
-  </div>
-
-  <!-- TURF TAB -->
-  <div id="tab-turf" class="tab-panel">
-    <div class="section-title">TURF CONTROL</div>
-    <div class="flex justify-between align-center mb-12">
-      <div style="font-size:12px;color:var(--text-secondary);">PASSIVE INCOME: <span id="turf-total-income" class="gold">$0/min</span></div>
-      <div style="font-size:12px;color:var(--text-secondary);">TERRITORIES HELD: <span id="turf-owned-count" class="value">0</span></div>
-    </div>
-    <div id="turf-grid" class="grid-3"></div>
-  </div>
-
-  <!-- FINANCES TAB -->
-  <div id="tab-finances" class="tab-panel">
-    <div class="section-title">FINANCES</div>
-    <div class="grid-2">
-      <div>
-        <div class="panel">
-          <div class="label mb-8">BALANCE</div>
-          <div id="fin-cash" style="font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--accent-primary);">$0</div>
-          <div class="flex justify-between mt-12">
-            <div><div class="label">CASH/MIN (NET)</div><div id="fin-cpm" class="value positive">$0</div></div>
-            <div class="text-right"><div class="label">TOTAL EARNED</div><div id="fin-total" class="value">$0</div></div>
-          </div>
-          <div class="flex justify-between mt-8">
-            <div><div class="label">PAYROLL/WEEK</div><div id="fin-payroll" class="value negative">$0</div></div>
-            <div class="text-right"><div class="label">OVERHEAD/MIN</div><div id="fin-overhead" class="value negative">$0</div></div>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="label mb-8">TRANSACTION LOG</div>
-          <div id="txn-log" style="max-height:280px;overflow-y:auto;"></div>
-        </div>
-      </div>
-      <div>
-        <div class="label mb-8" style="padding-left:0;">FRONT BUSINESSES</div>
-        <div id="fronts-list"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- INTEL TAB -->
-  <div id="tab-intel" class="tab-panel">
-    <div class="section-title">INTEL</div>
-    <div class="grid-2">
-      <div>
-        <div class="panel">
-          <div class="flex justify-between align-center mb-8">
-            <div class="label">HEAT LEVEL</div>
-            <div id="heat-num" style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--heat-color);">0</div>
-          </div>
-          <div id="heat-bar-outer2" style="height:24px;background:var(--bg-secondary);border:1px solid var(--border);position:relative;overflow:hidden;">
-            <div id="heat-bar-inner2" style="height:100%;transition:width .5s,background .5s;background:var(--accent-primary);width:0%;"></div>
-            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:2px;">HEAT</div>
-          </div>
-          <div id="heat-sources" style="margin-top:10px;font-size:11px;color:var(--text-muted);line-height:1.8;"></div>
-          <div class="mt-12">
-            <button class="btn btn-warn" onclick="layLow()">LAY LOW — COSTS CASH</button>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="label mb-8">RIVAL CREWS</div>
-          <div id="rivals-list"></div>
-        </div>
-      </div>
-      <div>
-        <div class="panel" style="max-height:300px;overflow-y:auto;">
-          <div class="label mb-8">EVENT LOG</div>
-          <div id="event-log"></div>
-        </div>
-        <div class="panel mt-12">
-          <div class="label mb-8">INTELLIGENCE REPORTS</div>
-          <div id="headlines-list"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- BOTTOM TICKER -->
-<div id="ticker">
-  <div id="ticker-inner">STANDING BY...</div>
-</div>
-
+<div id="ticker"><div id="ticker-inner">STANDING BY...</div></div>
 <script>
-// ==================== CONSTANTS ====================
-const CONSTANTS = {
-  hardware: [
-    {name:"None (bare hands)",cost:0,batch:50,time:300,purityBonus:0},
-    {name:"Basic Setup",cost:1000,batch:150,time:240,purityBonus:.10},
-    {name:"Mid-Grade Hardware",cost:8000,batch:400,time:180,purityBonus:.20},
-    {name:"Advanced Hardware",cost:40000,batch:1000,time:120,purityBonus:.35},
-    {name:"Industrial Operation",cost:200000,batch:5000,time:90,purityBonus:.50}
-  ],
-  formula: [
-    {name:"Street Cut",cost:0,basePurity:.20,desc:"Whatever you can scrape together"},
-    {name:"Standard Formula",cost:500,basePurity:.35,desc:"Reliable, moves on the street"},
-    {name:"Refined Formula",cost:5000,basePurity:.55,desc:"People start asking for it by name"},
-    {name:"Pure Formula",cost:30000,basePurity:.75,desc:"Reserved for serious buyers"},
-    {name:"Uncut",cost:150000,basePurity:.95,desc:"The real thing. Almost no one can do this"}
-  ],
-  sourcing: [
-    {name:"Garbage mats",cost:0,purityBonus:0,riskLevel:"HIGH"},
-    {name:"Standard Supply",cost:800,purityBonus:.05,riskLevel:"MEDIUM"},
-    {name:"Quality Source",cost:6000,purityBonus:.15,riskLevel:"LOW-MED"},
-    {name:"Premium Supply",cost:35000,purityBonus:.25,riskLevel:"LOW"},
-    {name:"Cartel-Grade",cost:180000,purityBonus:.40,riskLevel:"MINIMAL"}
-  ],
-  storage: [
-    {cost:0,cap:500},{cost:1500,cap:2000},{cost:10000,cap:8000},
-    {cost:50000,cap:30000},{cost:250000,cap:150000}
-  ],
-  crewRoles: {
+const C={
+  hardware:[{name:"None",cost:0,batch:50,time:300,purityBonus:0},{name:"Basic Setup",cost:1000,batch:150,time:240,purityBonus:.10},{name:"Mid-Grade",cost:8000,batch:400,time:180,purityBonus:.20},{name:"Advanced",cost:40000,batch:1000,time:120,purityBonus:.35},{name:"Industrial",cost:200000,batch:5000,time:90,purityBonus:.50}],
+  formula:[{name:"Street Cut",cost:0,basePurity:.20},{name:"Standard Formula",cost:500,basePurity:.35},{name:"Refined Formula",cost:5000,basePurity:.55},{name:"Pure Formula",cost:30000,basePurity:.75},{name:"Uncut",cost:150000,basePurity:.95}],
+  sourcing:[{name:"Garbage mats",cost:0,purityBonus:0},{name:"Standard Supply",cost:800,purityBonus:.05},{name:"Quality Source",cost:6000,purityBonus:.15},{name:"Premium Supply",cost:35000,purityBonus:.25},{name:"Cartel-Grade",cost:180000,purityBonus:.40}],
+  storage:[{cost:0,cap:500},{cost:1500,cap:2000},{cost:10000,cap:8000},{cost:50000,cap:30000},{cost:250000,cap:150000}],
+  crewRoles:{
     cooks:{label:"COOK",tiers:["Rookie Cook","Journeyman Cook","Veteran Cook","Master Cook"],costs:[200,800,3000,12000],wage:[50,150,500,1500],desc:"Reduces synthesis time. Increases purity ceiling."},
-    slingers:{label:"SLINGER",tiers:["Corner Boy","Slinger","Veteran Slinger","Lieutenant"],costs:[100,400,1500,6000],wage:[30,100,350,1000],desc:"Moves product passively. Core revenue driver."},
-    runners:{label:"RUNNER",tiers:["Errand Boy","Runner","Road Runner","Ghost"],costs:[150,600,2500,10000],wage:[40,120,400,1200],desc:"Reduces internal transfer risk and delays."},
-    enforcers:{label:"ENFORCER",tiers:["Muscle","Enforcer","Veteran Enforcer","Soldier"],costs:[500,2000,8000,30000],wage:[100,300,1000,3000],desc:"Protects turf. Contests rival presence."},
-    distributors:{label:"DISTRIBUTOR",tiers:["Mule","Distributor","Connect","Wholesale King"],costs:[400,1500,6000,25000],wage:[80,250,800,2500],desc:"Enables bulk sales at higher volume."},
-    distributors2:{label:"CONNECT (L2)",tiers:["Street Connect","Mid-Level Connect","Cartel Connect"],costs:[3000,12000,50000],wage:[500,1500,5000],desc:"High-level wholesale deals on a timer."},
-    accountants:{label:"ACCOUNTANT",tiers:["Bookkeeper","Accountant","CPA","The Cleaner"],costs:[300,1200,5000,20000],wage:[60,200,700,2000],desc:"Reduces overhead. Boosts front income."},
-    lawyers:{label:"LAWYER",tiers:["Public Defender","Street Lawyer","Fixer","The Counselor"],costs:[1000,4000,15000,60000],wage:[200,600,2000,7000],desc:"Reduces heat passively. Mitigates raids."}
+    slingers:{label:"SLINGER",tiers:["Corner Boy","Slinger","Veteran Slinger","Lieutenant"],costs:[100,400,1500,6000],wage:[30,100,350,1000],desc:"Moves product passively. Core revenue."},
+    runners:{label:"RUNNER",tiers:["Errand Boy","Runner","Road Runner","Ghost"],costs:[150,600,2500,10000],wage:[40,120,400,1200],desc:"Reduces supply chain risk."},
+    enforcers:{label:"ENFORCER",tiers:["Muscle","Enforcer","Veteran Enforcer","Soldier"],costs:[500,2000,8000,30000],wage:[100,300,1000,3000],desc:"Protects turf. Contests rivals."},
+    distributors:{label:"DISTRIBUTOR",tiers:["Mule","Distributor","Connect","Wholesale King"],costs:[400,1500,6000,25000],wage:[80,250,800,2500],desc:"Enables bulk sales."},
+    distributors2:{label:"CONNECT L2",tiers:["Street Connect","Mid-Level Connect","Cartel Connect"],costs:[3000,12000,50000],wage:[500,1500,5000],desc:"High-level wholesale deals."},
+    accountants:{label:"ACCOUNTANT",tiers:["Bookkeeper","Accountant","CPA","The Cleaner"],costs:[300,1200,5000,20000],wage:[60,200,700,2000],desc:"Reduces overhead."},
+    lawyers:{label:"LAWYER",tiers:["Public Defender","Street Lawyer","Fixer","The Counselor"],costs:[1000,4000,15000,60000],wage:[200,600,2000,7000],desc:"Reduces heat. Mitigates raids."}
   },
-  tierRequirements:[
-    {cash:0,xp:0,name:"Street Corner"},
-    {cash:5000,xp:100,name:"Stash House"},
-    {cash:25000,xp:500,name:"Warehouse"},
-    {cash:100000,xp:2000,name:"Distribution Network"},
-    {cash:500000,xp:10000,name:"City Cartel"},
-    {cash:2000000,xp:50000,name:"National Operation"},
-    {cash:10000000,xp:200000,name:"THE EMPIRE"}
-  ],
-  tierUnlocks:[
-    {},
-    {crewSlots:{slingers:2,runners:1}},
-    {crewSlots:{enforcers:2,distributors:2}},
-    {crewSlots:{distributors2:2,accountants:2}},
-    {crewSlots:{lawyers:2,cooks:2}},
-    {crewSlots:{slingers:2,enforcers:2,distributors:2,accountants:1,lawyers:1}},
-    {}
-  ],
-  turf:[
-    {id:'flats',name:'The Flats',income:2,heat:.3,minTier:1,cost:800},
-    {id:'eastside',name:'Eastside Strip',income:4,heat:.5,minTier:1,cost:1500},
-    {id:'bottoms',name:'The Bottoms',income:3,heat:.3,minTier:1,cost:1200},
-    {id:'warehouse_d',name:'Warehouse District',income:8,heat:.5,minTier:2,cost:5000},
-    {id:'northgate',name:'Northgate',income:6,heat:.3,minTier:2,cost:4000},
-    {id:'thecut',name:'The Cut',income:10,heat:.8,minTier:2,cost:6000},
-    {id:'downtown',name:'Downtown Core',income:15,heat:.8,minTier:3,cost:20000},
-    {id:'oldquarter',name:'Old Quarter',income:12,heat:.5,minTier:3,cost:15000},
-    {id:'portaccess',name:'Port Access',income:18,heat:1.0,minTier:3,cost:30000},
-    {id:'finrow',name:'Financial Row',income:25,heat:.5,minTier:4,cost:80000},
-    {id:'heights',name:'The Heights',income:20,heat:.3,minTier:4,cost:60000},
-    {id:'southterm',name:'South Terminal',income:30,heat:.8,minTier:4,cost:100000},
-    {id:'industrial',name:'Industrial Zone',income:40,heat:.6,minTier:5,cost:200000},
-    {id:'corridor',name:'The Corridor',income:50,heat:.7,minTier:5,cost:250000},
-    {id:'airport',name:'Airport Perimeter',income:60,heat:.9,minTier:5,cost:350000},
-    {id:'citycenter',name:'City Center',income:75,heat:.8,minTier:6,cost:500000},
-    {id:'ridge',name:'The Ridge',income:85,heat:.6,minTier:6,cost:600000},
-    {id:'estate',name:'The Estate',income:100,heat:.5,minTier:6,cost:750000}
-  ],
-  fronts:[
-    {id:'bakery',name:'Bakery',desc:'Bread front.',cost:2000,heatRed:.5,cashPerMin:1,minTier:1},
-    {id:'laundromat',name:'Laundromat',desc:'Clean money.',cost:5000,heatRed:1.0,cashPerMin:2,minTier:1},
-    {id:'carwash',name:'Car Wash',desc:'Surface level.',cost:12000,heatRed:1.5,cashPerMin:4,minTier:2},
-    {id:'restaurant',name:'Restaurant',desc:'Full service.',cost:30000,heatRed:2.5,cashPerMin:8,minTier:3},
-    {id:'importexport',name:'Import/Export Co.',desc:'Volume trade.',cost:80000,heatRed:4.0,cashPerMin:15,minTier:4},
-    {id:'realestate',name:'Real Estate Co.',desc:'Asset holding.',cost:200000,heatRed:6.0,cashPerMin:30,minTier:5},
-    {id:'holdings',name:'Holdings LLC',desc:'Total coverage.',cost:500000,heatRed:10.0,cashPerMin:60,minTier:6}
-  ],
-  rivals:[
-    {id:'westside',name:'The Westside Bloc',strength:45},
-    {id:'carreno',name:"Carreño's People",strength:60},
-    {id:'ninth',name:'The 9th Street Outfit',strength:35},
-    {id:'corriente',name:'La Corriente',strength:55}
-  ],
-  prestigeBonuses:[
-    {id:'cook',name:'THE COOK',desc:'All cooks start at Tier 1. Synthesis time reduced 15%.'},
-    {id:'connect',name:'THE CONNECT',desc:'Start with $2,000 cash. Market always at minimum NORMAL.'},
-    {id:'ghost',name:'THE GHOST',desc:'Heat generation from all sources reduced 20%.'},
-    {id:'muscle',name:'THE MUSCLE',desc:'Enforcers cost 25% less. Rival presence grows 30% slower.'},
-    {id:'cleaner',name:'THE CLEANER',desc:'Start with a Laundromat front already owned.'},
-    {id:'lawyer',name:'THE LAWYER',desc:'Start with one Tier 1 Lawyer already recruited.'},
-    {id:'accountant',name:'THE ACCOUNTANT',desc:'Overhead/payroll reduced 20% permanently.'},
-    {id:'streetking',name:'THE STREET KING',desc:'Slingers sell 25% more volume per minute.'}
-  ],
+  tierReq:[{cash:0,xp:0,name:"Street Corner"},{cash:5000,xp:100,name:"Stash House"},{cash:25000,xp:500,name:"Warehouse"},{cash:100000,xp:2000,name:"Distribution Network"},{cash:500000,xp:10000,name:"City Cartel"},{cash:2000000,xp:50000,name:"National Operation"},{cash:10000000,xp:200000,name:"THE EMPIRE"}],
+  tierUnlocks:[{},{crewSlots:{slingers:2,runners:1}},{crewSlots:{enforcers:2,distributors:2}},{crewSlots:{distributors2:2,accountants:2}},{crewSlots:{lawyers:2,cooks:2}},{crewSlots:{slingers:2,enforcers:2,distributors:2,accountants:1,lawyers:1}},{}],
+  turf:[{id:'flats',name:'The Flats',income:2,heat:.3,minTier:1,cost:800},{id:'eastside',name:'Eastside Strip',income:4,heat:.5,minTier:1,cost:1500},{id:'bottoms',name:'The Bottoms',income:3,heat:.3,minTier:1,cost:1200},{id:'warehouse_d',name:'Warehouse District',income:8,heat:.5,minTier:2,cost:5000},{id:'northgate',name:'Northgate',income:6,heat:.3,minTier:2,cost:4000},{id:'thecut',name:'The Cut',income:10,heat:.8,minTier:2,cost:6000},{id:'downtown',name:'Downtown Core',income:15,heat:.8,minTier:3,cost:20000},{id:'oldquarter',name:'Old Quarter',income:12,heat:.5,minTier:3,cost:15000},{id:'portaccess',name:'Port Access',income:18,heat:1.0,minTier:3,cost:30000},{id:'finrow',name:'Financial Row',income:25,heat:.5,minTier:4,cost:80000},{id:'heights',name:'The Heights',income:20,heat:.3,minTier:4,cost:60000},{id:'southterm',name:'South Terminal',income:30,heat:.8,minTier:4,cost:100000},{id:'industrial',name:'Industrial Zone',income:40,heat:.6,minTier:5,cost:200000},{id:'corridor',name:'The Corridor',income:50,heat:.7,minTier:5,cost:250000},{id:'airport',name:'Airport Perimeter',income:60,heat:.9,minTier:5,cost:350000},{id:'citycenter',name:'City Center',income:75,heat:.8,minTier:6,cost:500000},{id:'ridge',name:'The Ridge',income:85,heat:.6,minTier:6,cost:600000},{id:'estate',name:'The Estate',income:100,heat:.5,minTier:6,cost:750000}],
+  fronts:[{id:'bakery',name:'Bakery',desc:'Bread front.',cost:2000,heatRed:.5,cashPerMin:1,minTier:1},{id:'laundromat',name:'Laundromat',desc:'Clean money.',cost:5000,heatRed:1.0,cashPerMin:2,minTier:1},{id:'carwash',name:'Car Wash',desc:'Surface level.',cost:12000,heatRed:1.5,cashPerMin:4,minTier:2},{id:'restaurant',name:'Restaurant',desc:'Full service.',cost:30000,heatRed:2.5,cashPerMin:8,minTier:3},{id:'importexport',name:'Import/Export',desc:'Volume trade.',cost:80000,heatRed:4.0,cashPerMin:15,minTier:4},{id:'realestate',name:'Real Estate Co.',desc:'Asset holding.',cost:200000,heatRed:6.0,cashPerMin:30,minTier:5},{id:'holdings',name:'Holdings LLC',desc:'Total coverage.',cost:500000,heatRed:10.0,cashPerMin:60,minTier:6}],
+  rivals:[{id:'westside',name:'The Westside Bloc',strength:45},{id:'carreno',name:"Carreño's People",strength:60},{id:'ninth',name:'The 9th Street Outfit',strength:35},{id:'corriente',name:'La Corriente',strength:55}],
+  prestigeBonuses:[{id:'cook',name:'THE COOK',desc:'Cooks start Tier 1. Synth -15%.'},{id:'connect',name:'THE CONNECT',desc:'Start $2k. Market never below NORMAL.'},{id:'ghost',name:'THE GHOST',desc:'Heat gen -20%.'},{id:'muscle',name:'THE MUSCLE',desc:'Enforcers 25% off. Rivals 30% slower.'},{id:'cleaner',name:'THE CLEANER',desc:'Start with Laundromat.'},{id:'lawyer',name:'THE LAWYER',desc:'Start with 1 Lawyer.'},{id:'accountant',name:'THE ACCOUNTANT',desc:'Payroll -20%.'},{id:'streetking',name:'THE STREET KING',desc:'Slingers sell 25% more.'}],
   minorEvents:[
-    {text:"A runner got sloppy. Lost 8g in transit.",type:'neg',effect:(s)=>{s.fent=Math.max(0,s.fent-8);}},
-    {text:"Demand spike in The Flats. Window open.",type:'pos',effect:(s)=>{}},
-    {text:"One of your slingers got into it with Carreño's People. Heat +5.",type:'neg',effect:(s)=>{s.heat.level=Math.min(100,s.heat.level+5);}},
-    {text:"mats shipment delayed. Next cook takes longer.",type:'neg',effect:(s)=>{}},
+    {text:"Runner got sloppy. Lost 8g.",type:'neg',effect:(s)=>{s.fent=Math.max(0,s.fent-8);}},
+    {text:"Demand spike. Window open.",type:'pos',effect:()=>{}},
+    {text:"Slinger got into it with Carreño's. Heat +5.",type:'neg',effect:(s)=>{s.heat.level=Math.min(100,s.heat.level+5);}},
+    {text:"mats shipment delayed.",type:'neg',effect:()=>{}},
     {text:"Anonymous tip to authorities. Heat +8.",type:'neg',effect:(s)=>{s.heat.level=Math.min(100,s.heat.level+8);}},
-    {text:"Slinger moved double volume tonight. Good night.",type:'pos',effect:(s)=>{}},
-    {text:"A cook called in. Synthesis delayed.",type:'neg',effect:(s)=>{}},
-    {text:"The Feds are running patrols near Northgate. Turf income down temporarily.",type:'neg',effect:(s)=>{}},
-    {text:"One of your runners got picked up. He won't talk. Probably.",type:'neg',effect:(s)=>{s.heat.level=Math.min(100,s.heat.level+5);}},
-    {text:"Market dried up. Demand down.",type:'neg',effect:(s)=>{}},
-    {text:"Clean batch. Purity above expectations.",type:'pos',effect:(s)=>{}},
-    {text:"A slinger came in short. Shortfall absorbed.",type:'neg',effect:(s)=>{s.cash=Math.max(0,s.cash-100);}},
-    {text:"Word on the street: your product is the one to have.",type:'pos',effect:(s)=>{}},
-    {text:"One of La Corriente's people was seen near your stash. Eyes open.",type:'neg',effect:(s)=>{s.heat.level=Math.min(100,s.heat.level+3);}},
-    {text:"A connect came through early. Good timing.",type:'pos',effect:(s)=>{s.cash+=200;}},
-    {text:"Feds doing spot checks. Keep it tight.",type:'neg',effect:(s)=>{s.heat.level=Math.min(100,s.heat.level+6);}},
-    {text:"Your product showed up in a police report. Heat +4.",type:'neg',effect:(s)=>{s.heat.level=Math.min(100,s.heat.level+4);}},
-    {text:"Quiet night. Nothing moved. Nothing happened.",type:'neu',effect:(s)=>{}}
+    {text:"Slinger moved double volume. Good night.",type:'pos',effect:()=>{}},
+    {text:"Cook called in sick.",type:'neg',effect:()=>{}},
+    {text:"Feds patrolling Northgate.",type:'neg',effect:()=>{}},
+    {text:"Runner got picked up. Won't talk. Probably.",type:'neg',effect:(s)=>{s.heat.level=Math.min(100,s.heat.level+5);}},
+    {text:"Market dried up.",type:'neg',effect:()=>{}},
+    {text:"Clean batch. Purity above expectations.",type:'pos',effect:()=>{}},
+    {text:"Slinger came in short. Absorbed.",type:'neg',effect:(s)=>{s.cash=Math.max(0,s.cash-100);}},
+    {text:"Word on the street: your product is the one.",type:'pos',effect:()=>{}},
+    {text:"La Corriente near your stash. Heat +3.",type:'neg',effect:(s)=>{s.heat.level=Math.min(100,s.heat.level+3);}},
+    {text:"Connect came through early. +$200.",type:'pos',effect:(s)=>{s.cash+=200;}},
+    {text:"Feds doing spot checks. Heat +6.",type:'neg',effect:(s)=>{s.heat.level=Math.min(100,s.heat.level+6);}},
+    {text:"Product in a police report. Heat +4.",type:'neg',effect:(s)=>{s.heat.level=Math.min(100,s.heat.level+4);}},
+    {text:"Quiet night.",type:'neu',effect:()=>{}}
   ],
   headlines:[
-    {id:'h1',xpReq:50,source:"LOCAL DISPATCH",text:"Local grain prices disrupted by unknown supplier, merchants report"},
-    {id:'h2',xpReq:150,source:"CITY BULLETIN",text:"Health department baffled by unusual fent purity standards in underground market"},
-    {id:'h3',xpReq:400,source:"EASTSIDE GAZETTE",text:"Police report uptick in unlicensed fent distribution in Eastside neighborhoods"},
+    {id:'h1',xpReq:50,source:"LOCAL DISPATCH",text:"Local grain prices disrupted by unknown supplier"},
+    {id:'h2',xpReq:150,source:"CITY BULLETIN",text:"Health dept baffled by unusual fent purity in underground market"},
+    {id:'h3',xpReq:400,source:"EASTSIDE GAZETTE",text:"Police report uptick in unlicensed fent distribution"},
     {id:'h4',xpReq:800,source:"WIRE SERVICE",text:"Two men arrested in connection with unauthorized chemistry operation"},
-    {id:'h5',xpReq:1500,source:"METRO REPORT",text:"Sources describe a highly organized fent distribution network operating across multiple districts"},
-    {id:'h6',xpReq:3000,source:"FEDERAL BULLETIN",text:"Task force formed to investigate alleged fent cartel — officials decline to comment on scope"},
-    {id:'h7',xpReq:6000,source:"INVESTIGATIVE UNIT",text:"Anonymous tip leads to raid on suspected stash house — 40kg of high-purity fent seized"},
-    {id:'h8',xpReq:10000,source:"CRIME DESK",text:"Fent-related arrests up 340% this quarter, commissioner calls it a crisis"},
-    {id:'h9',xpReq:20000,source:"NATIONAL WIRE",text:"Federal investigators believe single organization controls majority of city's fent supply"},
-    {id:'h10',xpReq:40000,source:"CAPITOL REPORT",text:"Senator demands answers on alleged fent monopoly sweeping the nation"},
-    {id:'h11',xpReq:70000,source:"DEA PRESS RELEASE",text:"DEA task force expanded: This is not a local problem anymore"},
-    {id:'h12',xpReq:100000,source:"CLASSIFIED ██████",text:"Operation WHITEOUT — identity of fent kingpin ██████████ unknown"},
-    {id:'h13',xpReq:150000,source:"REDACTED",text:"████████ operation believed to involve ████ cities, ████ personnel, $████████ in assets"},
-    {id:'h14',xpReq:180000,source:"SEALED MEMO",text:"Interdiction efforts have failed to locate the organization's leadership. Source unknown. Distribution continues."},
+    {id:'h5',xpReq:1500,source:"METRO REPORT",text:"Sources describe a highly organized fent network across multiple districts"},
+    {id:'h6',xpReq:3000,source:"FEDERAL BULLETIN",text:"Task force formed to investigate alleged fent cartel"},
+    {id:'h7',xpReq:6000,source:"INVESTIGATIVE UNIT",text:"Tip leads to raid — 40kg of high-purity fent seized"},
+    {id:'h8',xpReq:10000,source:"CRIME DESK",text:"Fent arrests up 340% this quarter. Commissioner calls it a crisis."},
+    {id:'h9',xpReq:20000,source:"NATIONAL WIRE",text:"Federal investigators believe single org controls majority of city fent supply"},
+    {id:'h10',xpReq:40000,source:"CAPITOL REPORT",text:"Senator demands answers on alleged fent monopoly"},
+    {id:'h11',xpReq:70000,source:"DEA PRESS",text:"DEA task force expanded: This is not a local problem anymore"},
+    {id:'h12',xpReq:100000,source:"CLASSIFIED ██",text:"Operation WHITEOUT — identity of fent kingpin ██████ unknown"},
+    {id:'h13',xpReq:150000,source:"REDACTED",text:"████ operation: ████ cities, $████████ in assets"},
+    {id:'h14',xpReq:180000,source:"SEALED MEMO",text:"Interdiction has failed. Distribution continues."},
     {id:'h15',xpReq:200000,source:"FINAL REPORT",text:"They built it from nothing. We never saw it coming."}
+  ],
+  dripItems:[
+    {id:'skin_1',cat:'SKIN',name:'Fair',brand:'SELF',icon:'🟡',price:0,type:'skin',skinColor:'#FFDBB4'},
+    {id:'skin_2',cat:'SKIN',name:'Light Tan',brand:'SELF',icon:'🟠',price:0,type:'skin',skinColor:'#D4956A'},
+    {id:'skin_3',cat:'SKIN',name:'Medium Brown',brand:'SELF',icon:'🟤',price:500,type:'skin',skinColor:'#B5704E'},
+    {id:'skin_4',cat:'SKIN',name:'Dark Brown',brand:'SELF',icon:'🟫',price:500,type:'skin',skinColor:'#8B4513'},
+    {id:'skin_5',cat:'SKIN',name:'Deep',brand:'SELF',icon:'⬛',price:500,type:'skin',skinColor:'#4A2C17'},
+    {id:'body_slim',cat:'BODY',name:'Slim Build',brand:'PHYSIQUE',icon:'🧍',price:0,type:'body',bodyVal:'slim'},
+    {id:'body_avg',cat:'BODY',name:'Average',brand:'PHYSIQUE',icon:'🧍',price:1000,type:'body',bodyVal:'avg'},
+    {id:'body_muscle',cat:'BODY',name:'Muscular',brand:'PHYSIQUE',icon:'💪',price:5000,type:'body',bodyVal:'muscle'},
+    {id:'body_jacked',cat:'BODY',name:'Jacked',brand:'PHYSIQUE',icon:'🏋️',price:25000,type:'body',bodyVal:'jacked'},
+    {id:'hair_bald',cat:'HAIR',name:'Bald',brand:'SELF',icon:'🔵',price:0,type:'hair',hairVal:'bald'},
+    {id:'hair_short',cat:'HAIR',name:'Short Cut',brand:'SELF',icon:'💇',price:200,type:'hair',hairVal:'short'},
+    {id:'hair_waves',cat:'HAIR',name:'360 Waves',brand:'SELF',icon:'〰️',price:800,type:'hair',hairVal:'waves'},
+    {id:'hair_dreads',cat:'HAIR',name:'Dreads',brand:'SELF',icon:'🟫',price:1500,type:'hair',hairVal:'dreads'},
+    {id:'top_tee',cat:'TOPS',name:'Plain Tee',brand:'BASIC',icon:'👕',price:0,type:'top',topColor:'#444'},
+    {id:'top_hoodie',cat:'TOPS',name:'Hoodie',brand:'BASIC',icon:'🧥',price:500,type:'top',topColor:'#3a3a4a'},
+    {id:'top_vest',cat:'TOPS',name:'Puffer Vest',brand:'BASIC',icon:'🦺',price:800,type:'top',topColor:'#2a3a2a'},
+    {id:'top_trackjacket',cat:'TOPS',name:'Track Jacket',brand:'BASIC',icon:'🧥',price:1200,type:'top',topColor:'#2a2a4a'},
+    {id:'top_sup_box',cat:'TOPS',name:'Box Logo Hoodie',brand:'SUPREME',icon:'🟥',price:8000,type:'top',topColor:'#cc0000',luxury:true},
+    {id:'top_gucci_shirt',cat:'TOPS',name:'GG Monogram Shirt',brand:'GUCCI',icon:'🐍',price:15000,type:'top',topColor:'#1a3a1a',luxury:true},
+    {id:'top_lv_hoodie',cat:'TOPS',name:'LV Embossed Hoodie',brand:'LOUIS VUITTON',icon:'🟤',price:22000,type:'top',topColor:'#3a2a1a',luxury:true},
+    {id:'top_chrome_cross',cat:'TOPS',name:'Cross Patch Hoodie',brand:'CHROME HEARTS',icon:'✝️',price:35000,type:'top',topColor:'#111',luxury:true},
+    {id:'top_rick_drk',cat:'TOPS',name:'Woven Biker Jacket',brand:'RICK OWENS',icon:'🖤',price:50000,type:'top',topColor:'#0a0a0a',luxury:true},
+    {id:'top_balenciaga',cat:'TOPS',name:'Triple-S Oversized Tee',brand:'BALENCIAGA',icon:'🅱️',price:18000,type:'top',topColor:'#1a1a2a',luxury:true},
+    {id:'top_off_white',cat:'TOPS',name:'Arrow Tee',brand:'OFF-WHITE',icon:'⬜',price:12000,type:'top',topColor:'#d0d0c0',luxury:true},
+    {id:'top_dior_parka',cat:'TOPS',name:'Oblique Parka',brand:'DIOR',icon:'💠',price:45000,type:'top',topColor:'#1a1a3a',luxury:true},
+    {id:'bot_sweats',cat:'BOTTOMS',name:'Sweatpants',brand:'BASIC',icon:'🩳',price:0,type:'bottom',botColor:'#2a2a2a'},
+    {id:'bot_jeans',cat:'BOTTOMS',name:'Jeans',brand:'BASIC',icon:'👖',price:600,type:'bottom',botColor:'#1a2a4a'},
+    {id:'bot_cargos',cat:'BOTTOMS',name:'Cargo Pants',brand:'BASIC',icon:'👖',price:900,type:'bottom',botColor:'#2a3a1a'},
+    {id:'bot_joggers',cat:'BOTTOMS',name:'Tech Joggers',brand:'BASIC',icon:'🩲',price:1500,type:'bottom',botColor:'#1a1a2a'},
+    {id:'bot_amiri',cat:'BOTTOMS',name:'MX1 Jeans',brand:'AMIRI',icon:'💙',price:12000,type:'bottom',botColor:'#1a2a4a',luxury:true},
+    {id:'bot_lv_track',cat:'BOTTOMS',name:'Monogram Track Pants',brand:'LOUIS VUITTON',icon:'🟤',price:18000,type:'bottom',botColor:'#3a2a1a',luxury:true},
+    {id:'bot_gucci_sweep',cat:'BOTTOMS',name:'GG Web Sweats',brand:'GUCCI',icon:'🟢',price:14000,type:'bottom',botColor:'#1a3a1a',luxury:true},
+    {id:'bot_rick_drkshdw',cat:'BOTTOMS',name:'Drawstring Cargo',brand:'RICK OWENS DRKSHDW',icon:'🖤',price:28000,type:'bottom',botColor:'#080808',luxury:true},
+    {id:'bot_chrome_denim',cat:'BOTTOMS',name:'Fleur Flare Denim',brand:'CHROME HEARTS',icon:'✝️',price:40000,type:'bottom',botColor:'#111',luxury:true},
+    {id:'shoe_af1',cat:'SHOES',name:'Air Force 1',brand:'NIKE',icon:'👟',price:200,type:'shoe',shoeColor:'#ddd'},
+    {id:'shoe_timbs',cat:'SHOES',name:'Timberlands',brand:'TIMBERLAND',icon:'🥾',price:400,type:'shoe',shoeColor:'#8B6914'},
+    {id:'shoe_slides',cat:'SHOES',name:'Slides',brand:'BASIC',icon:'🩴',price:100,type:'shoe',shoeColor:'#555'},
+    {id:'shoe_yeezy',cat:'SHOES',name:'Yeezy 700 V3',brand:'YEEZY',icon:'🩶',price:8000,type:'shoe',shoeColor:'#8a8a7a',luxury:true},
+    {id:'shoe_lv_trainer',cat:'SHOES',name:'LV Trainer',brand:'LOUIS VUITTON',icon:'🟤',price:20000,type:'shoe',shoeColor:'#3a2a1a',luxury:true},
+    {id:'shoe_gucci_ace',cat:'SHOES',name:'Ace Sneakers',brand:'GUCCI',icon:'🐝',price:16000,type:'shoe',shoeColor:'#eee8cc',luxury:true},
+    {id:'shoe_rick_geo',cat:'SHOES',name:'Geobasket',brand:'RICK OWENS',icon:'🖤',price:35000,type:'shoe',shoeColor:'#0a0a0a',luxury:true},
+    {id:'shoe_chrome_boots',cat:'SHOES',name:'Cemetery Boots',brand:'CHROME HEARTS',icon:'✝️',price:45000,type:'shoe',shoeColor:'#111',luxury:true},
+    {id:'shoe_dior_b22',cat:'SHOES',name:'B22 Sneakers',brand:'DIOR',icon:'💠',price:25000,type:'shoe',shoeColor:'#eee',luxury:true},
+    {id:'shoe_balenc_triple',cat:'SHOES',name:'Triple S',brand:'BALENCIAGA',icon:'🅱️',price:22000,type:'shoe',shoeColor:'#ccc',luxury:true},
+    {id:'acc_chain',cat:'ACCESSORIES',name:'Gold Chain',brand:'BASIC',icon:'📿',price:2000,type:'acc',accVal:'chain'},
+    {id:'acc_durag',cat:'ACCESSORIES',name:'Durag',brand:'BASIC',icon:'🔵',price:300,type:'acc',accVal:'durag'},
+    {id:'acc_glasses',cat:'ACCESSORIES',name:'Shades',brand:'BASIC',icon:'🕶️',price:500,type:'acc',accVal:'glasses'},
+    {id:'acc_fitted',cat:'ACCESSORIES',name:'Fitted Cap',brand:'BASIC',icon:'🧢',price:400,type:'acc',accVal:'fitted'},
+    {id:'acc_gucci_chain',cat:'ACCESSORIES',name:'GG Chain Necklace',brand:'GUCCI',icon:'🐍',price:30000,type:'acc',accVal:'gucci_chain',luxury:true},
+    {id:'acc_lv_belt',cat:'ACCESSORIES',name:'LV Initiales Belt',brand:'LOUIS VUITTON',icon:'🟤',price:8000,type:'acc',accVal:'lv_belt',luxury:true},
+    {id:'acc_chrome_ring',cat:'ACCESSORIES',name:'Cross Ring Set',brand:'CHROME HEARTS',icon:'✝️',price:15000,type:'acc',accVal:'chrome_ring',luxury:true},
+    {id:'acc_rolex',cat:'ACCESSORIES',name:'Submariner',brand:'ROLEX',icon:'⌚',price:60000,type:'acc',accVal:'rolex',luxury:true},
+    {id:'acc_audemars',cat:'ACCESSORIES',name:'Royal Oak',brand:'AUDEMARS PIGUET',icon:'⌚',price:100000,type:'acc',accVal:'audemars',luxury:true},
+    {id:'acc_icegrill',cat:'ACCESSORIES',name:'VVS Grill',brand:'CUSTOM JEWELER',icon:'💎',price:80000,type:'acc',accVal:'grill',luxury:true},
+    {id:'out_puffer',cat:'OUTERWEAR',name:'North Face Puffer',brand:'THE NORTH FACE',icon:'🧥',price:1500,type:'outer',outerColor:'#1a1a2a'},
+    {id:'out_moncler',cat:'OUTERWEAR',name:'Maya Down Jacket',brand:'MONCLER',icon:'🔵',price:25000,type:'outer',outerColor:'#0a0a2a',luxury:true},
+    {id:'out_lv_blouson',cat:'OUTERWEAR',name:'Monogram Blouson',brand:'LOUIS VUITTON',icon:'🟤',price:38000,type:'outer',outerColor:'#3a2a1a',luxury:true},
+    {id:'out_rick_coat',cat:'OUTERWEAR',name:'Elongated Coat',brand:'RICK OWENS',icon:'🖤',price:55000,type:'outer',outerColor:'#050505',luxury:true},
+    {id:'out_chrome_leather',cat:'OUTERWEAR',name:'Cross Leather Jacket',brand:'CHROME HEARTS',icon:'✝️',price:75000,type:'outer',outerColor:'#0a0a0a',luxury:true},
+    {id:'out_dior_bomber',cat:'OUTERWEAR',name:'Oblique Bomber',brand:'DIOR',icon:'💠',price:48000,type:'outer',outerColor:'#1a1a3a',luxury:true},
+    {id:'hermes_birkin',cat:'ACCESSORIES',name:'Birkin 25',brand:'HERMÈS',icon:'🟠',price:250000,type:'acc',accVal:'birkin',luxury:true},
+    {id:'bentley_key',cat:'ACCESSORIES',name:'Bentayga Key Fob',brand:'BENTLEY',icon:'🚗',price:500000,type:'acc',accVal:'bentley',luxury:true},
+    {id:'jet_access',cat:'ACCESSORIES',name:'Private Jet Card',brand:'CARTEL LEVEL',icon:'✈️',price:1000000,type:'acc',accVal:'jet',luxury:true}
   ]
 };
-
-const MAJOR_EVENTS = [
-  {
-    id:'informant',
-    title:'INFORMANT',
-    body:"One of your crew is talking to the Feds. Intel says it's someone in your slinger network.",
-    options:[
-      {label:"A) CUT LOOSE — Remove all slingers. Heat -15.",
-        fn:(s)=>{s.crew.slingers.count=0;s.heat.level=Math.max(0,s.heat.level-15);addEvent("Cut the slinger network loose. Heat dropped.","pos");}},
-      {label:"B) PAY TO FIND OUT — $2,000. Lose 1 slinger. Heat -5.",
-        fn:(s)=>{if(s.cash>=2000){s.cash-=2000;s.crew.slingers.count=Math.max(0,s.crew.slingers.count-1);s.heat.level=Math.max(0,s.heat.level-5);addEvent("Informant identified and removed. $2,000 spent.","neg");}else{addEvent("Not enough bread to find the rat.","neg");}}},
-      {label:"C) DO NOTHING — Risk: Heat +20 over next 10 minutes.",
-        fn:(s)=>{s.heat.level=Math.min(100,s.heat.level+20);addEvent("Let the rat run. Heat rising.","neg");}}
-    ]
-  },
-  {
-    id:'supply_offer',
-    title:'SUPPLY OFFER',
-    body:"A connect you don't know is offering 500g of premium mats at half price. Could be a setup.",
-    options:[
-      {label:"A) TAKE THE DEAL — Pay $500. Get material. 30% chance it's a sting (+30 heat).",
-        fn:(s)=>{if(s.cash>=500){s.cash-=500;addTransaction(-500,"Supply deal");if(Math.random()<.3){s.heat.level=Math.min(100,s.heat.level+30);addEvent("Supply deal was a sting. Heat spiked.","neg");}else{s.fent=Math.min(s.storage.capacity,s.fent+200);addEvent("Supply deal came through. +200g raw material processed.","pos");}}else{addEvent("Not enough bread.","neg");}}},
-      {label:"B) PASS — Walk away.",
-        fn:(s)=>{addEvent("Declined the supply offer. Nothing happened.","neu");}},
-      {label:"C) SEND A RUNNER — 2-minute delay. Sting chance drops to 10%.",
-        fn:(s)=>{if(s.cash>=500){s.cash-=500;addTransaction(-500,"Supply deal (runner checked)");if(Math.random()<.1){s.heat.level=Math.min(100,s.heat.level+30);addEvent("Even with the runner, it was a sting.","neg");}else{s.fent=Math.min(s.storage.capacity,s.fent+200);addEvent("Runner confirmed the deal. +200g.","pos");}}else{addEvent("Not enough bread.","neg");}}}
-    ]
-  },
-  {
-    id:'rival_incursion',
-    title:'RIVAL INCURSION',
-    body:"Carreño's People are moving into your turf. Rival presence jumped to 80% in one of your territories.",
-    options:[
-      {label:"A) SEND ENFORCERS — $500. Rival drops back to 20%.",
-        fn:(s)=>{if(s.cash>=500){s.cash-=500;addTransaction(-500,"Enforcer deployment");const owned=s.turf.filter(t=>t.owned);if(owned.length>0){owned[0].rivalPct=20;}addEvent("Enforcers pushed Carreño's People back.","pos");}else{addEvent("No bread for enforcers.","neg");}}},
-      {label:"B) LET IT SLIDE — Turf income reduced until dealt with.",
-        fn:(s)=>{const owned=s.turf.filter(t=>t.owned);if(owned.length>0){owned[0].rivalPct=80;}addEvent("Let Carreño's People hold the block. Income down.","neg");}},
-      {label:"C) NEGOTIATE — $1,500. Rival presence holds at 50% for a while.",
-        fn:(s)=>{if(s.cash>=1500){s.cash-=1500;addTransaction(-1500,"Rival negotiation");const owned=s.turf.filter(t=>t.owned);if(owned.length>0){owned[0].rivalPct=50;}addEvent("Negotiated with Carreño's People. Uneasy peace.","neu");}else{addEvent("No bread to negotiate.","neg");}}}
-    ]
-  },
-  {
-    id:'payroll_crisis',
-    title:'PAYROLL CRISIS',
-    body:"You missed payroll. Your crew is getting restless. This cannot stand.",
-    options:[
-      {label:"A) PAY DOUBLE — Smooth it over. Costs 2x normal payroll.",
-        fn:(s)=>{const double=calcPayroll(s)*2;if(s.cash>=double){s.cash-=double;addTransaction(-double,"Emergency double payroll");addEvent("Paid double payroll. Crew settled down.","pos");}else{addEvent("Can't cover double payroll either. Things are falling apart.","neg");}}},
-      {label:"B) LET IT RIDE — Lose 1 random crew member.",
-        fn:(s)=>{fireRandomCrew(s);addEvent("Let payroll slide. Lost a crew member.","neg");}},
-      {label:"C) MAKE PROMISES — Buys 5 minutes. Miss again: lose 3.",
-        fn:(s)=>{addEvent("Made promises to the crew. Clock is ticking.","neu");setTimeout(()=>{if(gs.cash<calcPayroll(gs)*0.5){for(let i=0;i<3;i++)fireRandomCrew(gs);addEvent("Broke the promises. Lost 3 crew members.","neg");}},300000);}}
-    ]
-  },
-  {
-    id:'health_inspector',
-    title:'HEALTH INSPECTOR',
-    body:"City health inspector is nosing around one of your fronts. This needs to go away.",
-    options:[
-      {label:"A) BRIBE — $3,000. Inspector goes away clean.",
-        fn:(s)=>{if(s.cash>=3000){s.cash-=3000;addTransaction(-3000,"Inspector bribe");addEvent("Paid off the inspector. Clean result.","pos");}else{addEvent("Can't cover the bribe. Front is exposed.","neg");s.heat.level=Math.min(100,s.heat.level+15);}}},
-      {label:"B) LAWYER UP — 80% free if you have one. Otherwise $8,000.",
-        fn:(s)=>{if(s.crew.lawyers.count>0){if(Math.random()<.8){addEvent("Lawyer handled the inspector. No cost.","pos");}else{s.cash-=3000;addTransaction(-3000,"Legal fees");addEvent("Lawyer couldn't fully cover it. $3,000 in fees.","neg");}}else{if(s.cash>=8000){s.cash-=8000;addTransaction(-8000,"Legal fees (no lawyer)");addEvent("Paid $8,000 without a lawyer. Expensive.","neg");}else{s.heat.level=Math.min(100,s.heat.level+20);addEvent("Couldn't afford legal protection. Heat spiked.","neg");}}}},
-      {label:"C) SHUT DOWN TEMPORARILY — Front offline 10 minutes. No heat.",
-        fn:(s)=>{addEvent("Shut front down temporarily. No heat consequences.","neu");}}
-    ]
-  },
-  {
-    id:'fed_surveillance',
-    title:'SURVEILLANCE DETECTED',
-    body:"Your lookout reports an unmarked vehicle outside your stash house. Federal surveillance is likely.",
-    options:[
-      {label:"A) MOVE PRODUCT — Emergency relocation. Lose 15% of current stock but clear the location.",
-        fn:(s)=>{const lost=Math.floor(s.fent*.15);s.fent=Math.max(0,s.fent-lost);s.heat.level=Math.max(0,s.heat.level-20);addEvent(`Emergency relocation. Lost ${lost}g. Heat reduced.`,"neu");}},
-      {label:"B) SIT TIGHT — Risk: +25 heat. If heat hits 100 now, it's a raid.",
-        fn:(s)=>{s.heat.level=Math.min(100,s.heat.level+25);addEvent("Held position. Heat spiked.","neg");if(s.heat.level>=100)triggerRaid();}},
-      {label:"C) LAWYERS AND COUNTER-INTEL — $5,000. Heat -15. Surveillance called off.",
-        fn:(s)=>{if(s.cash>=5000){s.cash-=5000;addTransaction(-5000,"Counter-surveillance");s.heat.level=Math.max(0,s.heat.level-15);addEvent("Counter-intel deployed. Surveillance pulled back.","pos");}else{addEvent("No bread for counter-intel. Surveillance continues.","neg");}}}
-    ]
-  },
-  {
-    id:'cook_arrested',
-    title:'COOK DETAINED',
-    body:"One of your cooks was picked up on an unrelated charge. They're being held for 48 hours.",
-    options:[
-      {label:"A) BAIL OUT — $2,000. Cook returns in 5 minutes.",
-        fn:(s)=>{if(s.cash>=2000){s.cash-=2000;addTransaction(-2000,"Bail");addEvent("Cook bailed out. Back on the job shortly.","pos");}else{s.crew.cooks.count=Math.max(0,s.crew.cooks.count-1);addEvent("Couldn't make bail. Cook is out.","neg");}}},
-      {label:"B) CUT THEM LOOSE — Cook is gone. Heat +5 (loose end).",
-        fn:(s)=>{s.crew.cooks.count=Math.max(0,s.crew.cooks.count-1);s.heat.level=Math.min(100,s.heat.level+5);addEvent("Cut the cook loose. One less problem. One less cook.","neg");}},
-      {label:"C) WAIT IT OUT — Cook released in 48 hours. Synthesis delayed.",
-        fn:(s)=>{addEvent("Waiting on the cook's release. Synthesis running slow.","neu");}}
-    ]
-  },
-  {
-    id:'wholesale_deal',
-    title:'WHOLESALE OPPORTUNITY',
-    body:"A distributor in the next district is asking for 500g at a bulk discount. Quick move.",
-    options:[
-      {label:"A) TAKE THE DEAL — Move 500g at $8/gram. Fast cash.",
-        fn:(s)=>{if(s.fent>=500){const rev=500*8;s.fent-=500;s.cash+=rev;addTransaction(rev,"Wholesale deal");addXP(200);s.heat.level=Math.min(100,s.heat.level+8);addEvent(`Wholesale deal completed. +$${rev.toLocaleString()}.`,"pos");}else{addEvent("Not enough product to fill the wholesale order.","neg");}}},
-      {label:"B) COUNTER OFFER — Hold out for $12/gram. 50% chance they walk.",
-        fn:(s)=>{if(Math.random()<.5){if(s.fent>=500){const rev=500*12;s.fent-=500;s.cash+=rev;addTransaction(rev,"Wholesale deal (counter)");addXP(300);addEvent(`Counter offer accepted. +$${rev.toLocaleString()}.`,"pos");}else{addEvent("Counter accepted but no product to fill it.","neg");}}else{addEvent("Counter offer rejected. They walked.","neu");}}},
-      {label:"C) DECLINE — Not worth the exposure.",
-        fn:(s)=>{addEvent("Declined the wholesale deal.","neu");}}
-    ]
-  },
-  {
-    id:'new_connect',
-    title:'NEW CONNECT',
-    body:"Word came back: there's a distributor in the port district looking to establish a regular arrangement. This could be big.",
-    options:[
-      {label:"A) SET THE MEETING — Invest $1,000 to build the relationship. +$500/week going forward.",
-        fn:(s)=>{if(s.cash>=1000){s.cash-=1000;addTransaction(-1000,"Connect investment");s._connectBonus=(s._connectBonus||0)+500;addEvent("New connect established. Ongoing arrangement in place.","pos");}else{addEvent("No bread for the introduction.","neg");}}},
-      {label:"B) SEND A RUNNER TO VET THEM FIRST — Costs nothing. Delays 3 minutes. Reduces risk.",
-        fn:(s)=>{addEvent("Runner dispatched to vet the new connect. Will know shortly.","neu");}},
-      {label:"C) PASS — Too much exposure right now.",
-        fn:(s)=>{addEvent("Passed on the new connect. Maybe next time.","neu");}}
-    ]
-  },
-  {
-    id:'territory_dispute',
-    title:'TERRITORY DISPUTE',
-    body:"The 9th Street Outfit is claiming The Cut as theirs. They're wrong. They don't know that yet.",
-    options:[
-      {label:"A) HOLD THE LINE — Send enforcers. $800. Turf stays yours.",
-        fn:(s)=>{if(s.cash>=800){s.cash-=800;addTransaction(-800,"Territorial defense");addEvent("Held the line against 9th Street. Turf secure.","pos");}else{const t=s.turf.find(t=>t.id==='thecut');if(t)t.rivalPct=Math.min(100,t.rivalPct+40);addEvent("Couldn't fund the defense. 9th Street moved in.","neg");}}},
-      {label:"B) NEGOTIATE A SPLIT — Give up 40% of income from The Cut. Avoid conflict.",
-        fn:(s)=>{const t=s.turf.find(t=>t.id==='thecut');if(t)t.rivalPct=40;addEvent("Negotiated a split with 9th Street. Uneasy arrangement.","neu");}},
-      {label:"C) ESCALATE — Push them out completely. $2,000. Rival strength -10 permanently.",
-        fn:(s)=>{if(s.cash>=2000){s.cash-=2000;addTransaction(-2000,"Territorial escalation");const rival=gs.rivals.find(r=>r.id==='ninth');if(rival)rival.strength=Math.max(5,rival.strength-10);s.heat.level=Math.min(100,s.heat.level+15);addEvent("Escalated against 9th Street. They backed off. Heat cost.","pos");}else{addEvent("No bread to escalate. Dispute unresolved.","neg");}}}
-    ]
-  }
+const MAJOR_EVENTS=[
+  {id:'informant',title:'INFORMANT',body:"One of your crew is talking to the Feds. Intel says it's someone in your slinger network.",options:[
+    {label:"A) CUT LOOSE — Remove all slingers. Heat -15.",fn:(s)=>{s.crew.slingers.count=0;s.heat.level=Math.max(0,s.heat.level-15);addEvent("Cut slinger network. Heat dropped.",'pos');}},
+    {label:"B) PAY TO FIND OUT — $2,000. Lose 1 slinger. Heat -5.",fn:(s)=>{if(s.cash>=2000){s.cash-=2000;s.crew.slingers.count=Math.max(0,s.crew.slingers.count-1);s.heat.level=Math.max(0,s.heat.level-5);addEvent("Informant removed. $2k spent.",'neg');}else addEvent("Not enough bread.",'neg');}},
+    {label:"C) DO NOTHING — Heat +20.",fn:(s)=>{s.heat.level=Math.min(100,s.heat.level+20);addEvent("Let the rat run. Heat rising.",'neg');}}
+  ]},
+  {id:'supply_offer',title:'SUPPLY OFFER',body:"A connect you don't know is offering 500g of premium mats at half price. Could be a setup.",options:[
+    {label:"A) TAKE THE DEAL — $500. 30% chance it's a sting (+30 heat).",fn:(s)=>{if(s.cash>=500){s.cash-=500;addTxn(-500,"Supply deal");if(Math.random()<.3){s.heat.level=Math.min(100,s.heat.level+30);addEvent("Sting. Heat spiked.",'neg');}else{s.fent=Math.min(s.storage.capacity,s.fent+200);addEvent("Supply deal. +200g.",'pos');}}else addEvent("Not enough bread.",'neg');}},
+    {label:"B) PASS.",fn:(s)=>{addEvent("Declined supply offer.",'neu');}},
+    {label:"C) SEND RUNNER — 10% sting chance.",fn:(s)=>{if(s.cash>=500){s.cash-=500;addTxn(-500,"Supply deal");if(Math.random()<.1){s.heat.level=Math.min(100,s.heat.level+30);addEvent("Still a sting.",'neg');}else{s.fent=Math.min(s.storage.capacity,s.fent+200);addEvent("Runner confirmed. +200g.",'pos');}}else addEvent("Not enough bread.",'neg');}}
+  ]},
+  {id:'rival_incursion',title:'RIVAL INCURSION',body:"Carreño's People are moving into your turf. Rival presence jumped to 80%.",options:[
+    {label:"A) SEND ENFORCERS — $500. Rival back to 20%.",fn:(s)=>{if(s.cash>=500){s.cash-=500;addTxn(-500,"Enforcer deploy");const t=s.turf.find(t=>t.owned);if(t)t.rivalPct=20;addEvent("Enforcers pushed them back.",'pos');}else addEvent("No bread.",'neg');}},
+    {label:"B) LET IT SLIDE.",fn:(s)=>{const t=s.turf.find(t=>t.owned);if(t)t.rivalPct=80;addEvent("Let rivals hold the block.",'neg');}},
+    {label:"C) NEGOTIATE — $1,500. Rival at 50%.",fn:(s)=>{if(s.cash>=1500){s.cash-=1500;addTxn(-1500,"Negotiation");const t=s.turf.find(t=>t.owned);if(t)t.rivalPct=50;addEvent("Uneasy truce.",'neu');}else addEvent("No bread.",'neg');}}
+  ]},
+  {id:'payroll_crisis',title:'PAYROLL CRISIS',body:"You missed payroll. Your crew is restless.",options:[
+    {label:"A) PAY DOUBLE — Smooth it over.",fn:(s)=>{const d=calcPayroll(s)*2;if(s.cash>=d){s.cash-=d;addTxn(-d,"Double payroll");addEvent("Paid double. Crew settled.",'pos');}else addEvent("Can't cover it.",'neg');}},
+    {label:"B) LET IT RIDE — Lose 1 crew.",fn:(s)=>{fireRandomCrew(s);addEvent("Lost a crew member.",'neg');}},
+    {label:"C) MAKE PROMISES — Buys time.",fn:(s)=>{addEvent("Made promises. Clock ticking.",'neu');}}
+  ]},
+  {id:'health_inspector',title:'HEALTH INSPECTOR',body:"City inspector is nosing around one of your fronts.",options:[
+    {label:"A) BRIBE — $3,000.",fn:(s)=>{if(s.cash>=3000){s.cash-=3000;addTxn(-3000,"Inspector bribe");addEvent("Inspector paid off.",'pos');}else{s.heat.level=Math.min(100,s.heat.level+15);addEvent("Couldn't bribe. Heat up.",'neg');}}},
+    {label:"B) LAWYER — Free if you have one, else $8,000.",fn:(s)=>{if(s.crew.lawyers.count>0&&Math.random()<.8){addEvent("Lawyer handled it.",'pos');}else if(s.cash>=8000){s.cash-=8000;addTxn(-8000,"Legal fees");addEvent("$8k in legal fees.",'neg');}else{s.heat.level=Math.min(100,s.heat.level+20);addEvent("No lawyer, no bread.",'neg');}}},
+    {label:"C) SHUT DOWN FRONT — No heat.",fn:(s)=>{addEvent("Front shut temporarily.",'neu');}}
+  ]},
+  {id:'fed_surveillance',title:'SURVEILLANCE DETECTED',body:"Unmarked vehicle outside your stash. Federal surveillance likely.",options:[
+    {label:"A) MOVE PRODUCT — Lose 15% stock. Heat -20.",fn:(s)=>{const lost=Math.floor(s.fent*.15);s.fent=Math.max(0,s.fent-lost);s.heat.level=Math.max(0,s.heat.level-20);addEvent(`Moved product. Lost ${lost}g.`,'neu');}},
+    {label:"B) SIT TIGHT — Heat +25.",fn:(s)=>{s.heat.level=Math.min(100,s.heat.level+25);addEvent("Held position. Heat spiked.",'neg');if(s.heat.level>=100)triggerRaid();}},
+    {label:"C) COUNTER-INTEL — $5,000. Heat -15.",fn:(s)=>{if(s.cash>=5000){s.cash-=5000;addTxn(-5000,"Counter-surveillance");s.heat.level=Math.max(0,s.heat.level-15);addEvent("Counter-intel deployed.",'pos');}else addEvent("No bread.",'neg');}}
+  ]},
+  {id:'wholesale_deal',title:'WHOLESALE OPPORTUNITY',body:"A distributor in the next district wants 500g at bulk rate.",options:[
+    {label:"A) MOVE 500g @ $8/g — +$4,000.",fn:(s)=>{if(s.fent>=500){s.fent-=500;s.cash+=4000;addTxn(4000,"Wholesale");addXP(200);s.heat.level=Math.min(100,s.heat.level+8);addEvent("Wholesale deal. +$4,000.",'pos');}else addEvent("Not enough product.",'neg');}},
+    {label:"B) COUNTER @ $12/g — 50% they walk.",fn:(s)=>{if(Math.random()<.5&&s.fent>=500){s.fent-=500;s.cash+=6000;addTxn(6000,"Wholesale counter");addXP(300);addEvent("Counter accepted. +$6,000.",'pos');}else addEvent("Counter rejected.",'neu');}},
+    {label:"C) DECLINE.",fn:(s)=>{addEvent("Declined wholesale.",'neu');}}
+  ]},
+  {id:'cook_arrested',title:'COOK DETAINED',body:"One of your cooks was picked up on an unrelated charge.",options:[
+    {label:"A) BAIL OUT — $2,000.",fn:(s)=>{if(s.cash>=2000){s.cash-=2000;addTxn(-2000,"Bail");addEvent("Cook bailed out.",'pos');}else{s.crew.cooks.count=Math.max(0,s.crew.cooks.count-1);addEvent("Couldn't make bail. Cook is gone.",'neg');}}},
+    {label:"B) CUT LOOSE — Cook gone. Heat +5.",fn:(s)=>{s.crew.cooks.count=Math.max(0,s.crew.cooks.count-1);s.heat.level=Math.min(100,s.heat.level+5);addEvent("Cut the cook.",'neg');}},
+    {label:"C) WAIT IT OUT.",fn:(s)=>{addEvent("Waiting on cook's release.",'neu');}}
+  ]},
+  {id:'territory_dispute',title:'TERRITORY DISPUTE',body:"9th Street Outfit is claiming The Cut. They're wrong.",options:[
+    {label:"A) HOLD THE LINE — $800.",fn:(s)=>{if(s.cash>=800){s.cash-=800;addTxn(-800,"Territorial defense");addEvent("Held the line.",'pos');}else{const t=s.turf.find(t=>t.id==='thecut');if(t)t.rivalPct=Math.min(100,(t.rivalPct||0)+40);addEvent("Couldn't fund defense.",'neg');}}},
+    {label:"B) NEGOTIATE — Give 40% income.",fn:(s)=>{const t=s.turf.find(t=>t.id==='thecut');if(t)t.rivalPct=40;addEvent("Split with 9th Street.",'neu');}},
+    {label:"C) ESCALATE — $2,000. Rival STR -10.",fn:(s)=>{if(s.cash>=2000){s.cash-=2000;addTxn(-2000,"Escalation");const r=gs.rivals.find(r=>r.id==='ninth');if(r)r.strength=Math.max(5,r.strength-10);s.heat.level=Math.min(100,s.heat.level+15);addEvent("Escalated. 9th backed off.",'pos');}else addEvent("No bread.",'neg');}}
+  ]},
+  {id:'new_connect',title:'NEW CONNECT',body:"A distributor in the port district wants to establish a regular arrangement.",options:[
+    {label:"A) SET THE MEETING — $1,000 investment.",fn:(s)=>{if(s.cash>=1000){s.cash-=1000;addTxn(-1000,"Connect investment");s._connectBonus=(s._connectBonus||0)+500;addEvent("New connect established.",'pos');}else addEvent("No bread.",'neg');}},
+    {label:"B) VET FIRST — Runner checks them out.",fn:(s)=>{addEvent("Runner dispatched.",'neu');}},
+    {label:"C) PASS.",fn:(s)=>{addEvent("Passed on connect.",'neu');}}
+  ]}
 ];
 
-// ==================== GAME STATE ====================
-let gs = null;
-let sessionSales = {grams:0, revenue:0};
-let saleFeed = [];
-let tickerQueue = [];
-let currentEvent = null;
-let gameLoopInterval = null;
-let secondInterval = null;
-let eventCooldown = 0;
-let majorEventCooldown = 0;
-let tickerText = '';
-let lastTickerEventIdx = 0;
+// ===== STATE =====
+let gs=null,sessionSales={grams:0,revenue:0},saleFeed=[],txns=[],currentEvent=null;
+let gameLoopInterval=null,secondInterval=null,eventCooldown=0,majorEventCooldown=0;
+let tickerMessages=[],_pageHidden=false,_hiddenAt=null,currentTab='operations';
 
 function defaultState(){
-  return {
-    meta:{playerName:"",prestigeBonus:null,prestigeCount:0,runStartTime:Date.now(),totalXP:0,playerLevel:1,gameWon:false},
+  return{
+    meta:{playerName:'',prestigeBonus:null,prestigeCount:0,runStartTime:Date.now(),totalXP:0,playerLevel:1,gameWon:false},
     cash:500,fent:0,fentPurity:.20,
     storage:{capacity:500,upgrades:0},
     lab:{hardwareLevel:0,formulaLevel:0,sourcingLevel:0,synthesisInProgress:false,synthesisEndTime:null,synthesisAmount:0,maxPurityCeiling:.25},
-    crew:{
-      cooks:{count:0,maxSlots:1,tier:0},
-      slingers:{count:0,maxSlots:2,tier:0},
-      runners:{count:0,maxSlots:1,tier:0},
-      enforcers:{count:0,maxSlots:0,tier:0},
-      distributors:{count:0,maxSlots:0,tier:0},
-      distributors2:{count:0,maxSlots:0,tier:0},
-      accountants:{count:0,maxSlots:0,tier:0},
-      lawyers:{count:0,maxSlots:0,tier:0}
-    },
-    turf:CONSTANTS.turf.map(t=>({...t,owned:false,rivalPct:Math.floor(Math.random()*40+10)})),
+    crew:{cooks:{count:0,maxSlots:1,tier:0},slingers:{count:0,maxSlots:2,tier:0},runners:{count:0,maxSlots:1,tier:0},enforcers:{count:0,maxSlots:0,tier:0},distributors:{count:0,maxSlots:0,tier:0},distributors2:{count:0,maxSlots:0,tier:0},accountants:{count:0,maxSlots:0,tier:0},lawyers:{count:0,maxSlots:0,tier:0}},
+    turf:C.turf.map(t=>({...t,owned:false,rivalPct:Math.floor(Math.random()*40+10)})),
     market:{basePrice:12,demandMultiplier:1.0,demandState:'NORMAL',lastFluctuation:null,playerSetPrice:12},
     heat:{level:0,raidThreshold:100,decayRate:.5},
-    fronts:CONSTANTS.fronts.map(f=>({...f,owned:false})),
-    events:[],headlines:[],
-    empireTier:0,lastSave:null,gameStarted:false,
-    _totalEarned:0,_totalXP:0,_payrollTimer:Date.now()+300000,
-    rivals:CONSTANTS.rivals.map(r=>({...r}))
+    fronts:C.fronts.map(f=>({...f,owned:false})),
+    events:[],headlines:[],empireTier:0,lastSave:null,gameStarted:false,
+    _totalEarned:0,_payrollTimer:Date.now()+300000,
+    rivals:C.rivals.map(r=>({...r})),
+    drip:{owned:['skin_1','body_slim','hair_bald','top_tee','bot_sweats','shoe_af1'],equipped:{skin:'skin_1',body:'body_slim',hair:'hair_bald',top:'top_tee',bottom:'bot_sweats',shoe:'shoe_af1',acc:null,outer:null}},
+    tapCash:0
   };
 }
 
-// ==================== INIT ====================
-window.onload = function(){
-  const saved = localStorage.getItem('fentDealer_save');
+function ensureDefaults(s){
+  if(!s.rivals)s.rivals=C.rivals.map(r=>({...r}));
+  if(!s._payrollTimer)s._payrollTimer=Date.now()+300000;
+  if(!s._totalEarned)s._totalEarned=0;
+  if(!s.market.demandState)s.market.demandState='NORMAL';
+  if(!s.drip)s.drip={owned:['skin_1','body_slim','hair_bald','top_tee','bot_sweats','shoe_af1'],equipped:{skin:'skin_1',body:'body_slim',hair:'hair_bald',top:'top_tee',bottom:'bot_sweats',shoe:'shoe_af1',acc:null,outer:null}};
+  if(!s.tapCash)s.tapCash=0;
+  s.turf.forEach(t=>{if(t.rivalPct===undefined)t.rivalPct=20;});
+  return s;
+}
+
+window.onload=function(){
+  const saved=localStorage.getItem('fentDealer_save');
   if(saved){
     try{
-      gs = JSON.parse(atob(saved));
-      if(!gs.rivals) gs.rivals = CONSTANTS.rivals.map(r=>({...r}));
-      if(!gs._payrollTimer) gs._payrollTimer = Date.now()+300000;
-      if(!gs._totalEarned) gs._totalEarned = 0;
-      if(!gs.market.demandState) gs.market.demandState = 'NORMAL';
-      gs.turf.forEach(t=>{if(t.rivalPct===undefined)t.rivalPct=20;});
+      gs=ensureDefaults(JSON.parse(atob(saved)));
       if(gs.gameStarted){
+        if(gs.lastSave){const om=Math.min((Date.now()-gs.lastSave)/60000,10);if(om>0.5)catchUpOffline(om);}
         document.getElementById('newgame-overlay').style.display='none';
-        startGameLoop();
-        renderAll();
-        flashMessage("OPERATION RESUMED");
-      } else {
-        showNewGame();
-      }
-    } catch(e){
-      gs = defaultState();
-      showNewGame();
-    }
-  } else {
-    gs = defaultState();
-    showNewGame();
-  }
+        startGameLoop();renderAll();flashMessage("RESUMED");
+      }else showNewGame();
+    }catch(e){gs=defaultState();showNewGame();}
+  }else{gs=defaultState();showNewGame();}
+  initScene();
+  setupVisibilityHandlers();
+  setTimeout(()=>{tickerMessages=['Standing by...','Eyes open.','TAP THE SCENE TO EARN.'];document.getElementById('ticker-inner').textContent=tickerMessages.join('  ——  ');},600);
 };
 
+function setupVisibilityHandlers(){
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){_pageHidden=true;_hiddenAt=Date.now();autoSave();}
+    else{
+      _pageHidden=false;
+      if(_hiddenAt&&gs&&gs.gameStarted){
+        const mins=Math.min((Date.now()-_hiddenAt)/60000,5);
+        if(mins>0.3)catchUpOffline(mins);
+        _hiddenAt=null;renderAll();
+      }
+    }
+  });
+}
+
+function catchUpOffline(mins){
+  if(gs.lab.synthesisInProgress&&Date.now()>=gs.lab.synthesisEndTime)completeCook();
+  if(gs.fent>0&&gs.crew.slingers.count>0){
+    const tm=[0.5,1,1.5,2.5][gs.crew.slingers.tier]||1;
+    const sold=Math.min(gs.fent,gs.crew.slingers.count*tm*gs.market.demandMultiplier*0.5*mins);
+    if(sold>0){const rev=sold*gs.market.playerSetPrice*(1+(gs.fentPurity-.2)*2);gs.fent-=sold;gs.cash+=rev;gs._totalEarned+=rev;}
+  }
+  gs.turf.forEach(t=>{if(t.owned)gs.cash+=t.income*(1-(t.rivalPct/100)*.7)*mins*0.5;});
+  addEvent(`Resumed after ${mins.toFixed(1)} min. Limited activity continued.`,'neu');
+}
+
 function showNewGame(){
-  const overlay = document.getElementById('newgame-overlay');
-  overlay.style.display='flex';
+  document.getElementById('newgame-overlay').style.display='flex';
   if(gs.meta.prestigeCount>0){
-    const info = document.getElementById('ng-prestige-info');
-    info.style.display='block';
-    const b = gs.meta.prestigeBonus;
-    info.innerHTML = b ? `PRESTIGE BONUS ACTIVE: <span style="color:var(--accent-primary)">${CONSTANTS.prestigeBonuses.find(p=>p.id===b.id)?.name||b.id}</span><br><span style="font-size:10px;">${CONSTANTS.prestigeBonuses.find(p=>p.id===b.id)?.desc||''}</span>` : '';
+    const info=document.getElementById('ng-prestige-info');info.style.display='block';
+    const b=gs.meta.prestigeBonus;const found=C.prestigeBonuses.find(p=>p.id===b?.id);
+    info.innerHTML=found?`PRESTIGE BONUS: <span style="color:var(--accent-primary)">${found.name}</span><br><span style="font-size:10px;">${found.desc}</span>`:'';
   }
 }
 
 function startNewGame(){
-  const name = document.getElementById('ng-name').value.trim() || 'Unknown';
-  const oldPrestige = gs.meta.prestigeCount;
-  const oldBonus = gs.meta.prestigeBonus;
-  const oldHeadlines = gs.headlines ? [...gs.headlines] : [];
-  gs = defaultState();
-  gs.meta.playerName = name;
-  gs.meta.prestigeCount = oldPrestige;
-  gs.meta.prestigeBonus = oldBonus;
-  gs.headlines = oldHeadlines;
-  gs.gameStarted = true;
-  gs.meta.runStartTime = Date.now();
+  const name=document.getElementById('ng-name').value.trim()||'Unknown';
+  const {prestigeCount,prestigeBonus}=gs.meta;const oldH=gs.headlines?[...gs.headlines]:[];const oldD=gs.drip;
+  gs=defaultState();gs.meta.playerName=name;gs.meta.prestigeCount=prestigeCount;gs.meta.prestigeBonus=prestigeBonus;
+  gs.headlines=oldH;gs.drip=oldD;gs.gameStarted=true;gs.meta.runStartTime=Date.now();
   applyPrestigeBonus();
   document.getElementById('newgame-overlay').style.display='none';
-  startGameLoop();
-  renderAll();
-  addEvent(`${name} is back on the street.`,'pos');
+  startGameLoop();renderAll();addEvent(`${name} is back on the street.`,'pos');
 }
 
 function applyPrestigeBonus(){
-  if(!gs.meta.prestigeBonus) return;
-  const b = gs.meta.prestigeBonus;
-  if(b.id==='connect') gs.cash += 2000;
+  const b=gs.meta.prestigeBonus;if(!b)return;
+  if(b.id==='connect')gs.cash+=2000;
   if(b.id==='cleaner'){const f=gs.fronts.find(f=>f.id==='laundromat');if(f)f.owned=true;}
-  if(b.id==='lawyer') gs.crew.lawyers.count=1;
-  if(b.id==='cook') gs.crew.cooks.tier=1;
+  if(b.id==='lawyer')gs.crew.lawyers.count=1;
+  if(b.id==='cook')gs.crew.cooks.tier=1;
 }
 
-// ==================== GAME LOOP ====================
 function startGameLoop(){
-  if(gameLoopInterval) clearInterval(gameLoopInterval);
-  if(secondInterval) clearInterval(secondInterval);
-  gameLoopInterval = setInterval(gameTick, 60000);
-  secondInterval = setInterval(secondTick, 1000);
+  if(gameLoopInterval)clearInterval(gameLoopInterval);
+  if(secondInterval)clearInterval(secondInterval);
+  gameLoopInterval=setInterval(gameTick,60000);
+  secondInterval=setInterval(secondTick,1000);
 }
 
-let secondCounter = 0;
+let secCount=0;
 function secondTick(){
-  if(!gs || !gs.gameStarted) return;
-  secondCounter++;
+  if(!gs||!gs.gameStarted||_pageHidden)return;
+  secCount++;
   updateSynthTimer();
-  updateTickerScroll();
-  if(secondCounter % 5 === 0) updateTopBar();
-  if(secondCounter % 10 === 0){
-    renderSynthProgress();
-    renderHeatBar();
-  }
-  if(secondCounter >= 60){
-    secondCounter = 0;
-    gameTick();
-  }
+  if(secCount%3===0)updateTopBar();
+  if(secCount%5===0){renderSynthProgress();renderHeatBar();}
+  if(secCount%5===0&&currentTab==='crew')updatePayrollTimer();
+  if(secCount>=60){secCount=0;gameTick();}
 }
 
 function gameTick(){
-  if(!gs || !gs.gameStarted) return;
-  // SELLING
-  processSales();
-  // TURF INCOME
-  processTurfIncome();
-  // HEAT
-  processHeat();
-  // RIVALS
-  processRivals();
-  // PAYROLL
-  checkPayroll();
-  // MARKET FLUCTUATION
-  if(!gs.market.lastFluctuation || Date.now() - gs.market.lastFluctuation > (120000 + Math.random()*180000)){
-    fluctuateMarket();
-  }
-  // MINOR EVENTS
-  eventCooldown--;
-  if(eventCooldown <= 0){
-    if(Math.random() < .6) fireMinorEvent();
-    eventCooldown = Math.floor(Math.random()*3)+1;
-  }
-  // MAJOR EVENTS
-  majorEventCooldown--;
-  if(majorEventCooldown <= 0 && !currentEvent){
-    if(Math.random() < .3) fireMajorEvent();
-    majorEventCooldown = Math.floor(Math.random()*8)+5;
-  }
-  // HEADLINES
-  checkHeadlines();
-  // TIER
-  checkTierAdvancement();
-  // AUTO SAVE
-  autoSave();
-  renderAll();
+  if(!gs||!gs.gameStarted)return;
+  processSales();processTurfIncome();processHeat();processRivals();checkPayroll();
+  if(!gs.market.lastFluctuation||Date.now()-gs.market.lastFluctuation>120000+Math.random()*180000)fluctuateMarket();
+  eventCooldown--;if(eventCooldown<=0){if(Math.random()<.6)fireMinorEvent();eventCooldown=Math.floor(Math.random()*3)+1;}
+  majorEventCooldown--;if(majorEventCooldown<=0&&!currentEvent){if(Math.random()<.3)fireMajorEvent();majorEventCooldown=Math.floor(Math.random()*8)+5;}
+  checkHeadlines();checkTierAdvancement();autoSave();renderAll();
 }
 
 function processSales(){
-  if(gs.fent <= 0 || gs.crew.slingers.count === 0) return;
-  const tierMult = [0.5,1,1.5,2.5][gs.crew.slingers.tier] || 1;
-  let streetBonus = 1;
-  if(gs.meta.prestigeBonus && gs.meta.prestigeBonus.id==='streetking') streetBonus = 1.25;
-  const demand = gs.market.demandMultiplier;
-  const price = gs.market.playerSetPrice;
-  const basePrice = CONSTANTS.hardware[gs.lab.hardwareLevel].purityBonus * 20 + 12;
-  const priceFactor = price > basePrice*2 ? 0.5 : price < basePrice*0.5 ? 1.5 : 1.0;
-  let gramsPerMin = gs.crew.slingers.count * tierMult * demand * priceFactor * streetBonus;
-  if(gs.crew.distributors.count > 0) gramsPerMin *= (1 + gs.crew.distributors.count * 0.15);
-  gramsPerMin = Math.max(0.1, gramsPerMin);
-  const gramsSold = Math.min(gs.fent, gramsPerMin);
-  if(gramsSold <= 0) return;
-  const purityBonus = 1 + (gs.fentPurity - 0.2) * 2;
-  const revenue = gramsSold * price * purityBonus;
-  gs.fent -= gramsSold;
-  gs.cash += revenue;
-  gs._totalEarned = (gs._totalEarned||0) + revenue;
-  sessionSales.grams += gramsSold;
-  sessionSales.revenue += revenue;
-  addXP(Math.floor(gramsSold * 0.5 + (gs.fentPurity > 0.6 ? 2 : 0)));
-  addTransaction(revenue, `Moved ${gramsSold.toFixed(1)}g @ $${price}`);
-  saleFeed.unshift(`Moved ${gramsSold.toFixed(1)}g @ $${price} — $${revenue.toFixed(0)}`);
-  if(saleFeed.length > 30) saleFeed.pop();
-  // Heat from sales
-  const ghostMult = (gs.meta.prestigeBonus && gs.meta.prestigeBonus.id==='ghost') ? 0.8 : 1;
-  gs.heat.level = Math.min(100, gs.heat.level + gramsSold * 0.01 * ghostMult);
+  if(gs.fent<=0||gs.crew.slingers.count===0)return;
+  const tm=[0.5,1,1.5,2.5][gs.crew.slingers.tier]||1;
+  let sb=gs.meta.prestigeBonus?.id==='streetking'?1.25:1;
+  const price=gs.market.playerSetPrice,base=12+gs.lab.formulaLevel*5;
+  const pf=price>base*3?0.5:price<base*0.5?1.5:1.0;
+  let gpm=gs.crew.slingers.count*tm*gs.market.demandMultiplier*pf*sb;
+  if(gs.crew.distributors.count>0)gpm*=(1+gs.crew.distributors.count*.15);
+  const sold=Math.min(gs.fent,Math.max(0.1,gpm));
+  if(sold<=0)return;
+  const rev=sold*price*(1+(gs.fentPurity-.2)*2);
+  gs.fent-=sold;gs.cash+=rev;gs._totalEarned+=rev;
+  sessionSales.grams+=sold;sessionSales.revenue+=rev;
+  addXP(Math.floor(sold*.5+(gs.fentPurity>.6?2:0)));
+  addTxn(rev,`Moved ${sold.toFixed(1)}g @ $${price}`);
+  saleFeed.unshift(`${sold.toFixed(1)}g @ $${price} — $${rev.toFixed(0)}`);
+  if(saleFeed.length>30)saleFeed.pop();
+  const gm=gs.meta.prestigeBonus?.id==='ghost'?0.8:1;
+  gs.heat.level=Math.min(100,gs.heat.level+sold*.01*gm);
 }
 
 function processTurfIncome(){
-  let income = 0;
-  gs.turf.forEach(t=>{
-    if(t.owned){
-      const rivalFactor = 1 - (t.rivalPct/100)*0.7;
-      income += t.income * rivalFactor;
-      const ghostMult = (gs.meta.prestigeBonus && gs.meta.prestigeBonus.id==='ghost') ? 0.8 : 1;
-      gs.heat.level = Math.min(100, gs.heat.level + t.heat * ghostMult * 0.5);
-    }
-  });
-  if(income > 0){
-    gs.cash += income;
-    gs._totalEarned = (gs._totalEarned||0) + income;
-    addTransaction(income, "Turf passive income");
-  }
+  let inc=0;
+  gs.turf.forEach(t=>{if(t.owned)inc+=t.income*(1-(t.rivalPct/100)*.7);});
+  if(inc>0){gs.cash+=inc;gs._totalEarned+=inc;addTxn(inc,"Turf income");}
+  const gm=gs.meta.prestigeBonus?.id==='ghost'?0.8:1;
+  gs.turf.forEach(t=>{if(t.owned)gs.heat.level=Math.min(100,gs.heat.level+t.heat*gm*.5);});
 }
 
 function processHeat(){
-  let heatDelta = -gs.heat.decayRate;
-  // Slingers add heat
-  const ghostMult = (gs.meta.prestigeBonus && gs.meta.prestigeBonus.id==='ghost') ? 0.8 : 1;
-  heatDelta += gs.crew.slingers.count * 0.3 * ghostMult;
-  // Lawyers reduce heat
-  heatDelta -= gs.crew.lawyers.count * [1,1.5,2.5,4][gs.crew.lawyers.tier] * 0.5;
-  // Fronts reduce heat
-  gs.fronts.forEach(f=>{if(f.owned) heatDelta -= f.heatRed * 0.5;});
-  gs.heat.level = Math.max(0, Math.min(100, gs.heat.level + heatDelta));
-  if(gs.heat.level >= 100) triggerRaid();
-  // Front income
-  gs.fronts.forEach(f=>{
-    if(f.owned){
-      let inc = f.cashPerMin;
-      if(gs.crew.accountants.count > 0) inc *= (1 + gs.crew.accountants.count * 0.1);
-      gs.cash += inc;
-    }
-  });
+  let d=-gs.heat.decayRate;
+  const gm=gs.meta.prestigeBonus?.id==='ghost'?0.8:1;
+  d+=gs.crew.slingers.count*.3*gm;
+  d-=gs.crew.lawyers.count*([1,1.5,2.5,4][gs.crew.lawyers.tier]||1)*.5;
+  gs.fronts.forEach(f=>{if(f.owned){d-=f.heatRed*.5;let inc=f.cashPerMin;if(gs.crew.accountants.count>0)inc*=(1+gs.crew.accountants.count*.1);gs.cash+=inc;}});
+  gs.heat.level=Math.max(0,Math.min(100,gs.heat.level+d));
+  if(gs.heat.level>=100)triggerRaid();
 }
 
 function processRivals(){
-  const slowMult = (gs.meta.prestigeBonus && gs.meta.prestigeBonus.id==='muscle') ? 0.7 : 1;
+  const sm=gs.meta.prestigeBonus?.id==='muscle'?0.7:1;
   gs.turf.forEach(t=>{
-    if(t.owned){
-      if(Math.random() < .3){
-        t.rivalPct = Math.min(100, t.rivalPct + (Math.random()*3)*slowMult);
-        if(gs.crew.enforcers.count > 0){
-          t.rivalPct = Math.max(0, t.rivalPct - gs.crew.enforcers.count * 2);
-        }
-      }
+    if(t.owned&&Math.random()<.3){
+      t.rivalPct=Math.min(100,t.rivalPct+Math.random()*3*sm);
+      if(gs.crew.enforcers.count>0)t.rivalPct=Math.max(0,t.rivalPct-gs.crew.enforcers.count*2);
     }
   });
 }
 
 function checkPayroll(){
-  if(Date.now() < gs._payrollTimer) return;
-  const payroll = calcPayroll(gs);
-  gs._payrollTimer = Date.now() + 300000; // 5 min = "1 week"
-  if(gs.cash >= payroll){
-    gs.cash -= payroll;
-    addTransaction(-payroll, "Weekly payroll");
-    addEvent(`Payroll covered. -$${payroll.toLocaleString()}.`,'neg');
-  } else {
-    addEvent("MISSED PAYROLL. Crew is restless.",'neg');
-    addTickerMessage("Missed payroll. The crew is not happy.");
-    fireMajorEventById('payroll_crisis');
-  }
+  if(Date.now()<gs._payrollTimer)return;
+  const p=calcPayroll(gs);gs._payrollTimer=Date.now()+300000;
+  if(gs.cash>=p){gs.cash-=p;addTxn(-p,"Payroll");addEvent(`Payroll -$${p.toLocaleString()}.`,'neg');}
+  else{addEvent("MISSED PAYROLL.",'neg');addTickerMsg("Missed payroll. Crew is not happy.");fireMajorEventById('payroll_crisis');}
 }
 
 function calcPayroll(s){
-  let total = 0;
-  let mult = (s.meta.prestigeBonus && s.meta.prestigeBonus.id==='accountant') ? 0.8 : 1;
-  Object.keys(s.crew).forEach(role=>{
-    const c = s.crew[role];
-    const wages = CONSTANTS.crewRoles[role]?.wage;
-    if(wages && c.count > 0){
-      total += c.count * (wages[c.tier]||wages[0]);
-    }
-  });
-  return Math.floor(total * mult);
+  let t=0;const m=s.meta.prestigeBonus?.id==='accountant'?0.8:1;
+  Object.keys(s.crew).forEach(r=>{const c=s.crew[r];const w=C.crewRoles[r]?.wage;if(w&&c.count>0)t+=c.count*(w[c.tier]||w[0]);});
+  return Math.floor(t*m);
 }
 
 function fluctuateMarket(){
-  const states = ['DROUGHT','SLOW','NORMAL','NORMAL','HOT','FRENZY'];
-  const mults = {DROUGHT:0.5,SLOW:0.8,NORMAL:1.0,HOT:1.3,FRENZY:1.7};
-  const weights = [0.1,0.2,0.4,0.15,0.1,0.05];
-  const current = gs.market.demandState;
-  let prestige = (gs.meta.prestigeBonus && gs.meta.prestigeBonus.id==='connect');
-  let newState;
-  do {
-    let r = Math.random();
-    let cumulative = 0;
-    newState = 'NORMAL';
-    for(let i=0;i<states.length;i++){
-      cumulative += weights[i];
-      if(r <= cumulative){newState=states[i];break;}
-    }
-    if(prestige && (newState==='DROUGHT'||newState==='SLOW')) newState='NORMAL';
-  } while(false);
-  gs.market.demandState = newState;
-  gs.market.demandMultiplier = mults[newState];
-  gs.market.lastFluctuation = Date.now();
-  addTickerMessage(`Market shift: ${newState}`);
+  const states=['DROUGHT','SLOW','NORMAL','NORMAL','HOT','FRENZY'];
+  const mults={DROUGHT:.5,SLOW:.8,NORMAL:1.0,HOT:1.3,FRENZY:1.7};
+  const weights=[.1,.2,.4,.15,.1,.05];
+  let r=Math.random(),cum=0,s='NORMAL';
+  for(let i=0;i<states.length;i++){cum+=weights[i];if(r<=cum){s=states[i];break;}}
+  if(gs.meta.prestigeBonus?.id==='connect'&&(s==='DROUGHT'||s==='SLOW'))s='NORMAL';
+  gs.market.demandState=s;gs.market.demandMultiplier=mults[s];gs.market.lastFluctuation=Date.now();
+  addTickerMsg(`Market shift: ${s}`);
 }
 
-function fireMinorEvent(){
-  const ev = CONSTANTS.minorEvents[Math.floor(Math.random()*CONSTANTS.minorEvents.length)];
-  ev.effect(gs);
-  addTickerMessage(ev.text);
-  addEvent(ev.text, ev.type);
-}
-
-function fireMajorEvent(){
-  const available = MAJOR_EVENTS.filter(e=>!currentEvent);
-  if(available.length === 0) return;
-  const ev = available[Math.floor(Math.random()*available.length)];
-  showMajorEvent(ev);
-}
-
-function fireMajorEventById(id){
-  const ev = MAJOR_EVENTS.find(e=>e.id===id);
-  if(ev) showMajorEvent(ev);
-}
+function fireMinorEvent(){const ev=C.minorEvents[Math.floor(Math.random()*C.minorEvents.length)];ev.effect(gs);addTickerMsg(ev.text);addEvent(ev.text,ev.type);}
+function fireMajorEvent(){const ev=MAJOR_EVENTS[Math.floor(Math.random()*MAJOR_EVENTS.length)];showMajorEvent(ev);}
+function fireMajorEventById(id){const ev=MAJOR_EVENTS.find(e=>e.id===id);if(ev)showMajorEvent(ev);}
 
 function showMajorEvent(ev){
-  currentEvent = ev;
-  document.getElementById('event-modal-title').textContent = ev.title;
-  document.getElementById('event-modal-body').textContent = ev.body;
-  const opts = document.getElementById('event-modal-options');
-  opts.innerHTML='';
+  currentEvent=ev;
+  document.getElementById('event-modal-title').textContent=ev.title;
+  document.getElementById('event-modal-body').textContent=ev.body;
+  const opts=document.getElementById('event-modal-options');opts.innerHTML='';
   ev.options.forEach((opt,i)=>{
-    const btn = document.createElement('button');
-    btn.className = 'modal-opt' + (i===1?' opt-b':i===2?' opt-c':'');
-    btn.textContent = opt.label;
-    btn.onclick = ()=>{
-      opt.fn(gs);
-      currentEvent = null;
-      closeModal('event-modal');
-      renderAll();
-    };
+    const btn=document.createElement('button');
+    btn.className='modal-opt'+(i===1?' opt-b':i===2?' opt-c':'');
+    btn.textContent=opt.label;
+    btn.onclick=()=>{opt.fn(gs);currentEvent=null;closeModal('event-modal');renderAll();};
     opts.appendChild(btn);
   });
   openModal('event-modal');
 }
 
 function checkHeadlines(){
-  const xp = gs.meta.totalXP;
-  CONSTANTS.headlines.forEach(h=>{
-    if(xp >= h.xpReq && !gs.headlines.includes(h.id)){
-      gs.headlines.push(h.id);
-      addEvent(`INTEL REPORT UNLOCKED: ${h.source}`,'pos');
-    }
-  });
+  const xp=gs.meta.totalXP;
+  C.headlines.forEach(h=>{if(xp>=h.xpReq&&!gs.headlines.includes(h.id)){gs.headlines.push(h.id);addEvent(`INTEL REPORT: ${h.source}`,'pos');}});
 }
 
 function checkTierAdvancement(){
-  if(gs.empireTier >= 6) return;
-  const next = CONSTANTS.tierRequirements[gs.empireTier+1];
-  if(gs.cash >= next.cash && gs.meta.totalXP >= next.xp){
-    document.getElementById('ops-advance-panel').style.display='block';
-    document.getElementById('ops-advance-text').textContent = `Requirements met: $${next.cash.toLocaleString()} cash + ${next.xp.toLocaleString()} XP. Ready to advance to: ${next.name}`;
-  } else {
-    document.getElementById('ops-advance-panel').style.display='none';
-  }
+  if(gs.empireTier>=6)return;
+  const next=C.tierReq[gs.empireTier+1];
+  const ready=gs.cash>=next.cash&&gs.meta.totalXP>=next.xp;
+  document.getElementById('ops-advance-panel').style.display=ready?'block':'none';
+  if(ready)document.getElementById('ops-advance-text').textContent=`Ready: $${next.cash.toLocaleString()} + ${next.xp.toLocaleString()} XP → ${next.name}`;
 }
 
 function advanceTier(){
-  if(gs.empireTier >= 6) return;
-  const next = CONSTANTS.tierRequirements[gs.empireTier+1];
-  if(gs.cash < next.cash || gs.meta.totalXP < next.xp) return;
+  if(gs.empireTier>=6)return;
+  const next=C.tierReq[gs.empireTier+1];
+  if(gs.cash<next.cash||gs.meta.totalXP<next.xp)return;
   gs.empireTier++;
-  const unlocks = CONSTANTS.tierUnlocks[gs.empireTier];
-  if(unlocks.crewSlots){
-    Object.keys(unlocks.crewSlots).forEach(role=>{
-      if(gs.crew[role]) gs.crew[role].maxSlots += unlocks.crewSlots[role];
-    });
-  }
-  addEvent(`EMPIRE ADVANCED: ${CONSTANTS.tierRequirements[gs.empireTier].name}`,'pos');
-  addXP(1000);
-  if(gs.empireTier === 6){
-    gs.meta.gameWon = true;
-    document.getElementById('victory-overlay').classList.add('open');
-  }
+  const u=C.tierUnlocks[gs.empireTier];
+  if(u.crewSlots)Object.keys(u.crewSlots).forEach(r=>{if(gs.crew[r])gs.crew[r].maxSlots+=u.crewSlots[r];});
+  addEvent(`EMPIRE ADVANCED: ${C.tierReq[gs.empireTier].name}`,'pos');addXP(1000);
+  if(gs.empireTier===6){gs.meta.gameWon=true;document.getElementById('victory-overlay').classList.add('open');}
   renderAll();
 }
 
@@ -1425,741 +693,608 @@ function closeVictory(){document.getElementById('victory-overlay').classList.rem
 
 function triggerPrestige(){
   document.getElementById('victory-overlay').classList.remove('open');
-  const pool = CONSTANTS.prestigeBonuses;
-  const shuffled = pool.sort(()=>Math.random()-.5).slice(0,3);
-  const container = document.getElementById('prestige-options');
-  container.innerHTML='';
-  shuffled.forEach(b=>{
-    const btn = document.createElement('button');
-    btn.className='modal-opt';
-    btn.innerHTML = `<strong style="color:var(--accent-primary)">${b.name}</strong><br>${b.desc}`;
-    btn.onclick=()=>{
-      gs.meta.prestigeBonus={id:b.id};
-      gs.meta.prestigeCount++;
-      closeModal('prestige-overlay');
-      showNewGame();
-    };
+  const pool=[...C.prestigeBonuses].sort(()=>Math.random()-.5).slice(0,3);
+  const container=document.getElementById('prestige-options');container.innerHTML='';
+  pool.forEach(b=>{
+    const btn=document.createElement('button');btn.className='modal-opt';
+    btn.innerHTML=`<strong style="color:var(--accent-primary)">${b.name}</strong><br>${b.desc}`;
+    btn.onclick=()=>{gs.meta.prestigeBonus={id:b.id};gs.meta.prestigeCount++;closeModal('prestige-overlay');showNewGame();};
     container.appendChild(btn);
   });
   openModal('prestige-overlay');
 }
 
 function triggerRaid(){
-  if(gs.heat.level < 100) return;
-  gs.heat.level = 40;
-  const lawyerProtection = gs.crew.lawyers.count * 0.10;
-  let consequences = [];
-  if(Math.random() > lawyerProtection){
-    const fentLoss = Math.floor(gs.fent * (0.20 + Math.random()*0.40));
-    gs.fent = Math.max(0, gs.fent - fentLoss);
-    consequences.push(`${fentLoss}g of product seized`);
-  }
-  if(Math.random() > lawyerProtection){
-    const crewLost = Math.floor(Math.random()*3)+1;
-    for(let i=0;i<crewLost;i++) fireRandomCrew(gs);
-    consequences.push(`${crewLost} crew member(s) arrested`);
-  }
-  if(Math.random() > lawyerProtection){
-    const fine = Math.floor((1000 + Math.random()*49000) * (1 + gs.empireTier * 0.5));
-    gs.cash = Math.max(0, gs.cash - fine);
-    addTransaction(-fine, "Raid fine");
-    consequences.push(`$${fine.toLocaleString()} fine`);
-  }
-  addEvent('RAID EXECUTED BY TASK FORCE.','neg');
-  document.getElementById('raid-text').innerHTML = consequences.length > 0 ?
-    consequences.map(c=>`— ${c}`).join('<br>') :
-    '— Lawyers deflected most of the damage. You got lucky.';
-  document.getElementById('raid-overlay').classList.add('open');
-  addXP(500);
+  if(gs.heat.level<100)return;
+  gs.heat.level=40;
+  const lp=gs.crew.lawyers.count*.10,cons=[];
+  if(Math.random()>lp){const l=Math.floor(gs.fent*(.2+Math.random()*.4));gs.fent=Math.max(0,gs.fent-l);cons.push(`${l}g seized`);}
+  if(Math.random()>lp){const n=Math.floor(Math.random()*3)+1;for(let i=0;i<n;i++)fireRandomCrew(gs);cons.push(`${n} crew arrested`);}
+  if(Math.random()>lp){const fine=Math.floor((1000+Math.random()*49000)*(1+gs.empireTier*.5));gs.cash=Math.max(0,gs.cash-fine);addTxn(-fine,"Raid fine");cons.push(`$${fine.toLocaleString()} fine`);}
+  addEvent('RAID EXECUTED.','neg');
+  document.getElementById('raid-text').innerHTML=cons.length?cons.map(c=>`— ${c}`).join('<br>'):'— Lawyers deflected most damage.';
+  document.getElementById('raid-overlay').classList.add('open');addXP(500);
 }
 
-function closeRaid(){
-  document.getElementById('raid-overlay').classList.remove('open');
-  renderAll();
+function closeRaid(){document.getElementById('raid-overlay').classList.remove('open');renderAll();}
+function fireRandomCrew(s){const roles=Object.keys(s.crew).filter(r=>s.crew[r].count>0);if(!roles.length)return;const r=roles[Math.floor(Math.random()*roles.length)];s.crew[r].count=Math.max(0,s.crew[r].count-1);addEvent(`Lost a ${C.crewRoles[r]?.label||r}.`,'neg');}
+function addXP(a){gs.meta.totalXP=(gs.meta.totalXP||0)+a;gs.meta.playerLevel=Math.max(1,Math.floor(Math.log(gs.meta.totalXP/100+1)/Math.log(1.5))+1);}
+function addTxn(amount,desc){txns.unshift({amount,desc,time:new Date().toLocaleTimeString()});if(txns.length>50)txns.pop();}
+function addEvent(text,type='neu'){gs.events.unshift({text,type,time:new Date().toLocaleTimeString()});if(gs.events.length>100)gs.events.pop();}
+function addTickerMsg(msg){tickerMessages.push(msg);if(tickerMessages.length>20)tickerMessages.shift();document.getElementById('ticker-inner').textContent=tickerMessages.join('  ——  ');}
+// ===== SCENE =====
+let sceneCanvas,sceneCtx,charX=0,charDir=1,charFrame=0,charFrameTimer=0,floatObjs=[];
+
+function isNight(){const h=new Date().getHours();return h>=20||h<6;}
+function getDayProgress(){const h=new Date().getHours(),m=new Date().getMinutes(),tot=h*60+m;if(tot>=360&&tot<1200)return(tot-360)/840;return tot>=1200?1:0;}
+function lerp(a,b,t){return a+(b-a)*t;}
+
+function initScene(){
+  sceneCanvas=document.getElementById('scene-canvas');
+  sceneCtx=sceneCanvas.getContext('2d');
+  sceneCanvas.style.imageRendering='pixelated';
+  resizeScene();
+  window.addEventListener('resize',resizeScene);
+  sceneCanvas.addEventListener('click',handleSceneTap);
+  sceneCanvas.addEventListener('touchstart',handleSceneTap,{passive:false});
+  requestAnimationFrame(sceneLoop);
 }
 
-function fireRandomCrew(s){
-  const roles = Object.keys(s.crew).filter(r=>s.crew[r].count>0);
-  if(roles.length===0) return;
-  const role = roles[Math.floor(Math.random()*roles.length)];
-  s.crew[role].count = Math.max(0, s.crew[role].count - 1);
-  addEvent(`Lost a ${CONSTANTS.crewRoles[role]?.label||role}.`,'neg');
+function resizeScene(){
+  const wrap=document.getElementById('scene-wrap');
+  sceneCanvas.width=Math.max(120,Math.floor(wrap.offsetWidth/2));
+  sceneCanvas.height=100;
+  sceneCanvas.style.width=wrap.offsetWidth+'px';
+  sceneCanvas.style.height='200px';
+  if(charX===0)charX=Math.floor(sceneCanvas.width*0.3);
 }
 
-// ==================== XP & LEVEL ====================
-function addXP(amount){
-  gs.meta.totalXP = (gs.meta.totalXP||0) + amount;
-  const newLevel = Math.floor(Math.log(gs.meta.totalXP/100+1)/Math.log(1.5)) + 1;
-  gs.meta.playerLevel = Math.max(1, newLevel);
+let lastSceneTs=0;
+function sceneLoop(ts){
+  if(!_pageHidden&&ts-lastSceneTs>80){drawScene();lastSceneTs=ts;}
+  requestAnimationFrame(sceneLoop);
 }
 
-// ==================== TRANSACTIONS ====================
-let transactions = [];
-function addTransaction(amount, desc){
-  transactions.unshift({amount, desc, time:new Date().toLocaleTimeString()});
-  if(transactions.length > 50) transactions.pop();
+function drawScene(){
+  if(!sceneCtx)return;
+  const W=sceneCanvas.width,H=sceneCanvas.height,night=isNight(),stage=gs?gs.empireTier:0;
+  sceneCtx.clearRect(0,0,W,H);
+  drawSky(W,H,night);drawGround(W,H,stage,night);drawBuildings(W,H,stage,night);
+  animateChar(W);drawCharacter(W,H);drawFloatObjs();
 }
 
-// ==================== EVENTS ====================
-function addEvent(text, type='neu'){
-  gs.events.unshift({text, type, time:new Date().toLocaleTimeString()});
-  if(gs.events.length > 100) gs.events.pop();
-}
-
-let tickerMessages = [];
-function addTickerMessage(msg){
-  tickerMessages.push(msg);
-  if(tickerMessages.length > 20) tickerMessages.shift();
-  updateTickerScroll();
-}
-
-function updateTickerScroll(){
-  if(tickerMessages.length > 0){
-    const el = document.getElementById('ticker-inner');
-    el.textContent = tickerMessages.join('   ——   ');
-  }
-}
-
-// ==================== LAB ====================
-function updateSynthTimer(){
-  if(!gs.lab.synthesisInProgress) return;
-  const now = Date.now();
-  const endTime = gs.lab.synthesisEndTime;
-  if(now >= endTime){
-    completeCook();
+function drawSky(W,H,night){
+  const c=sceneCtx;
+  if(night){
+    const g=c.createLinearGradient(0,0,0,H*.6);g.addColorStop(0,'#050510');g.addColorStop(1,'#0a0a1a');
+    c.fillStyle=g;c.fillRect(0,0,W,H*.6);
+    c.fillStyle='#fff';for(let i=0;i<18;i++)c.fillRect((i*73+17)%W,(i*31+7)%(H*.45),1,1);
+    c.fillStyle='#e8e0c0';c.fillRect(W-18,4,8,8);c.fillStyle='#050510';c.fillRect(W-16,4,8,8);
+  }else{
+    const dp=getDayProgress();
+    const g=c.createLinearGradient(0,0,0,H*.6);
+    g.addColorStop(0,`rgb(${Math.floor(lerp(135,30,dp))},${Math.floor(lerp(206,100,dp))},${Math.floor(lerp(235,170,dp))})`);
+    g.addColorStop(1,`rgb(${Math.floor(lerp(200,80,dp))},${Math.floor(lerp(170,50,dp))},${Math.floor(lerp(230,100,dp))})`);
+    c.fillStyle=g;c.fillRect(0,0,W,H*.6);
+    if(dp<0.92){
+      const sx=Math.floor(dp*W*.9+W*.05),sy=Math.floor(12-Math.sin(dp*Math.PI)*8);
+      c.fillStyle='#FFD700';c.fillRect(sx,sy,6,6);
+      c.fillStyle='rgba(255,215,0,0.15)';c.fillRect(sx-3,sy-3,12,12);
+    }
   }
 }
+
+function drawGround(W,H,stage,night){
+  const c=sceneCtx,gy=Math.floor(H*.65);
+  c.fillStyle=night?'#1a1a1a':'#2a2520';c.fillRect(0,gy,W,H-gy);
+  c.fillStyle=night?'#222':'#3a3530';c.fillRect(0,gy,W,2);
+  if(stage>=2){c.fillStyle=night?'#3a2a1a':'#4a3a2a';for(let x=0;x<W;x+=12)c.fillRect(x,gy+5,6,1);}
+}
+
+function drawBuildings(W,H,stage,night){
+  const c=sceneCtx,gy=Math.floor(H*.65);
+  if(stage===0){
+    // Street corner: single beat-up building + streetlight
+    drawBldg(c,2,gy-18,22,18,night?'#1a1a2a':'#252535',night);
+    c.fillStyle=night?'#332211':'#443322';c.fillRect(8,gy-10,7,10);
+    drawLamp(c,W-10,gy,night);
+    c.fillStyle='#3a2a1a';c.fillRect(W-24,gy-5,5,5);
+  }else if(stage===1){
+    drawBldg(c,0,gy-28,35,28,night?'#1a1a1a':'#22221f',night);
+    c.fillStyle=night?'#332211':'#443322';c.fillRect(10,gy-12,8,12);c.fillRect(21,gy-12,8,12);
+    drawLamp(c,W-12,gy,night);
+    drawBldg(c,W-22,gy-16,22,16,night?'#111':'#1c1c1c',night);
+  }else if(stage===2){
+    drawBldg(c,0,gy-35,55,35,night?'#111':'#1a1a1a',night);
+    c.fillStyle=night?'#443322':'#554433';c.fillRect(8,gy-16,12,16);c.fillRect(24,gy-16,12,16);
+    drawLamp(c,W-12,gy,night);drawLamp(c,Math.floor(W/2),gy,night);
+    c.fillStyle=night?'#2a1a0a':'#3a2a18';c.fillRect(W-28,gy-22,20,22);
+  }else if(stage===3){
+    drawBldg(c,0,gy-40,50,40,night?'#0f0f1a':'#18181f',night);
+    drawBldg(c,W-38,gy-30,38,30,night?'#111':'#1c1c1c',night);
+    c.fillStyle=night?'#0a1a0a':'#182818';c.fillRect(0,gy-14,16,14);
+    c.fillStyle=night?'#222':'#333';c.fillRect(W-52,gy-10,22,10);c.fillRect(W-60,gy-8,10,8);
+    drawLamp(c,Math.floor(W*.35),gy,night);drawLamp(c,Math.floor(W*.75),gy,night);
+  }else if(stage===4){
+    drawBldg(c,Math.floor(W/2)-16,gy-55,32,55,night?'#0a0a14':'#14141e',night);
+    drawBldg(c,2,gy-32,22,32,night?'#111':'#1c1c1c',night);
+    drawBldg(c,W-24,gy-30,22,30,night?'#111':'#1c1c1c',night);
+    c.fillStyle=night?'#1a1a1a':'#252520';c.fillRect(0,gy-7,W,7);
+    c.fillStyle='#c8a951';c.fillRect(Math.floor(W/2)-16,gy-55,32,2);
+    drawLamp(c,8,gy,night);drawLamp(c,W-8,gy,night);
+  }else{
+    // Empire skyline
+    const bldgs=[{x:0,w:18,h:52},{x:16,w:12,h:38},{x:27,w:20,h:62},{x:46,w:14,h:42}];
+    const mid=Math.floor(W/2);
+    bldgs.push({x:mid-13,w:26,h:75},{x:mid+14,w:16,h:58},{x:W-38,w:18,h:48},{x:W-22,w:22,h:42});
+    bldgs.forEach(b=>{
+      if(b.x<0||b.x+b.w>W+2)return;
+      drawBldg(c,b.x,gy-b.h,b.w,b.h,night?'#080810':'#14141a',night);
+      // windows
+      c.fillStyle=night?'rgba(255,220,100,.55)':'rgba(100,120,200,.2)';
+      for(let wx=b.x+2;wx<b.x+b.w-2;wx+=4)for(let wy=gy-b.h+3;wy<gy-4;wy+=5){if(Math.random()<.55)c.fillRect(wx,wy,2,2);}
+    });
+    c.fillStyle='#c8a951';c.fillRect(0,gy-2,W,2);
+    drawLamp(c,Math.floor(W*.2),gy,night);drawLamp(c,Math.floor(W*.8),gy,night);
+  }
+}
+
+function drawBldg(c,x,y,w,h,col,night){
+  c.fillStyle=col;c.fillRect(x,y,w,h);
+  if(h>14){
+    c.fillStyle=night?'rgba(255,210,80,.45)':'rgba(160,180,255,.22)';
+    for(let wx=x+2;wx<x+w-2;wx+=5)for(let wy=y+3;wy<y+h-4;wy+=5){if(Math.random()<.45)c.fillRect(wx,wy,2,2);}
+  }
+  c.strokeStyle=night?'#18182a':'#26262a';c.lineWidth=.5;c.strokeRect(x+.5,y+.5,w-1,h-1);
+}
+
+function drawLamp(c,x,gy,night){
+  c.fillStyle='#3a3530';c.fillRect(x,gy-16,1,16);
+  c.fillStyle='#4a4540';c.fillRect(x-2,gy-16,5,1);
+  if(night){c.fillStyle='rgba(255,200,80,.18)';c.beginPath();c.arc(x,gy-16,9,0,Math.PI*2);c.fill();c.fillStyle='#FFCC44';c.fillRect(x-1,gy-17,3,2);}
+}
+
+function animateChar(W){
+  charFrameTimer++;if(charFrameTimer>8){charFrameTimer=0;charFrame=(charFrame+1)%4;}
+  charX+=charDir;
+  if(charX>W-22)charDir=-1;if(charX<8)charDir=1;
+}
+
+function getEquippedColors(){
+  if(!gs||!gs.drip)return{skin:'#FFDBB4',topColor:'#444',botColor:'#334',shoeColor:'#222',isJacked:false,isMuscle:false,hasChain:false,hasGlasses:false,hasFitted:false,hasOuter:false,outerColor:'#1a1a1a'};
+  const eq=gs.drip.equipped;
+  const si=C.dripItems.find(i=>i.id===eq.skin);
+  const ti=C.dripItems.find(i=>i.id===eq.top);
+  const bi=C.dripItems.find(i=>i.id===eq.bottom);
+  const shi=C.dripItems.find(i=>i.id===eq.shoe);
+  const oi=C.dripItems.find(i=>i.id===eq.outer);
+  const bv=C.dripItems.find(i=>i.id===eq.body)?.bodyVal||'slim';
+  return{
+    skin:si?.skinColor||'#FFDBB4',
+    topColor:ti?.topColor||'#444',
+    botColor:bi?.botColor||'#334',
+    shoeColor:shi?.shoeColor||'#222',
+    isJacked:bv==='jacked',isMuscle:bv==='muscle',
+    hasChain:eq.acc&&(eq.acc.includes('chain')||eq.acc==='acc_gucci_chain'),
+    hasGlasses:eq.acc==='acc_glasses',
+    hasFitted:eq.acc==='acc_fitted'||eq.acc==='acc_durag',
+    hasOuter:!!eq.outer,
+    outerColor:oi?.outerColor||'#1a1a1a'
+  };
+}
+
+function drawCharacter(W,H){
+  const c=sceneCtx,gy=Math.floor(H*.65),cx=Math.floor(charX);
+  const col=getEquippedColors();
+  const bw=col.isJacked?8:col.isMuscle?7:6;
+  const bob=Math.floor(Math.sin(charFrame*Math.PI/2));
+  const y=gy+bob;
+  // shoes
+  c.fillStyle=col.shoeColor;c.fillRect(cx,y-2,3,2);c.fillRect(cx+bw-1,y-2,3,2);
+  // legs
+  c.fillStyle=col.botColor;
+  const la=charFrame%2===0?0:1;
+  c.fillRect(cx,y-9,2,7+la);c.fillRect(cx+bw-2,y-9,2,7-la);
+  // torso
+  c.fillStyle=col.topColor;c.fillRect(cx-1,y-17,bw+2,9);
+  if(col.hasOuter){c.fillStyle=col.outerColor;c.globalAlpha=.7;c.fillRect(cx-2,y-17,bw+4,9);c.globalAlpha=1;}
+  if(col.hasChain){c.fillStyle='#c8a951';c.fillRect(cx,y-14,bw,1);}
+  // arms
+  c.fillStyle=col.skin;
+  const as=charFrame%2===0?1:-1;
+  c.fillRect(cx-2,y-16+as,2,5);c.fillRect(cx+bw,y-16-as,2,5);
+  // head
+  c.fillStyle=col.skin;c.fillRect(cx+1,y-23,bw-2,6);
+  // hair
+  const hv=C.dripItems.find(i=>i.id===gs.drip.equipped.hair)?.hairVal||'bald';
+  if(hv==='waves'){c.fillStyle='#1a0a00';c.fillRect(cx+1,y-24,bw-2,3);c.fillStyle='#2a1500';c.fillRect(cx+2,y-24,1,1);c.fillRect(cx+bw-3,y-24,1,1);}
+  else if(hv==='dreads'){c.fillStyle='#2a1500';for(let d=0;d<3;d++)c.fillRect(cx+1+d*2,y-26,1,4);}
+  else if(hv==='short'){c.fillStyle='#1a0a00';c.fillRect(cx+1,y-24,bw-2,2);}
+  if(col.hasFitted){c.fillStyle='#1a1a1a';c.fillRect(cx,y-24,bw,3);c.fillRect(cx-1,y-23,1,2);}
+  if(col.hasGlasses){c.fillStyle='rgba(0,0,0,.85)';c.fillRect(cx+1,y-21,2,1);c.fillRect(cx+4,y-21,2,1);}
+  // face
+  c.fillStyle='#000';
+  c.fillRect(cx+2,y-20,1,1);c.fillRect(cx+bw-3,y-20,1,1);
+  if(charFrame===3){c.fillRect(cx+2,y-20,1,2);}// wink
+  c.fillRect(cx+3,y-18,bw-5,1);
+}
+
+function drawFloatObjs(){
+  const c=sceneCtx;
+  floatObjs=floatObjs.filter(o=>{
+    o.y-=1.5;o.opacity-=0.035;
+    if(o.opacity<=0)return false;
+    c.globalAlpha=o.opacity;c.fillStyle=o.color;
+    c.font=`bold ${o.size}px 'IBM Plex Mono',monospace`;
+    c.fillText(o.text,o.x,o.y);c.globalAlpha=1;
+    return true;
+  });
+}
+
+let _lastTap=0;
+function handleSceneTap(e){
+  if(e.cancelable)e.preventDefault();
+  if(!gs||!gs.gameStarted)return;
+  const now=Date.now();if(now-_lastTap<1000)return;_lastTap=now;
+  const rect=sceneCanvas.getBoundingClientRect();
+  const scaleX=sceneCanvas.width/rect.width,scaleY=sceneCanvas.height/rect.height;
+  let tx,ty;
+  if(e.touches&&e.touches[0]){tx=(e.touches[0].clientX-rect.left)*scaleX;ty=(e.touches[0].clientY-rect.top)*scaleY;}
+  else{tx=(e.clientX-rect.left)*scaleX;ty=(e.clientY-rect.top)*scaleY;}
+  const reward=calcTapReward();
+  gs.cash+=reward;gs._totalEarned+=reward;gs.tapCash=(gs.tapCash||0)+reward;
+  addXP(1);
+  floatObjs.push({x:tx-8,y:ty-4,text:`+$${reward}`,color:'#c8a951',opacity:1,size:7});
+  gs.heat.level=Math.min(100,gs.heat.level+.15);
+  updateTopBar();
+}
+
+function calcTapReward(){
+  return Math.max(1,1+gs.empireTier*2+Math.floor(gs.fentPurity*5)+gs.crew.slingers.count);
+}
+
+// ===== LAB =====
+function updateSynthTimer(){if(!gs.lab.synthesisInProgress)return;if(Date.now()>=gs.lab.synthesisEndTime)completeCook();}
 
 function startCook(){
-  if(gs.lab.synthesisInProgress) return;
-  const hw = CONSTANTS.hardware[gs.lab.hardwareLevel];
-  if(gs.fent >= gs.storage.capacity){addEvent("Stash is full. No room for product.",'neg');return;}
-  let cookTime = hw.time * 1000;
-  if(gs.crew.cooks.count > 0){
-    const cookBonus = [0.95,0.85,0.75,0.60][gs.crew.cooks.tier];
-    cookTime *= (cookBonus || 1);
-  }
-  if(gs.meta.prestigeBonus && gs.meta.prestigeBonus.id==='cook') cookTime *= 0.85;
-  gs.lab.synthesisInProgress = true;
-  gs.lab.synthesisEndTime = Date.now() + cookTime;
-  gs.lab.synthesisAmount = hw.batch;
-  const ghostMult = (gs.meta.prestigeBonus && gs.meta.prestigeBonus.id==='ghost') ? 0.8 : 1;
-  gs.heat.level = Math.min(100, gs.heat.level + 5 * ghostMult);
-  addEvent(`Cook started. Batch: ${hw.batch}g.`,'neu');
-  renderLab();
+  if(gs.lab.synthesisInProgress)return;
+  if(gs.fent>=gs.storage.capacity){addEvent("Stash full.",'neg');return;}
+  const hw=C.hardware[gs.lab.hardwareLevel];
+  let ct=hw.time*1000;
+  if(gs.crew.cooks.count>0)ct*=[.95,.85,.75,.60][gs.crew.cooks.tier]||1;
+  if(gs.meta.prestigeBonus?.id==='cook')ct*=.85;
+  gs.lab.synthesisInProgress=true;gs.lab.synthesisEndTime=Date.now()+ct;gs.lab.synthesisAmount=hw.batch;
+  const gm=gs.meta.prestigeBonus?.id==='ghost'?0.8:1;
+  gs.heat.level=Math.min(100,gs.heat.level+5*gm);
+  addEvent(`Cook started. Batch: ${hw.batch}g.`,'neu');renderLab();
 }
 
 function completeCook(){
-  if(!gs.lab.synthesisInProgress) return;
-  const fml = CONSTANTS.formula[gs.lab.formulaLevel];
-  const src = CONSTANTS.sourcing[gs.lab.sourcingLevel];
-  const hw = CONSTANTS.hardware[gs.lab.hardwareLevel];
-  const cookBonus = gs.crew.cooks.count > 0 ? [0,0.02,0.05,0.10][gs.crew.cooks.tier] : 0;
-  const ceiling = Math.min(1.0, fml.basePurity + hw.purityBonus + src.purityBonus + 0.05);
-  gs.lab.maxPurityCeiling = ceiling;
-  const rawPurity = fml.basePurity + cookBonus + (Math.random()*0.10-0.05);
-  gs.fentPurity = Math.min(ceiling, Math.max(0.05, rawPurity));
-  const batchSize = Math.min(gs.lab.synthesisAmount, gs.storage.capacity - gs.fent);
-  gs.fent += batchSize;
-  gs.lab.synthesisInProgress = false;
-  gs.lab.synthesisEndTime = null;
-  addEvent(`Cook complete. +${batchSize}g at ${(gs.fentPurity*100).toFixed(0)}% purity.`,'pos');
-  addXP(50 + Math.floor(gs.fentPurity * 100));
+  if(!gs.lab.synthesisInProgress)return;
+  const fml=C.formula[gs.lab.formulaLevel],hw=C.hardware[gs.lab.hardwareLevel],src=C.sourcing[gs.lab.sourcingLevel];
+  const cb=gs.crew.cooks.count>0?[0,.02,.05,.10][gs.crew.cooks.tier]:0;
+  const ceil=Math.min(1,fml.basePurity+hw.purityBonus+src.purityBonus+.05);
+  gs.lab.maxPurityCeiling=ceil;
+  gs.fentPurity=Math.min(ceil,Math.max(.05,fml.basePurity+cb+(Math.random()*.10-.05)));
+  const batch=Math.min(gs.lab.synthesisAmount,gs.storage.capacity-gs.fent);
+  gs.fent+=batch;gs.lab.synthesisInProgress=false;gs.lab.synthesisEndTime=null;
+  addEvent(`Cook done. +${batch}g @ ${(gs.fentPurity*100).toFixed(0)}%.`,'pos');
+  addXP(50+Math.floor(gs.fentPurity*100));
+  document.getElementById('lab-last-batch').textContent=`Last: ${batch}g @ ${(gs.fentPurity*100).toFixed(0)}%`;
   renderLab();
-  renderAll();
 }
 
-function upgradeHardware(){
-  const next = gs.lab.hardwareLevel + 1;
-  if(next >= CONSTANTS.hardware.length) return;
-  const cost = CONSTANTS.hardware[next].cost;
-  if(gs.cash < cost){addEvent(`Not enough bread. Need $${cost.toLocaleString()}.`,'neg');return;}
-  gs.cash -= cost;
-  gs.lab.hardwareLevel = next;
-  addTransaction(-cost, `Hardware upgrade: ${CONSTANTS.hardware[next].name}`);
-  addEvent(`Hardware upgraded to: ${CONSTANTS.hardware[next].name}.`,'pos');
-  renderLab();
-  updateTopBar();
+function upgradeHardware(){const n=gs.lab.hardwareLevel+1;if(n>=C.hardware.length)return;const cost=C.hardware[n].cost;if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;gs.lab.hardwareLevel=n;addTxn(-cost,`HW: ${C.hardware[n].name}`);addEvent(`Hardware: ${C.hardware[n].name}.`,'pos');renderLab();updateTopBar();}
+function upgradeFormula(){const n=gs.lab.formulaLevel+1;if(n>=C.formula.length)return;const cost=C.formula[n].cost;if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;gs.lab.formulaLevel=n;addTxn(-cost,`Formula: ${C.formula[n].name}`);addEvent(`Formula: ${C.formula[n].name}.`,'pos');renderLab();updateTopBar();}
+function upgradeSourcing(){const n=gs.lab.sourcingLevel+1;if(n>=C.sourcing.length)return;const cost=C.sourcing[n].cost;if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;gs.lab.sourcingLevel=n;addTxn(-cost,`Sourcing: ${C.sourcing[n].name}`);addEvent(`Sourcing: ${C.sourcing[n].name}.`,'pos');renderLab();updateTopBar();}
+function upgradeStorage(){const n=gs.storage.upgrades+1;if(n>=C.storage.length)return;const cost=C.storage[n].cost;if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;gs.storage.upgrades=n;gs.storage.capacity=C.storage[n].cap;addTxn(-cost,"Stash expansion");addEvent(`Stash: ${C.storage[n].cap.toLocaleString()}g.`,'pos');renderLab();updateTopBar();}
+
+// ===== CREW/TURF/FRONTS/PRICE =====
+function recruitCrew(role){const c=gs.crew[role],def=C.crewRoles[role];if(!def)return;if(c.count>=c.maxSlots){addEvent("No open slots.",'neg');return;}let cost=def.costs[c.tier]||def.costs[0];if(role==='enforcers'&&gs.meta.prestigeBonus?.id==='muscle')cost=Math.floor(cost*.75);if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;c.count++;addTxn(-cost,`Recruited ${def.tiers[c.tier]||def.label}`);addEvent(`Recruited ${def.tiers[c.tier]||def.label}.`,'pos');renderCrew();updateTopBar();}
+function upgradeCrew(role){const c=gs.crew[role],def=C.crewRoles[role];if(!def)return;const nt=c.tier+1;if(nt>=def.costs.length)return;const cost=def.costs[nt]*Math.max(1,c.count);if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;c.tier=nt;addTxn(-cost,`Upgraded ${def.label}`);addEvent(`${def.label} → ${def.tiers[nt]}.`,'pos');renderCrew();}
+function fireCrew(role){const c=gs.crew[role];if(c.count<=0)return;c.count--;addEvent(`Cut a ${C.crewRoles[role]?.label||role}.`,'neg');renderCrew();updateTopBar();}
+function buyTurf(id){const t=gs.turf.find(t=>t.id===id);if(!t||t.owned)return;if(gs.empireTier<t.minTier){addEvent(`Need Tier ${t.minTier}.`,'neg');return;}if(gs.cash<t.cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=t.cost;t.owned=true;addTxn(-t.cost,`Turf: ${t.name}`);addEvent(`Acquired: ${t.name}.`,'pos');addXP(200);gs.heat.level=Math.min(100,gs.heat.level+10);renderTurf();updateTopBar();}
+function sendEnforcers(id){const t=gs.turf.find(t=>t.id===id);if(!t||!t.owned)return;const cost=gs.meta.prestigeBonus?.id==='muscle'?375:500;if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;t.rivalPct=Math.max(0,t.rivalPct-30);addTxn(-cost,`Enforcers: ${t.name}`);addEvent(`Enforcers → ${t.name}.`,'pos');renderTurf();}
+function buyFront(id){const f=gs.fronts.find(f=>f.id===id);if(!f||f.owned)return;if(gs.empireTier<f.minTier){addEvent(`Need Tier ${f.minTier}.`,'neg');return;}if(gs.cash<f.cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=f.cost;f.owned=true;addTxn(-f.cost,`Front: ${f.name}`);addEvent(`Front: ${f.name}.`,'pos');renderFinances();updateTopBar();}
+function updatePrice(val){val=Math.max(1,Math.min(500,parseInt(val)||12));gs.market.playerSetPrice=val;document.getElementById('price-display').textContent=`$${val}/g`;const base=12+gs.lab.formulaLevel*5;document.getElementById('price-advice').textContent=val>base*3?'PRICE TOO HIGH — volume drops':val<base*0.5?'UNDERCUTTING — good volume':'IN RANGE';}
+function layLow(){const cost=[500,1000,2000,3500,6000,10000,20000][gs.empireTier]||500;if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;const r=20+gs.crew.lawyers.count*5;gs.heat.level=Math.max(0,gs.heat.level-r);addTxn(-cost,"Lay low");addEvent(`Went quiet. Heat -${r}.`,'pos');renderIntel();updateTopBar();}
+
+// ===== DRIP =====
+function buyDrip(id){
+  const item=C.dripItems.find(i=>i.id===id);if(!item)return;
+  if(gs.drip.owned.includes(id)){equipDrip(id);return;}
+  if(gs.cash<item.price){addEvent("Not enough bread for that.",'neg');return;}
+  gs.cash-=item.price;gs.drip.owned.push(id);
+  if(item.price>0)addTxn(-item.price,`${item.brand} — ${item.name}`);
+  addEvent(`Copped: ${item.brand} ${item.name}.`,'pos');
+  equipDrip(id);renderDrip();updateTopBar();
 }
 
-function upgradeFormula(){
-  const next = gs.lab.formulaLevel + 1;
-  if(next >= CONSTANTS.formula.length) return;
-  const cost = CONSTANTS.formula[next].cost;
-  if(gs.cash < cost){addEvent(`Not enough bread.`,'neg');return;}
-  gs.cash -= cost;
-  gs.lab.formulaLevel = next;
-  addTransaction(-cost, `Formula upgrade: ${CONSTANTS.formula[next].name}`);
-  addEvent(`Formula upgraded to: ${CONSTANTS.formula[next].name}.`,'pos');
-  renderLab();
-  updateTopBar();
+function equipDrip(id){
+  const item=C.dripItems.find(i=>i.id===id);if(!item)return;
+  gs.drip.equipped[item.type]=id;
+  renderDripPreview();renderDrip();
 }
 
-function upgradeSourcing(){
-  const next = gs.lab.sourcingLevel + 1;
-  if(next >= CONSTANTS.sourcing.length) return;
-  const cost = CONSTANTS.sourcing[next].cost;
-  if(gs.cash < cost){addEvent(`Not enough bread.`,'neg');return;}
-  gs.cash -= cost;
-  gs.lab.sourcingLevel = next;
-  addTransaction(-cost, `Sourcing upgrade: ${CONSTANTS.sourcing[next].name}`);
-  addEvent(`Sourcing upgraded to: ${CONSTANTS.sourcing[next].name}.`,'pos');
-  renderLab();
-  updateTopBar();
+function renderDripPreview(){
+  const canvas=document.getElementById('char-preview-canvas');if(!canvas)return;
+  const c=canvas.getContext('2d');c.clearRect(0,0,64,96);
+  const col=getEquippedColors();
+  const cx=20,cy=80,bw=col.isJacked?10:col.isMuscle?8:6;
+  c.fillStyle=col.shoeColor;c.fillRect(cx,cy,4,3);c.fillRect(cx+bw,cy,4,3);
+  c.fillStyle=col.botColor;c.fillRect(cx,cy-16,3,16);c.fillRect(cx+bw-1,cy-16,3,16);
+  c.fillStyle=col.topColor;c.fillRect(cx-2,cy-28,bw+4,14);
+  if(col.hasOuter){c.fillStyle=col.outerColor;c.globalAlpha=.65;c.fillRect(cx-3,cy-28,bw+6,14);c.globalAlpha=1;}
+  if(col.hasChain){c.fillStyle='#c8a951';c.fillRect(cx,cy-22,bw+1,1);}
+  c.fillStyle=col.skin;c.fillRect(cx-4,cy-27,4,8);c.fillRect(cx+bw+2,cy-27,4,8);
+  c.fillStyle=col.skin;c.fillRect(cx+1,cy-39,bw-2,11);
+  const hv=C.dripItems.find(i=>i.id===gs.drip.equipped.hair)?.hairVal||'bald';
+  if(hv==='waves'){c.fillStyle='#1a0a00';c.fillRect(cx+1,cy-41,bw-2,4);}
+  else if(hv==='dreads'){c.fillStyle='#2a1500';for(let d=0;d<3;d++)c.fillRect(cx+1+d*3,cy-45,2,7);}
+  else if(hv==='short'){c.fillStyle='#1a0a00';c.fillRect(cx+1,cy-41,bw-2,3);}
+  if(col.hasFitted){c.fillStyle='#1a1a1a';c.fillRect(cx,cy-41,bw,3);c.fillRect(cx-2,cy-40,2,3);}
+  if(col.hasGlasses){c.fillStyle='rgba(0,0,0,.85)';c.fillRect(cx+2,cy-33,3,2);c.fillRect(cx+7,cy-33,3,2);}
+  c.fillStyle='#000';c.fillRect(cx+2,cy-32,2,2);c.fillRect(cx+bw-3,cy-32,2,2);c.fillRect(cx+3,cy-29,bw-5,1);
+  const eq=gs.drip.equipped;
+  const names=[];
+  ['top','bottom','shoe','acc','outer'].forEach(slot=>{if(eq[slot]){const it=C.dripItems.find(i=>i.id===eq[slot]);if(it)names.push(it.name);}});
+  document.getElementById('equipped-label').textContent=names.slice(0,2).join(' / ')||'BASIC GEAR';
 }
 
-function upgradeStorage(){
-  const next = gs.storage.upgrades + 1;
-  if(next >= CONSTANTS.storage.length) return;
-  const cost = CONSTANTS.storage[next].cost;
-  if(gs.cash < cost){addEvent(`Not enough bread.`,'neg');return;}
-  gs.cash -= cost;
-  gs.storage.upgrades = next;
-  gs.storage.capacity = CONSTANTS.storage[next].cap;
-  addTransaction(-cost, `Stash expansion`);
-  addEvent(`Stash capacity expanded to ${CONSTANTS.storage[next].cap.toLocaleString()}g.`,'pos');
-  renderLab();
-  updateTopBar();
+function renderDrip(){
+  const container=document.getElementById('drip-store-list');if(!container)return;
+  const cats=['SKIN','BODY','HAIR','TOPS','BOTTOMS','SHOES','ACCESSORIES','OUTERWEAR'];
+  container.innerHTML='';
+  cats.forEach(cat=>{
+    const items=C.dripItems.filter(i=>i.cat===cat);if(!items.length)return;
+    const ch=document.createElement('div');ch.className='drip-category';
+    ch.textContent=cat;container.appendChild(ch);
+    items.forEach(item=>{
+      const owned=gs.drip.owned.includes(item.id);
+      const isEquipped=gs.drip.equipped[item.type]===item.id;
+      const row=document.createElement('div');row.className='drip-item';
+      const bc=item.luxury?'brand-luxury':'brand-normal';
+      row.innerHTML=`<div class="drip-item-icon">${item.icon}</div>
+        <div class="drip-item-info">
+          <div class="drip-item-name">${item.name}${item.luxury?' ✦':''}</div>
+          <div class="drip-item-brand ${bc}">${item.brand}</div>
+        </div>
+        <div style="text-align:right;min-width:64px;">
+          ${isEquipped?'<div class="drip-item-equipped">✓ ON</div>':
+            owned?`<button class="btn btn-sm" style="font-size:9px;" onclick="equipDrip('${item.id}')">WEAR</button>`:
+            `<div class="drip-item-price">${item.price>0?'$'+item.price.toLocaleString():'FREE'}</div>
+             <button class="btn btn-sm" style="font-size:9px;margin-top:4px;" onclick="buyDrip('${item.id}')" ${gs.cash<item.price?'disabled':''}>BUY</button>`}
+        </div>`;
+      container.appendChild(row);
+    });
+  });
+  renderDripPreview();
 }
 
-// ==================== CREW ====================
-function recruitCrew(role){
-  const c = gs.crew[role];
-  const def = CONSTANTS.crewRoles[role];
-  if(!def) return;
-  if(c.count >= c.maxSlots){addEvent(`No open slots for ${def.label}.`,'neg');return;}
-  const cost = def.costs[c.tier]||def.costs[0];
-  if(gs.cash < cost){addEvent(`Not enough bread.`,'neg');return;}
-  gs.cash -= cost;
-  c.count++;
-  addTransaction(-cost, `Recruited ${def.tiers[c.tier]||def.label}`);
-  addEvent(`Recruited ${def.tiers[c.tier]||def.label}.`,'pos');
-  renderCrew();
-  updateTopBar();
-}
-
-function upgradeCrew(role){
-  const c = gs.crew[role];
-  const def = CONSTANTS.crewRoles[role];
-  if(!def) return;
-  const nextTier = c.tier+1;
-  if(nextTier >= def.costs.length) return;
-  const cost = def.costs[nextTier]*c.count;
-  if(gs.cash < cost){addEvent(`Not enough bread to upgrade ${def.label}.`,'neg');return;}
-  gs.cash -= cost;
-  c.tier = nextTier;
-  addTransaction(-cost, `Upgraded ${def.label} to tier ${nextTier}`);
-  addEvent(`${def.label} upgraded to ${def.tiers[nextTier]}.`,'pos');
-  renderCrew();
-}
-
-function fireCrew(role){
-  const c = gs.crew[role];
-  if(c.count <= 0) return;
-  c.count--;
-  addEvent(`Cut loose a ${CONSTANTS.crewRoles[role]?.label||role}.`,'neg');
-  renderCrew();
-  updateTopBar();
-}
-
-// ==================== TURF ====================
-function buyTurf(id){
-  const t = gs.turf.find(t=>t.id===id);
-  if(!t || t.owned) return;
-  if(gs.empireTier < t.minTier){addEvent(`Need Empire Tier ${t.minTier} for this turf.`,'neg');return;}
-  if(gs.cash < t.cost){addEvent(`Not enough bread.`,'neg');return;}
-  gs.cash -= t.cost;
-  t.owned = true;
-  addTransaction(-t.cost, `Acquired: ${t.name}`);
-  addEvent(`Acquired turf: ${t.name}.`,'pos');
-  addXP(200);
-  const ghostMult = (gs.meta.prestigeBonus && gs.meta.prestigeBonus.id==='ghost') ? 0.8 : 1;
-  gs.heat.level = Math.min(100, gs.heat.level + 10 * ghostMult);
-  renderTurf();
-  updateTopBar();
-}
-
-function sendEnforcers(id){
-  const t = gs.turf.find(t=>t.id===id);
-  if(!t || !t.owned) return;
-  const muscleDiscount = (gs.meta.prestigeBonus && gs.meta.prestigeBonus.id==='muscle') ? 0.75 : 1;
-  const cost = Math.floor(500 * muscleDiscount);
-  if(gs.cash < cost){addEvent(`Not enough bread.`,'neg');return;}
-  gs.cash -= cost;
-  t.rivalPct = Math.max(0, t.rivalPct - 30);
-  addTransaction(-cost, `Enforcer deployment: ${t.name}`);
-  addEvent(`Enforcers sent to ${t.name}. Rival presence reduced.`,'pos');
-  renderTurf();
-}
-
-// ==================== FRONTS ====================
-function buyFront(id){
-  const f = gs.fronts.find(f=>f.id===id);
-  if(!f || f.owned) return;
-  if(gs.empireTier < f.minTier){addEvent(`Need Empire Tier ${f.minTier} for this front.`,'neg');return;}
-  if(gs.cash < f.cost){addEvent(`Not enough bread.`,'neg');return;}
-  gs.cash -= f.cost;
-  f.owned = true;
-  addTransaction(-f.cost, `Acquired front: ${f.name}`);
-  addEvent(`Front acquired: ${f.name}.`,'pos');
-  renderFinances();
-  updateTopBar();
-}
-
-// ==================== PRICING ====================
-function updatePrice(val){
-  val = Math.max(1, Math.min(500, parseInt(val)||12));
-  gs.market.playerSetPrice = val;
-  document.getElementById('price-slider').value = val;
-  document.getElementById('price-input').value = val;
-  document.getElementById('price-display').textContent = `$${val}`;
-  const demand = gs.market.demandMultiplier;
-  const base = 12 + gs.lab.formulaLevel*5;
-  let advice = '';
-  if(val > base*3) advice='PRICE TOO HIGH — DEMAND WILL DRY UP';
-  else if(val < base*0.5) advice='UNDERCUTTING — MOVING VOLUME, LOW MARGIN';
-  else advice='PRICE IN RANGE';
-  document.getElementById('price-advice').textContent=advice;
-}
-
-// ==================== LAY LOW ====================
-function layLow(){
-  const cost = [500,1000,2000,3500,6000,10000,20000][gs.empireTier]||500;
-  if(gs.cash < cost){addEvent(`Not enough bread to lay low.`,'neg');return;}
-  gs.cash -= cost;
-  const reduction = 20 + gs.crew.lawyers.count * 5;
-  gs.heat.level = Math.max(0, gs.heat.level - reduction);
-  addTransaction(-cost, "Lay low operation");
-  addEvent(`Operation went quiet. Heat reduced by ${reduction}.`,'pos');
-  renderIntel();
-  updateTopBar();
-}
-
-// ==================== SAVE/LOAD ====================
-function autoSave(){
-  try{
-    const encoded = btoa(JSON.stringify(gs));
-    localStorage.setItem('fentDealer_save',encoded);
-    gs.lastSave = Date.now();
-    flashMessage("SAVED");
-  } catch(e){}
-}
-
-function manualSave(){
-  autoSave();
-}
-
-function openExport(){
-  try{
-    const code = btoa(JSON.stringify(gs));
-    document.getElementById('export-text').value = code;
-    openModal('export-modal');
-  } catch(e){alert('Save failed.');}
-}
-
-function copyExport(){
-  const ta = document.getElementById('export-text');
-  ta.select();
-  document.execCommand('copy');
-  flashMessage("COPIED");
-}
-
-function doImport(){
-  try{
-    const code = document.getElementById('import-text').value.trim();
-    const state = JSON.parse(atob(code));
-    gs = state;
-    if(!gs.rivals) gs.rivals = CONSTANTS.rivals.map(r=>({...r}));
-    if(!gs._payrollTimer) gs._payrollTimer = Date.now()+300000;
-    closeModal('import-modal');
-    startGameLoop();
-    renderAll();
-    flashMessage("OPERATION RESUMED");
-  } catch(e){alert('Invalid save code.');}
-}
-
-function flashMessage(msg){
-  const el = document.getElementById('save-flash');
-  el.textContent = msg;
-  el.style.opacity='1';
-  setTimeout(()=>el.style.opacity='0', 1500);
-}
-
+// ===== SAVE/LOAD =====
+function autoSave(){try{gs.lastSave=Date.now();localStorage.setItem('fentDealer_save',btoa(JSON.stringify(gs)));flashMessage("✓");}catch(e){}}
+function manualSave(){autoSave();}
+function openExport(){try{document.getElementById('export-text').value=btoa(JSON.stringify(gs));openModal('export-modal');}catch(e){}}
+function copyExport(){const ta=document.getElementById('export-text');ta.select();try{document.execCommand('copy');}catch(e){}flashMessage("COPIED");}
+function doImport(){try{gs=ensureDefaults(JSON.parse(atob(document.getElementById('import-text').value.trim())));closeModal('import-modal');startGameLoop();renderAll();flashMessage("LOADED");}catch(e){alert('Invalid save code.');}}
+function flashMessage(msg){const el=document.getElementById('save-flash');el.textContent=msg;el.style.opacity='1';setTimeout(()=>el.style.opacity='0',1500);}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
-// ==================== RENDERING ====================
-let currentTab = 'operations';
+// ===== RENDER =====
 function switchTab(tab){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
   document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-  currentTab = tab;
-  autoSave();
-  renderAll();
+  currentTab=tab;autoSave();renderAll();
 }
 
 function renderAll(){
-  updateTopBar();
-  renderHeatBar();
+  updateTopBar();renderHeatBar();
   switch(currentTab){
-    case 'operations': renderOperations(); break;
-    case 'lab': renderLab(); break;
-    case 'street': renderStreet(); break;
-    case 'crew': renderCrew(); break;
-    case 'turf': renderTurf(); break;
-    case 'finances': renderFinances(); break;
-    case 'intel': renderIntel(); break;
+    case 'operations':renderOperations();break;
+    case 'lab':renderLab();break;
+    case 'street':renderStreet();break;
+    case 'crew':renderCrew();break;
+    case 'turf':renderTurf();break;
+    case 'finances':renderFinances();break;
+    case 'intel':renderIntel();break;
+    case 'drip':renderDrip();break;
   }
 }
 
 function updateTopBar(){
-  document.getElementById('stat-cash').textContent = '$'+Math.floor(gs.cash).toLocaleString();
-  document.getElementById('stat-fent').textContent = gs.fent.toFixed(1)+'g';
-  document.getElementById('stat-purity').textContent = (gs.fentPurity*100).toFixed(0)+'%';
-  document.getElementById('stat-heat').textContent = Math.floor(gs.heat.level);
-  document.getElementById('stat-lvl').textContent = gs.meta.playerLevel;
-  if(gs.meta.prestigeCount>0){
-    document.getElementById('prestige-stat').style.display='';
-    document.getElementById('prestige-diamonds').textContent='◆'.repeat(Math.min(gs.meta.prestigeCount,5));
-  }
-  // XP bar
-  const xpForLevel = Math.pow(1.5, gs.meta.playerLevel-1)*100;
-  const xpForPrev = gs.meta.playerLevel>1 ? Math.pow(1.5, gs.meta.playerLevel-2)*100 : 0;
-  const pct = Math.min(100, ((gs.meta.totalXP - xpForPrev)/(xpForLevel-xpForPrev))*100);
-  document.getElementById('xp-bar-inner').style.width = pct+'%';
+  if(!gs)return;
+  document.getElementById('stat-cash').textContent='$'+Math.floor(gs.cash).toLocaleString();
+  document.getElementById('stat-fent').textContent=gs.fent.toFixed(1)+'g';
+  document.getElementById('stat-heat').textContent=Math.floor(gs.heat.level);
+  document.getElementById('stat-lvl').textContent=gs.meta.playerLevel;
+  const base=Math.pow(1.5,gs.meta.playerLevel-1)*100;
+  const prev=gs.meta.playerLevel>1?Math.pow(1.5,gs.meta.playerLevel-2)*100:0;
+  document.getElementById('xp-bar-inner').style.width=Math.min(100,((gs.meta.totalXP-prev)/(base-prev))*100)+'%';
 }
 
 function renderHeatBar(){
-  const pct = gs.heat.level;
-  let color = '#1a9a3a';
-  if(pct > 30) color = '#c8a951';
-  if(pct > 60) color = '#b85c00';
-  if(pct > 85) color = '#8b1a1a';
-  document.getElementById('heat-bar-inner').style.width = pct+'%';
-  document.getElementById('heat-bar-inner').style.background = color;
-  document.getElementById('heat-bar-inner2').style.width = pct+'%';
-  document.getElementById('heat-bar-inner2').style.background = color;
+  if(!gs)return;
+  const pct=gs.heat.level,col=pct>85?'#8b1a1a':pct>60?'#b85c00':pct>30?'#c8a951':'#1a9a3a';
+  ['heat-bar-inner','heat-bar-inner2'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.width=pct+'%';el.style.background=col;}});
 }
 
 function renderSynthProgress(){
+  if(!gs)return;
   if(!gs.lab.synthesisInProgress){
+    document.getElementById('synth-progress-bar').style.width='0%';
     document.getElementById('synth-bar2-inner').style.width='0%';
     document.getElementById('ops-synth-status').textContent='NO COOK IN PROGRESS';
-    document.getElementById('synth-progress-wrap').style.display='none';
     return;
   }
-  const now = Date.now();
-  const hw = CONSTANTS.hardware[gs.lab.hardwareLevel];
-  let totalTime = hw.time * 1000;
-  const elapsed = totalTime - (gs.lab.synthesisEndTime - now);
-  const pct = Math.min(100, (elapsed/totalTime)*100);
-  document.getElementById('synth-bar2-inner').style.width=pct+'%';
-  const remaining = Math.max(0, Math.ceil((gs.lab.synthesisEndTime - now)/1000));
-  document.getElementById('ops-synth-status').textContent=`SYNTHESIS IN PROGRESS — ${remaining}s remaining`;
-  document.getElementById('synth-progress-wrap').style.display='block';
+  const hw=C.hardware[gs.lab.hardwareLevel];
+  const total=hw.time*1000,elapsed=total-(gs.lab.synthesisEndTime-Date.now());
+  const pct=Math.min(100,(elapsed/total)*100);
   document.getElementById('synth-progress-bar').style.width=pct+'%';
+  document.getElementById('synth-bar2-inner').style.width=pct+'%';
+  const rem=Math.max(0,Math.ceil((gs.lab.synthesisEndTime-Date.now())/1000));
+  document.getElementById('ops-synth-status').textContent=`COOKING — ${rem}s`;
+}
+
+function updatePayrollTimer(){
+  const rem=Math.max(0,Math.ceil((gs._payrollTimer-Date.now())/1000));
+  document.getElementById('crew-payroll-timer').textContent=`${Math.floor(rem/60)}m${rem%60}s`;
 }
 
 function renderOperations(){
-  const tier = CONSTANTS.tierRequirements[gs.empireTier];
-  document.getElementById('ops-tier-num').textContent = gs.empireTier;
-  document.getElementById('ops-tier-name').textContent = tier.name;
-  if(gs.empireTier < 6){
-    const next = CONSTANTS.tierRequirements[gs.empireTier+1];
-    document.getElementById('ops-tier-next').textContent =
-      `NEXT TIER: $${next.cash.toLocaleString()} | ${next.xp.toLocaleString()} XP`;
-  } else {
-    document.getElementById('ops-tier-next').textContent = 'MAXIMUM TIER ACHIEVED';
-  }
+  if(!gs)return;
+  document.getElementById('ops-tier-num').textContent=gs.empireTier;
+  document.getElementById('ops-tier-name').textContent=C.tierReq[gs.empireTier].name;
+  document.getElementById('ops-tier-next').textContent=gs.empireTier<6?`NEXT: $${C.tierReq[gs.empireTier+1].cash.toLocaleString()} | ${C.tierReq[gs.empireTier+1].xp.toLocaleString()} XP`:'MAX TIER';
   renderSynthProgress();
-  document.getElementById('ops-heat-num').textContent = `${Math.floor(gs.heat.level)} / 100`;
-  const heatState = gs.heat.level < 30 ? 'COLD' : gs.heat.level < 60 ? 'WARM' : gs.heat.level < 85 ? 'HOT' : 'CRITICAL';
-  document.getElementById('ops-heat-state').textContent = heatState;
-  let cpm = 0;
-  if(gs.crew.slingers.count>0){
-    const tierMult = [0.5,1,1.5,2.5][gs.crew.slingers.tier];
-    cpm += gs.crew.slingers.count * tierMult * gs.market.demandMultiplier * gs.market.playerSetPrice * (1+(gs.fentPurity-.2)*2);
-  }
+  document.getElementById('ops-heat-num').textContent=`${Math.floor(gs.heat.level)}/100`;
+  document.getElementById('ops-heat-state').textContent=['COLD','WARM','HOT','CRITICAL'][gs.heat.level<30?0:gs.heat.level<60?1:gs.heat.level<85?2:3];
+  let cpm=0;
+  if(gs.crew.slingers.count>0){const tm=[.5,1,1.5,2.5][gs.crew.slingers.tier];cpm+=gs.crew.slingers.count*tm*gs.market.demandMultiplier*gs.market.playerSetPrice*(1+(gs.fentPurity-.2)*2);}
   gs.turf.forEach(t=>{if(t.owned)cpm+=t.income*(1-(t.rivalPct/100)*.7);});
   gs.fronts.forEach(f=>{if(f.owned)cpm+=f.cashPerMin;});
-  document.getElementById('ops-cpm').textContent = '$'+cpm.toFixed(1);
-  document.getElementById('ops-stock').textContent = `${gs.fent.toFixed(0)}g / ${gs.storage.capacity}g`;
-  document.getElementById('ops-slingers').textContent = gs.crew.slingers.count;
-  document.getElementById('ops-turf').textContent = gs.turf.filter(t=>t.owned).length;
-  document.getElementById('ops-market').textContent = gs.market.demandState;
-  document.getElementById('ops-purity').textContent = (gs.fentPurity*100).toFixed(0)+'%';
-  const log = document.getElementById('ops-log');
-  log.innerHTML = gs.events.slice(0,15).map(e=>
-    `<div class="log-entry ${e.type}"><span class="log-time">${e.time}</span>${e.text}</div>`
-  ).join('');
+  document.getElementById('ops-cpm').textContent='$'+cpm.toFixed(1);
+  document.getElementById('ops-stock').textContent=`${gs.fent.toFixed(0)}/${gs.storage.capacity}g`;
+  document.getElementById('ops-slingers').textContent=gs.crew.slingers.count;
+  document.getElementById('ops-turf').textContent=gs.turf.filter(t=>t.owned).length;
+  document.getElementById('ops-market').textContent=gs.market.demandState;
+  document.getElementById('ops-purity').textContent=(gs.fentPurity*100).toFixed(0)+'%';
+  document.getElementById('ops-log').innerHTML=gs.events.slice(0,12).map(e=>`<div class="log-entry ${e.type}"><span class="log-time">${e.time}</span>${e.text}</div>`).join('');
 }
 
 function renderLab(){
-  updatePurityDial(gs.fentPurity * 100);
-  document.getElementById('lab-ceiling').textContent = (gs.lab.maxPurityCeiling*100).toFixed(0)+'%';
-  const hw = CONSTANTS.hardware[gs.lab.hardwareLevel];
-  document.getElementById('lab-batch-size').textContent = hw.batch+'g';
-  document.getElementById('lab-storage-used').textContent = gs.fent.toFixed(0);
-  document.getElementById('lab-storage-cap').textContent = gs.storage.capacity;
-  const cookBtn = document.getElementById('cook-btn');
-  if(gs.lab.synthesisInProgress){
-    const remaining = Math.max(0, Math.ceil((gs.lab.synthesisEndTime - Date.now())/1000));
-    cookBtn.textContent = `COOKING... ${remaining}s`;
-    cookBtn.disabled = true;
-  } else {
-    cookBtn.textContent = 'START COOK';
-    cookBtn.disabled = gs.fent >= gs.storage.capacity;
-  }
-  // Hardware
-  const hwInfo = document.getElementById('hw-upgrade-info');
-  hwInfo.innerHTML = renderUpgradeInfo(CONSTANTS.hardware, gs.lab.hardwareLevel, 'Level','batch','g batch');
-  const hwBtn = document.getElementById('hw-upgrade-btn');
-  const hwNext = gs.lab.hardwareLevel+1;
-  hwBtn.disabled = hwNext >= CONSTANTS.hardware.length || gs.cash < CONSTANTS.hardware[hwNext]?.cost;
-  hwBtn.textContent = hwNext < CONSTANTS.hardware.length ? `UPGRADE — $${CONSTANTS.hardware[hwNext].cost.toLocaleString()}` : 'MAXED';
-  // Formula
-  document.getElementById('formula-upgrade-info').innerHTML = renderUpgradeInfo(CONSTANTS.formula, gs.lab.formulaLevel, 'Formula','basePurity','% purity');
-  const fBtn = document.getElementById('formula-upgrade-btn');
-  const fNext = gs.lab.formulaLevel+1;
-  fBtn.disabled = fNext >= CONSTANTS.formula.length || gs.cash < CONSTANTS.formula[fNext]?.cost;
-  fBtn.textContent = fNext < CONSTANTS.formula.length ? `UPGRADE — $${CONSTANTS.formula[fNext].cost.toLocaleString()}` : 'MAXED';
-  // Sourcing
-  document.getElementById('sourcing-upgrade-info').innerHTML = renderUpgradeInfo(CONSTANTS.sourcing, gs.lab.sourcingLevel, 'Source','purityBonus','+% purity ceil');
-  const sBtn = document.getElementById('sourcing-upgrade-btn');
-  const sNext = gs.lab.sourcingLevel+1;
-  sBtn.disabled = sNext >= CONSTANTS.sourcing.length || gs.cash < CONSTANTS.sourcing[sNext]?.cost;
-  sBtn.textContent = sNext < CONSTANTS.sourcing.length ? `UPGRADE — $${CONSTANTS.sourcing[sNext].cost.toLocaleString()}` : 'MAXED';
-  // Storage
-  document.getElementById('storage-upgrade-info').innerHTML = `
-    <div style="font-size:12px;color:var(--text-secondary);">
-      CURRENT: ${CONSTANTS.storage[gs.storage.upgrades].cap.toLocaleString()}g
-      ${gs.storage.upgrades+1 < CONSTANTS.storage.length ? `&nbsp;&nbsp;→&nbsp;&nbsp;NEXT: ${CONSTANTS.storage[gs.storage.upgrades+1].cap.toLocaleString()}g` : '&nbsp;&nbsp;MAXED'}
-    </div>`;
-  const stBtn = document.getElementById('storage-upgrade-btn');
-  const stNext = gs.storage.upgrades+1;
-  stBtn.disabled = stNext >= CONSTANTS.storage.length || gs.cash < CONSTANTS.storage[stNext]?.cost;
-  stBtn.textContent = stNext < CONSTANTS.storage.length ? `EXPAND — $${CONSTANTS.storage[stNext].cost.toLocaleString()}` : 'MAXED';
+  if(!gs)return;
+  updatePurityDial(gs.fentPurity*100);
+  document.getElementById('lab-ceiling').textContent=(gs.lab.maxPurityCeiling*100).toFixed(0)+'%';
+  document.getElementById('lab-batch-size').textContent=C.hardware[gs.lab.hardwareLevel].batch+'g';
+  document.getElementById('lab-storage-used').textContent=gs.fent.toFixed(0);
+  document.getElementById('lab-storage-cap').textContent=gs.storage.capacity;
+  const cb=document.getElementById('cook-btn');
+  if(gs.lab.synthesisInProgress){const rem=Math.max(0,Math.ceil((gs.lab.synthesisEndTime-Date.now())/1000));cb.textContent=`COOKING ${rem}s`;cb.disabled=true;}
+  else{cb.textContent='START COOK';cb.disabled=gs.fent>=gs.storage.capacity;}
+  renderUpgradePanel('hw',C.hardware,gs.lab.hardwareLevel,'hw-upgrade-btn','hw-upgrade-info');
+  renderUpgradePanel('fm',C.formula,gs.lab.formulaLevel,'formula-upgrade-btn','formula-upgrade-info');
+  renderUpgradePanel('sr',C.sourcing,gs.lab.sourcingLevel,'sourcing-upgrade-btn','sourcing-upgrade-info');
+  const su=gs.storage.upgrades,sc=C.storage;
+  document.getElementById('storage-upgrade-info').innerHTML=`<div style="font-size:11px;color:var(--text-secondary);">${sc[su].cap.toLocaleString()}g${su+1<sc.length?' → '+sc[su+1].cap.toLocaleString()+'g':' (MAX)'}</div>`;
+  const stb=document.getElementById('storage-upgrade-btn');const sn=su+1;
+  if(sn>=sc.length){stb.textContent='MAXED';stb.disabled=true;}else{stb.textContent=`EXPAND $${sc[sn].cost.toLocaleString()}`;stb.disabled=gs.cash<sc[sn].cost;}
 }
 
-function renderUpgradeInfo(arr, currentIdx, label, valueProp, suffix){
-  const current = arr[currentIdx];
-  const next = arr[currentIdx+1];
-  let dots = arr.map((_,i)=>
-    `<span class="upgrade-level-dot${i<=currentIdx?' active':''}"></span>`
-  ).join('');
-  let val = current[valueProp];
-  if(suffix.includes('%')) val = (val*100).toFixed(0)+'%';
-  return `<div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">${dots}</div>
-    <div style="font-size:12px;"><span style="color:var(--text-primary);">${current.name}</span></div>
-    ${next ? `<div class="tier-req mt-8">NEXT: ${next.name}</div>` : '<div class="tier-req mt-8">MAXIMUM TIER</div>'}`;
+function renderUpgradePanel(prefix,arr,idx,btnId,infoId){
+  const dots=arr.map((_,i)=>`<span class="upgrade-level-dot${i<=idx?' active':''}"></span>`).join('');
+  document.getElementById(infoId).innerHTML=`<div class="mb-8">${dots}</div><div style="font-size:12px;color:var(--text-primary);">${arr[idx].name}</div>${idx+1<arr.length?`<div class="tier-req mt-8">NEXT: ${arr[idx+1].name}</div>`:'<div class="tier-req mt-8">MAXED</div>'}`;
+  const btn=document.getElementById(btnId);const n=idx+1;
+  if(n>=arr.length){btn.textContent='MAXED';btn.disabled=true;}else{btn.textContent=`UPGRADE $${arr[n].cost.toLocaleString()}`;btn.disabled=gs.cash<arr[n].cost;}
 }
 
 function updatePurityDial(pct){
-  const r = 70, cx = 80, cy = 80;
-  const startAngle = 135;
-  const endAngle = startAngle + (pct/100)*270;
-  const toRad = deg => deg * Math.PI/180;
-  const x1 = cx + r*Math.cos(toRad(startAngle));
-  const y1 = cy + r*Math.sin(toRad(startAngle));
-  const x2 = cx + r*Math.cos(toRad(endAngle));
-  const y2 = cy + r*Math.sin(toRad(endAngle));
-  const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
-  const d = pct > 0 ? `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}` : '';
-  document.getElementById('purity-arc').setAttribute('d', d);
-  document.getElementById('purity-pct-text').textContent = pct.toFixed(0)+'%';
+  const el=document.getElementById('purity-arc'),txt=document.getElementById('purity-pct-text');if(!el||!txt)return;
+  const r=60,cx=70,cy=70,toRad=d=>d*Math.PI/180;
+  const start=135,end=start+(pct/100)*270;
+  const x1=cx+r*Math.cos(toRad(start)),y1=cy+r*Math.sin(toRad(start));
+  const x2=cx+r*Math.cos(toRad(end)),y2=cy+r*Math.sin(toRad(end));
+  el.setAttribute('d',pct>0?`M${x1} ${y1} A${r} ${r} 0 ${(end-start)>180?1:0} 1 ${x2} ${y2}`:'');
+  txt.textContent=pct.toFixed(0)+'%';
 }
 
 function renderStreet(){
-  const stateColors = {DROUGHT:'#8b1a1a',SLOW:'#b85c00',NORMAL:'#c8a951',HOT:'#4a9a6a',FRENZY:'#4a6a9a'};
-  const dd = document.getElementById('demand-display');
-  dd.textContent = gs.market.demandState;
-  dd.style.color = stateColors[gs.market.demandState]||'var(--accent-primary)';
-  document.getElementById('demand-sub').textContent = `DEMAND MULTIPLIER: ${gs.market.demandMultiplier}x`;
-  document.getElementById('price-slider').value = gs.market.playerSetPrice;
-  document.getElementById('price-input').value = gs.market.playerSetPrice;
-  document.getElementById('price-display').textContent = '$'+gs.market.playerSetPrice;
-  document.getElementById('st-grams-moved').textContent = sessionSales.grams.toFixed(1)+'g';
-  document.getElementById('st-revenue').textContent = '$'+sessionSales.revenue.toFixed(0);
-  const tierMult = [0.5,1,1.5,2.5][gs.crew.slingers.tier]||1;
-  const rate = (gs.crew.slingers.count * tierMult * gs.market.demandMultiplier).toFixed(1);
-  document.getElementById('st-sell-rate').textContent = rate+'g/min';
-  const breakdown = document.getElementById('st-slinger-breakdown');
-  breakdown.innerHTML = gs.crew.slingers.count > 0 ?
-    `<div>${gs.crew.slingers.count}x ${CONSTANTS.crewRoles.slingers.tiers[gs.crew.slingers.tier]} — ${rate}g/min</div>` :
-    '<div style="color:var(--text-muted);">No slingers on the street.</div>';
-  const feed = document.getElementById('sale-feed');
-  feed.innerHTML = saleFeed.slice(0,20).map(s=>`<div class="sale-entry">${s}</div>`).join('');
+  if(!gs)return;
+  const cols={DROUGHT:'#8b1a1a',SLOW:'#b85c00',NORMAL:'#c8a951',HOT:'#4a9a6a',FRENZY:'#4a6a9a'};
+  const dd=document.getElementById('demand-display');dd.textContent=gs.market.demandState;dd.style.color=cols[gs.market.demandState]||'var(--accent-primary)';
+  document.getElementById('demand-sub').textContent=`${gs.market.demandMultiplier}x MULTIPLIER`;
+  document.getElementById('price-slider').value=gs.market.playerSetPrice;
+  document.getElementById('price-display').textContent=`$${gs.market.playerSetPrice}/g`;
+  document.getElementById('st-grams-moved').textContent=sessionSales.grams.toFixed(1)+'g';
+  document.getElementById('st-revenue').textContent='$'+sessionSales.revenue.toFixed(0);
+  const tm=[.5,1,1.5,2.5][gs.crew.slingers.tier]||1;
+  document.getElementById('st-sell-rate').textContent=(gs.crew.slingers.count*tm*gs.market.demandMultiplier).toFixed(1)+'g/min';
+  document.getElementById('sale-feed').innerHTML=saleFeed.slice(0,18).map(s=>`<div class="sale-entry">${s}</div>`).join('');
 }
 
 function renderCrew(){
-  const container = document.getElementById('crew-cards');
-  container.innerHTML='';
+  if(!gs)return;
+  const container=document.getElementById('crew-cards');container.innerHTML='';
   Object.keys(gs.crew).forEach(role=>{
-    const c = gs.crew[role];
-    const def = CONSTANTS.crewRoles[role];
-    if(!def) return;
-    const card = document.createElement('div');
-    card.className='card';
-    const tierName = def.tiers[c.tier]||def.label;
-    const nextTier = c.tier+1;
-    const canUpgrade = nextTier < def.costs.length;
-    const upgradeCost = canUpgrade ? def.costs[nextTier]*c.count : 0;
-    const recruitCost = def.costs[c.tier]||def.costs[0];
-    let muscleDisc = (role==='enforcers' && gs.meta.prestigeBonus && gs.meta.prestigeBonus.id==='muscle') ? ' (25% off)' : '';
-    const actualCost = (role==='enforcers' && gs.meta.prestigeBonus && gs.meta.prestigeBonus.id==='muscle') ?
-      Math.floor(recruitCost*.75) : recruitCost;
-    card.innerHTML = `
-      <div class="flex justify-between align-center mb-8">
-        <div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1.5px;color:var(--accent-primary);">${def.label}</div>
-          <div class="tier-req">${tierName}</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:18px;color:var(--text-primary);font-weight:bold;">${c.count} / ${c.maxSlots}</div>
-          <div class="tier-req">SLOTS</div>
-        </div>
-      </div>
-      <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">${def.desc}</div>
-      <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;">
-        WAGE: $${(def.wage[c.tier]||def.wage[0]).toLocaleString()}/week each
-        ${c.maxSlots===0 ? '<br><span style="color:var(--accent-warning);">LOCKED — Advance tier to unlock</span>' : ''}
-      </div>
-      <div class="flex gap-8">
-        <button class="btn" onclick="recruitCrew('${role}')" ${c.count>=c.maxSlots||c.maxSlots===0?'disabled':''}>
-          RECRUIT — $${actualCost.toLocaleString()}${muscleDisc}
-        </button>
-        ${c.count>0 ? `
-          <button class="btn btn-danger" onclick="fireCrew('${role}')">CUT LOOSE</button>
-          ${canUpgrade && c.count>0 ? `<button class="btn btn-warn" onclick="upgradeCrew('${role}')" ${gs.cash<upgradeCost?'disabled':''}>UPGRADE — $${upgradeCost.toLocaleString()}</button>` : ''}
-        ` : ''}
-      </div>`;
-    container.appendChild(card);
+    const c=gs.crew[role],def=C.crewRoles[role];if(!def)return;
+    const tn=def.tiers[c.tier]||def.label;const nt=c.tier+1;const canUp=nt<def.costs.length;
+    const uCost=canUp?def.costs[nt]*Math.max(1,c.count):0;
+    let rCost=def.costs[c.tier]||def.costs[0];if(role==='enforcers'&&gs.meta.prestigeBonus?.id==='muscle')rCost=Math.floor(rCost*.75);
+    const div=document.createElement('div');div.className='card';
+    div.innerHTML=`<div class="flex justify-between align-center mb-8">
+      <div><div style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--accent-primary);">${def.label}</div><div class="tier-req">${tn}</div></div>
+      <div class="text-right"><div style="font-size:16px;font-weight:bold;">${c.count}/${c.maxSlots}</div><div class="tier-req">SLOTS</div></div></div>
+    <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">${def.desc}</div>
+    ${c.maxSlots===0?'<div class="tier-req">LOCKED</div>':''}
+    <div class="flex gap-8 flex-wrap">
+      <button class="btn btn-sm" onclick="recruitCrew('${role}')" ${c.count>=c.maxSlots||c.maxSlots===0?'disabled':''}>+$${rCost.toLocaleString()}</button>
+      ${c.count>0?`<button class="btn btn-danger btn-sm" onclick="fireCrew('${role}')">CUT</button>`:''}
+      ${canUp&&c.count>0?`<button class="btn btn-warn btn-sm" onclick="upgradeCrew('${role}')" ${gs.cash<uCost?'disabled':''}>UP $${uCost.toLocaleString()}</button>`:''}
+    </div>`;
+    container.appendChild(div);
   });
-  document.getElementById('crew-payroll').textContent = '$'+calcPayroll(gs).toLocaleString()+'/week';
-  const remaining = Math.max(0, Math.ceil((gs._payrollTimer - Date.now())/1000));
-  const mins = Math.floor(remaining/60), secs = remaining%60;
-  document.getElementById('crew-payroll-timer').textContent = `${mins}m ${secs}s`;
+  document.getElementById('crew-payroll').textContent='$'+calcPayroll(gs).toLocaleString()+'/wk';
+  updatePayrollTimer();
 }
 
 function renderTurf(){
-  const grid = document.getElementById('turf-grid');
-  grid.innerHTML='';
-  let totalIncome=0, ownedCount=0;
+  if(!gs)return;
+  const grid=document.getElementById('turf-grid');grid.innerHTML='';
+  let ti=0,to=0;
   gs.turf.forEach(t=>{
-    if(t.owned){totalIncome+=t.income*(1-(t.rivalPct/100)*.7);ownedCount++;}
-    const card = document.createElement('div');
-    card.className='turf-card';
-    let statusClass='turf-locked', statusText='LOCKED';
-    if(t.owned){statusClass='turf-owned';statusText='OWNED';}
-    else if(gs.empireTier>=t.minTier){statusClass='turf-available';statusText='AVAILABLE';}
-    card.innerHTML = `
-      <div><span class="turf-status ${statusClass}">${statusText}</span></div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;margin-bottom:4px;">${t.name}</div>
-      <div class="flex justify-between mb-8">
-        <span class="tier-req">$${t.income}/min</span>
-        <span class="tier-req">HEAT: ${t.heat>0.5?'HIGH':t.heat>0.3?'MED':'LOW'}</span>
-      </div>
-      ${t.owned ? `
-        <div style="margin-bottom:6px;">
-          <div class="tier-req mb-8">RIVAL PRESENCE: ${t.rivalPct.toFixed(0)}%</div>
-          <div class="rival-bar-wrap"><div class="rival-bar-inner" style="width:${t.rivalPct}%;"></div></div>
-        </div>
-        <button class="btn btn-warn" style="font-size:10px;padding:5px 10px;" onclick="sendEnforcers('${t.id}')">SEND ENFORCERS — $${(gs.meta.prestigeBonus?.id==='muscle'?375:500)}</button>
-      ` : gs.empireTier >= t.minTier ?
-        `<button class="btn" style="font-size:10px;padding:5px 10px;" onclick="buyTurf('${t.id}')">ACQUIRE — $${t.cost.toLocaleString()}</button>` :
-        `<div class="tier-req">REQUIRES TIER ${t.minTier}</div>`}`;
+    if(t.owned){ti+=t.income*(1-(t.rivalPct/100)*.7);to++;}
+    const avail=gs.empireTier>=t.minTier;
+    const card=document.createElement('div');card.className='turf-card';
+    let sc='turf-locked',st='LOCKED';
+    if(t.owned){sc='turf-owned';st='OWNED';}else if(avail){sc='turf-available';st='AVAIL';}
+    card.innerHTML=`<span class="turf-status ${sc}">${st}</span>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1px;margin-bottom:3px;">${t.name}</div>
+      <div class="flex justify-between mb-8"><span class="tier-req">$${t.income}/min</span><span class="tier-req">${t.heat>.5?'🔥':t.heat>.3?'⚠':'✓'}</span></div>
+      ${t.owned?`<div class="tier-req">RIVAL ${t.rivalPct.toFixed(0)}%</div><div class="rival-bar-wrap mb-8" style="margin-top:3px;"><div class="rival-bar-inner" style="width:${t.rivalPct}%;"></div></div><button class="btn btn-warn btn-sm" onclick="sendEnforcers('${t.id}')">ENFORCERS $${gs.meta.prestigeBonus?.id==='muscle'?375:500}</button>`:
+        avail?`<button class="btn btn-sm" onclick="buyTurf('${t.id}')">$${t.cost.toLocaleString()}</button>`:
+        `<div class="tier-req">TIER ${t.minTier}</div>`}`;
     grid.appendChild(card);
   });
-  document.getElementById('turf-total-income').textContent = '$'+totalIncome.toFixed(1)+'/min';
-  document.getElementById('turf-owned-count').textContent = ownedCount;
+  document.getElementById('turf-total-income').textContent='$'+ti.toFixed(1)+'/min';
+  document.getElementById('turf-owned-count').textContent=to;
 }
 
 function renderFinances(){
-  document.getElementById('fin-cash').textContent = '$'+Math.floor(gs.cash).toLocaleString();
+  if(!gs)return;
+  document.getElementById('fin-cash').textContent='$'+Math.floor(gs.cash).toLocaleString();
   let cpm=0;
-  if(gs.crew.slingers.count>0){
-    const tm=[0.5,1,1.5,2.5][gs.crew.slingers.tier];
-    cpm+=gs.crew.slingers.count*tm*gs.market.demandMultiplier*gs.market.playerSetPrice*(1+(gs.fentPurity-.2)*2);
-  }
+  if(gs.crew.slingers.count>0){const tm=[.5,1,1.5,2.5][gs.crew.slingers.tier];cpm+=gs.crew.slingers.count*tm*gs.market.demandMultiplier*gs.market.playerSetPrice*(1+(gs.fentPurity-.2)*2);}
   gs.turf.forEach(t=>{if(t.owned)cpm+=t.income*(1-(t.rivalPct/100)*.7);});
   gs.fronts.forEach(f=>{if(f.owned)cpm+=f.cashPerMin;});
-  const overhead = calcPayroll(gs)/300;
-  document.getElementById('fin-cpm').textContent = '$'+(cpm-overhead).toFixed(1);
-  document.getElementById('fin-total').textContent = '$'+Math.floor(gs._totalEarned||0).toLocaleString();
-  document.getElementById('fin-payroll').textContent = '$'+calcPayroll(gs).toLocaleString();
-  document.getElementById('fin-overhead').textContent = '$'+overhead.toFixed(2);
-  const fronts = document.getElementById('fronts-list');
-  fronts.innerHTML='';
+  const ov=calcPayroll(gs)/300;
+  document.getElementById('fin-cpm').textContent='$'+(cpm-ov).toFixed(1);
+  document.getElementById('fin-total').textContent='$'+Math.floor(gs._totalEarned||0).toLocaleString();
+  document.getElementById('fin-payroll').textContent='$'+calcPayroll(gs).toLocaleString();
+  document.getElementById('fin-overhead').textContent='$'+ov.toFixed(2);
+  const fl=document.getElementById('fronts-list');fl.innerHTML='';
   gs.fronts.forEach(f=>{
-    const card = document.createElement('div');
-    card.className='card mb-8';
-    card.innerHTML=`
-      <div class="flex justify-between align-center">
-        <div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:${f.owned?'var(--accent-primary)':'var(--text-primary)'};">${f.name}</div>
-          <div class="tier-req">${f.desc} &nbsp;|&nbsp; HEAT: -${f.heatRed}/min &nbsp;|&nbsp; +$${f.cashPerMin}/min</div>
-        </div>
-        <div>
-          ${f.owned ? '<span style="color:#4a9a6a;font-size:10px;letter-spacing:1px;">OPERATIONAL</span>' :
-            gs.empireTier>=f.minTier ?
-            `<button class="btn" style="font-size:10px;padding:5px 10px;" onclick="buyFront('${f.id}')">ACQUIRE — $${f.cost.toLocaleString()}</button>` :
-            `<span class="tier-req">TIER ${f.minTier} REQ</span>`}
-        </div>
-      </div>`;
-    fronts.appendChild(card);
+    const div=document.createElement('div');div.className='card mb-8';
+    div.innerHTML=`<div class="flex justify-between align-center">
+      <div><div style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:${f.owned?'var(--accent-primary)':'var(--text-primary)'};">${f.name}</div>
+      <div class="tier-req">${f.desc} | -${f.heatRed}heat | +$${f.cashPerMin}/min</div></div>
+      <div>${f.owned?'<span style="color:#4a9a6a;font-size:10px;">ACTIVE</span>':gs.empireTier>=f.minTier?`<button class="btn btn-sm" onclick="buyFront('${f.id}')">$${f.cost.toLocaleString()}</button>`:`<span class="tier-req">T${f.minTier}</span>`}</div>
+    </div>`;fl.appendChild(div);
   });
-  const txnLog = document.getElementById('txn-log');
-  txnLog.innerHTML = transactions.slice(0,20).map(t=>`
-    <div class="txn-entry">
-      <span style="color:var(--text-muted);font-size:10px;">${t.time}</span>
-      <span style="color:var(--text-secondary);flex:1;padding:0 8px;">${t.desc}</span>
-      <span class="${t.amount>=0?'positive':'negative'}">${t.amount>=0?'+':''}$${Math.abs(t.amount).toFixed(0)}</span>
-    </div>`).join('');
+  document.getElementById('txn-log').innerHTML=txns.slice(0,20).map(t=>`<div class="txn-entry"><span style="color:var(--text-muted);font-size:9px;">${t.time}</span><span style="flex:1;padding:0 6px;font-size:10px;">${t.desc}</span><span class="${t.amount>=0?'positive':'negative'}">${t.amount>=0?'+':''}$${Math.abs(t.amount).toFixed(0)}</span></div>`).join('');
 }
 
 function renderIntel(){
-  document.getElementById('heat-num').textContent = Math.floor(gs.heat.level);
-  const heatSources = document.getElementById('heat-sources');
-  heatSources.innerHTML = `
-    <div>SLINGERS: +${(gs.crew.slingers.count*.3).toFixed(1)}/min</div>
-    <div>TURF: +${gs.turf.filter(t=>t.owned).reduce((a,t)=>a+t.heat*.5,0).toFixed(1)}/min</div>
-    <div>LAWYERS: -${(gs.crew.lawyers.count*[1,1.5,2.5,4][gs.crew.lawyers.tier]*.5).toFixed(1)}/min</div>
-    <div>FRONTS: -${gs.fronts.filter(f=>f.owned).reduce((a,f)=>a+f.heatRed*.5,0).toFixed(1)}/min</div>
-    <div>DECAY: -${gs.heat.decayRate}/min</div>`;
-  const rivalsList = document.getElementById('rivals-list');
-  rivalsList.innerHTML = gs.rivals.map(r=>`
-    <div class="card mb-8">
-      <div class="flex justify-between align-center mb-8">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;">${r.name}</div>
-        <div style="font-size:12px;color:var(--text-secondary);">STRENGTH: ${r.strength}</div>
-      </div>
-      <div class="rival-bar-wrap"><div class="rival-bar-inner" style="width:${r.strength}%;"></div></div>
-    </div>`).join('');
-  const eventLog = document.getElementById('event-log');
-  eventLog.innerHTML = gs.events.slice(0,50).map(e=>`
-    <div class="log-entry ${e.type}"><span class="log-time">${e.time}</span>${e.text}</div>`).join('');
-  const headlinesList = document.getElementById('headlines-list');
-  const unlockedHeadlines = CONSTANTS.headlines.filter(h=>gs.headlines.includes(h.id));
-  if(unlockedHeadlines.length===0){
-    headlinesList.innerHTML='<div style="color:var(--text-muted);font-size:11px;letter-spacing:1px;">NO REPORTS ON FILE.</div>';
-  } else {
-    headlinesList.innerHTML = unlockedHeadlines.reverse().map(h=>`
-      <div class="headline-card">
-        <div class="headline-source">█ ${h.source} █</div>
-        <div class="headline-text">${h.text}</div>
-      </div>`).join('');
-  }
+  if(!gs)return;
+  document.getElementById('heat-num').textContent=Math.floor(gs.heat.level);
+  const gm=gs.meta.prestigeBonus?.id==='ghost'?0.8:1;
+  document.getElementById('heat-sources').innerHTML=`<div>SLINGERS +${(gs.crew.slingers.count*.3*gm).toFixed(1)}/min</div><div>TURF +${gs.turf.filter(t=>t.owned).reduce((a,t)=>a+t.heat*.5,0).toFixed(1)}/min</div><div>LAWYERS -${(gs.crew.lawyers.count*([1,1.5,2.5,4][gs.crew.lawyers.tier]||1)*.5).toFixed(1)}/min</div><div>FRONTS -${gs.fronts.filter(f=>f.owned).reduce((a,f)=>a+f.heatRed*.5,0).toFixed(1)}/min</div><div>DECAY -${gs.heat.decayRate}/min</div>`;
+  document.getElementById('rivals-list').innerHTML=gs.rivals.map(r=>`<div class="card mb-8"><div class="flex justify-between align-center mb-8"><div style="font-family:'Bebas Neue',sans-serif;font-size:13px;">${r.name}</div><div style="font-size:11px;color:var(--text-secondary);">STR ${r.strength}</div></div><div class="rival-bar-wrap"><div class="rival-bar-inner" style="width:${r.strength}%;"></div></div></div>`).join('');
+  document.getElementById('event-log').innerHTML=gs.events.slice(0,50).map(e=>`<div class="log-entry ${e.type}"><span class="log-time">${e.time}</span>${e.text}</div>`).join('');
+  const unlocked=C.headlines.filter(h=>gs.headlines.includes(h.id));
+  document.getElementById('headlines-list').innerHTML=unlocked.length===0?'<div style="color:var(--text-muted);font-size:11px;">NO REPORTS ON FILE.</div>':[...unlocked].reverse().map(h=>`<div class="headline-card"><div class="headline-source">█ ${h.source} █</div><div class="headline-text">${h.text}</div></div>`).join('');
 }
-
-// Initial dummy ticker
-window.addEventListener('load', ()=>{
-  setTimeout(()=>{
-    tickerMessages = ['Standing by...','All quiet.','Eyes open.'];
-    updateTickerScroll();
-  },500);
-});
 </script>
 </body>
 </html>
