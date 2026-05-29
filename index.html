@@ -278,7 +278,7 @@ input[type=text],input[type=number]{background:var(--bg-secondary);border:1px so
 const C={
   hardware:[{name:"None",cost:0,batch:50,time:300,purityBonus:0},{name:"Basic Setup",cost:1000,batch:150,time:240,purityBonus:.10},{name:"Mid-Grade",cost:8000,batch:400,time:180,purityBonus:.20},{name:"Advanced",cost:40000,batch:1000,time:120,purityBonus:.35},{name:"Industrial",cost:200000,batch:5000,time:90,purityBonus:.50}],
   formula:[{name:"Street Cut",cost:0,basePurity:.20},{name:"Standard Formula",cost:500,basePurity:.35},{name:"Refined Formula",cost:5000,basePurity:.55},{name:"Pure Formula",cost:30000,basePurity:.75},{name:"Uncut",cost:150000,basePurity:.95}],
-  sourcing:[{name:"Cheap Suply",cost:0,purityBonus:0},{name:"Standard Supply",cost:800,purityBonus:.05},{name:"Quality Source",cost:6000,purityBonus:.15},{name:"Premium Supply",cost:35000,purityBonus:.25},{name:"Cartel-Grade",cost:180000,purityBonus:.40}],
+  sourcing:[{name:"Garbage mats",cost:0,purityBonus:0},{name:"Standard Supply",cost:800,purityBonus:.05},{name:"Quality Source",cost:6000,purityBonus:.15},{name:"Premium Supply",cost:35000,purityBonus:.25},{name:"Cartel-Grade",cost:180000,purityBonus:.40}],
   storage:[{cost:0,cap:500},{cost:1500,cap:2000},{cost:10000,cap:8000},{cost:50000,cap:30000},{cost:250000,cap:150000}],
   crewRoles:{
     cooks:{label:"COOK",tiers:["Rookie Cook","Journeyman Cook","Veteran Cook","Master Cook"],costs:[200,800,3000,12000],wage:[50,150,500,1500],desc:"Reduces synthesis time. Increases purity ceiling."},
@@ -317,7 +317,7 @@ const C={
     {text:"Quiet night.",type:'neu',effect:()=>{}}
   ],
   headlines:[
-    {id:'h1',xpReq:50,source:"LOCAL DISPATCH",text:"Local fent prices disrupted by unknown supplier"},
+    {id:'h1',xpReq:50,source:"LOCAL DISPATCH",text:"Local grain prices disrupted by unknown supplier"},
     {id:'h2',xpReq:150,source:"CITY BULLETIN",text:"Health dept baffled by unusual fent purity in underground market"},
     {id:'h3',xpReq:400,source:"EASTSIDE GAZETTE",text:"Police report uptick in unlicensed fent distribution"},
     {id:'h4',xpReq:800,source:"WIRE SERVICE",text:"Two men arrested in connection with unauthorized chemistry operation"},
@@ -1257,7 +1257,10 @@ function renderStreet(){
   document.getElementById('st-grams-moved').textContent=sessionSales.grams.toFixed(1)+'g';
   document.getElementById('st-revenue').textContent='$'+sessionSales.revenue.toFixed(0);
   const tm=[.5,1,1.5,2.5][gs.crew.slingers.tier]||1;
-  document.getElementById('st-sell-rate').textContent=(gs.crew.slingers.count*tm*gs.market.demandMultiplier).toFixed(1)+'g/min';
+  const _base=12+gs.lab.formulaLevel*5;
+  const _pf=gs.market.playerSetPrice>_base*3?0.5:gs.market.playerSetPrice<_base*0.5?1.5:1.0;
+  const _rl=_pf<1?' (HIGH PRICE)':_pf>1?' (LOW PRICE)':'';
+  document.getElementById('st-sell-rate').textContent=(gs.crew.slingers.count*tm*gs.market.demandMultiplier*_pf).toFixed(1)+'g/min'+_rl;
   document.getElementById('sale-feed').innerHTML=saleFeed.slice(0,18).map(s=>`<div class="sale-entry">${s}</div>`).join('');
 }
 
