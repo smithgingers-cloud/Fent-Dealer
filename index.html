@@ -1009,7 +1009,20 @@ function buyTurf(id){const t=gs.turf.find(t=>t.id===id);if(!t||t.owned)return;if
 function sendEnforcers(id){const t=gs.turf.find(t=>t.id===id);if(!t||!t.owned)return;const cost=gs.meta.prestigeBonus?.id==='muscle'?375:500;if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;t.rivalPct=Math.max(0,t.rivalPct-30);addTxn(-cost,`Enforcers: ${t.name}`);addEvent(`Enforcers → ${t.name}.`,'pos');renderTurf();}
 function buyFront(id){const f=gs.fronts.find(f=>f.id===id);if(!f||f.owned)return;if(gs.empireTier<f.minTier){addEvent(`Need Tier ${f.minTier}.`,'neg');return;}if(gs.cash<f.cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=f.cost;f.owned=true;addTxn(-f.cost,`Front: ${f.name}`);addEvent(`Front: ${f.name}.`,'pos');renderFinances();updateTopBar();}
 function updatePrice(val){val=Math.max(1,Math.min(500,parseInt(val)||12));gs.market.playerSetPrice=val;document.getElementById('price-display').textContent=`$${val}/g`;const base=12+gs.lab.formulaLevel*5;document.getElementById('price-advice').textContent=val>base*3?'PRICE TOO HIGH — volume drops':val<base*0.5?'UNDERCUTTING — good volume':'IN RANGE';}
-function layLow(){if(!gs||!gs.gameStarted)return;const cost=[500,1000,2000,3500,6000,10000,20000][gs.empireTier]||500;if(gs.cash<cost){addEvent("Not enough bread.","neg");renderIntel();return;}gs.cash-=cost;const lawyers=gs.crew&&gs.crew.lawyers?gs.crew.lawyers.count:0;const r=20+lawyers*5;gs.heat.level=Math.max(0,gs.heat.level-r);addTxn(-cost,"Lay low");addEvent(`Went quiet. Heat -${r}. Cost $${cost}.`,'pos');autoSave();renderAll();}
+function layLow(){
+  if(!gs||!gs.gameStarted)return;
+  const cost=[500,1000,2000,3500,6000,10000,20000][gs.empireTier]||500;
+  if(gs.cash<cost){showToast("BROKE");addEvent("Not enough bread.",'neg');renderIntel();return;}
+  gs.cash-=cost;
+  const lawyers=gs.crew&&gs.crew.lawyers?gs.crew.lawyers.count:0;
+  const r=20+lawyers*5;
+  gs.heat.level=Math.max(0,gs.heat.level-r);
+  addTxn(-cost,"Lay low");
+  addEvent(`Went quiet. Heat -${r}.`,'pos');
+  showToast(`HEAT -${r}`);
+  autoSave();
+  renderAll();
+}
 
 // ===== DRIP =====
 function buyDrip(id){
@@ -1088,10 +1101,14 @@ function safeEncode(obj){try{return btoa(unescape(encodeURIComponent(JSON.string
 function safeDecode(str){try{return JSON.parse(decodeURIComponent(escape(atob(str))));}catch(e1){try{return JSON.parse(atob(str));}catch(e2){return null;}}}
 function autoSave(){
   if(!gs||!gs.gameStarted)return;
-  try{gs.lastSave=Date.now();const enc=safeEncode(gs);if(enc){localStorage.setItem('fentDealer_save',enc);flashMessage("✓");}else{flashMessage("ERR");}}
-  catch(e){flashMessage("ERR");}
+  try{gs.lastSave=Date.now();const enc=safeEncode(gs);if(enc)localStorage.setItem('fentDealer_save',enc);}
+  catch(e){}
 }
-function manualSave(){autoSave();}
+function manualSave(){
+  if(!gs||!gs.gameStarted)return;
+  try{gs.lastSave=Date.now();const enc=safeEncode(gs);if(enc){localStorage.setItem('fentDealer_save',enc);showToast("SAVED ✓");}else{showToast("SAVE ERR");}}
+  catch(e){showToast("SAVE ERR");}
+}
 function openExport(){const enc=safeEncode(gs);if(enc){document.getElementById('export-text').value=enc;openModal('export-modal');}else{flashMessage('ERR');}}
 function copyExport(){const ta=document.getElementById('export-text');ta.select();try{document.execCommand('copy');}catch(e){}flashMessage("COPIED");}
 function confirmReset(){const oldDrip=gs.drip;gs=defaultState();gs.drip=oldDrip;gs.gameStarted=true;localStorage.removeItem('fentDealer_save');closeModal('reset-confirm-modal');startGameLoop();renderAll();flashMessage("RESET");addEvent("Fresh start.",'neu');}
