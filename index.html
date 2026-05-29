@@ -283,7 +283,7 @@ const C={
   crewRoles:{
     cooks:{label:"COOK",tiers:["Rookie Cook","Journeyman Cook","Veteran Cook","Master Cook"],costs:[200,800,3000,12000],wage:[20,60,200,600],desc:"Reduces synthesis time. Increases purity ceiling."},
     slingers:{label:"SLINGER",tiers:["Corner Boy","Slinger","Veteran Slinger","Lieutenant"],costs:[100,400,1500,6000],wage:[10,35,120,350],desc:"Moves product passively. Core revenue."},
-    runners:{label:"RUNNER",tiers:["Errand Boy","Runner","Road Runner","Ghost"],costs:[150,600,2500,10000],wage:[15,45,150,400],desc:"Reduces supply chain risk."},
+    runners:{label:"RUNNER",tiers:["Errand Boy","Runner","Road Runner","Ghost"],costs:[150,600,2500,10000],wage:[15,45,150,400],desc:"Cuts heat, boosts slinger volume, protects product in raids, speeds up cooks."},
     enforcers:{label:"ENFORCER",tiers:["Muscle","Enforcer","Veteran Enforcer","Soldier"],costs:[500,2000,8000,30000],wage:[40,120,400,1200],desc:"Protects turf. Contests rivals."},
     distributors:{label:"DISTRIBUTOR",tiers:["Mule","Distributor","Connect","Wholesale King"],costs:[400,1500,6000,25000],wage:[30,100,300,900],desc:"Enables bulk sales."},
     distributors2:{label:"CONNECT L2",tiers:["Street Connect","Mid-Level Connect","Cartel Connect"],costs:[3000,12000,50000],wage:[200,600,2000],desc:"High-level wholesale deals."},
@@ -591,6 +591,7 @@ function processSales(){
   const price=gs.market.playerSetPrice,base=12+gs.lab.formulaLevel*5;
   const pf=Math.min(1.3,Math.pow(base*1.5/price,1.3));
   let gpm=gs.crew.slingers.count*tm*gs.market.demandMultiplier*pf*sb;
+  if(gs.crew.runners.count>0){const rm=[1.05,1.10,1.18,1.28][gs.crew.runners.tier]||1.05;gpm*=Math.pow(rm,gs.crew.runners.count);}
   if(gs.crew.distributors.count>0)gpm*=(1+gs.crew.distributors.count*.15);
   const sold=Math.min(gs.fent,Math.max(0.1,gpm));
   if(sold<=0)return;
@@ -618,6 +619,8 @@ function processHeat(){
   const gm=gs.meta.prestigeBonus?.id==='ghost'?0.8:1;
   d+=gs.crew.slingers.count*.3*gm;
   d-=gs.crew.lawyers.count*([1,1.5,2.5,4][gs.crew.lawyers.tier]||1)*.5;
+  // Runners reduce heat
+  if(gs.crew.runners.count>0){const rb=[0.3,0.5,0.8,1.2][gs.crew.runners.tier]||0.3;d-=gs.crew.runners.count*rb*gm;}
   gs.fronts.forEach(f=>{if(f.owned){d-=f.heatRed*.5;let inc=f.cashPerMin;if(gs.crew.accountants.count>0)inc*=(1+gs.crew.accountants.count*.1);gs.cash+=inc;}});
   gs.heat.level=Math.max(0,Math.min(100,gs.heat.level+d));
   if(gs.heat.level>=100)triggerRaid();
@@ -720,7 +723,7 @@ function triggerRaid(){
   if(gs.heat.level<100)return;
   gs.heat.level=40;
   const lp=gs.crew.lawyers.count*.10,cons=[];
-  if(Math.random()>lp){const l=Math.floor(gs.fent*(.2+Math.random()*.4));gs.fent=Math.max(0,gs.fent-l);cons.push(`${l}g seized`);}
+  if(Math.random()>lp){const rp=gs.crew.runners.count>0?Math.max(0.05,(.2+Math.random()*.4)*(1-gs.crew.runners.count*0.08)):(.2+Math.random()*.4);const l=Math.floor(gs.fent*rp);gs.fent=Math.max(0,gs.fent-l);cons.push(`${l}g seized`);}
   if(Math.random()>lp){const n=Math.floor(Math.random()*3)+1;for(let i=0;i<n;i++)fireRandomCrew(gs);cons.push(`${n} crew arrested`);}
   if(Math.random()>lp){const fine=Math.floor((1000+Math.random()*49000)*(1+gs.empireTier*.5));gs.cash=Math.max(0,gs.cash-fine);addTxn(-fine,"Raid fine");cons.push(`$${fine.toLocaleString()} fine`);}
   addEvent('RAID EXECUTED.','neg');
@@ -974,6 +977,7 @@ function startCook(){
   const hw=C.hardware[gs.lab.hardwareLevel];
   let ct=hw.time*1000;
   if(gs.crew.cooks.count>0)ct*=[.95,.85,.75,.60][gs.crew.cooks.tier]||1;
+  if(gs.crew.runners.count>0)ct*=Math.max(0.7,1-gs.crew.runners.count*([0.03,0.05,0.07,0.10][gs.crew.runners.tier]||0.03));
   if(gs.meta.prestigeBonus?.id==='cook')ct*=.85;
   gs.lab.synthesisInProgress=true;gs.lab.synthesisEndTime=Date.now()+ct;gs.lab.synthesisAmount=hw.batch;
   const gm=gs.meta.prestigeBonus?.id==='ghost'?0.8:1;
@@ -1341,7 +1345,8 @@ function renderIntel(){
   if(!gs)return;
   document.getElementById('heat-num').textContent=Math.floor(gs.heat.level);
   const gm=gs.meta.prestigeBonus?.id==='ghost'?0.8:1;
-  document.getElementById('heat-sources').innerHTML=`<div>SLINGERS +${(gs.crew.slingers.count*.3*gm).toFixed(1)}/min</div><div>TURF +${gs.turf.filter(t=>t.owned).reduce((a,t)=>a+t.heat*.5,0).toFixed(1)}/min</div><div>LAWYERS -${(gs.crew.lawyers.count*([1,1.5,2.5,4][gs.crew.lawyers.tier]||1)*.5).toFixed(1)}/min</div><div>FRONTS -${gs.fronts.filter(f=>f.owned).reduce((a,f)=>a+f.heatRed*.5,0).toFixed(1)}/min</div><div>DECAY -${gs.heat.decayRate}/min</div>`;
+  const runnerHeat=gs.crew.runners.count>0?(gs.crew.runners.count*([0.3,0.5,0.8,1.2][gs.crew.runners.tier]||0.3)*gm).toFixed(1):'0';
+  document.getElementById('heat-sources').innerHTML=`<div>SLINGERS +${(gs.crew.slingers.count*.3*gm).toFixed(1)}/min</div><div>TURF +${gs.turf.filter(t=>t.owned).reduce((a,t)=>a+t.heat*.5,0).toFixed(1)}/min</div><div>LAWYERS -${(gs.crew.lawyers.count*([1,1.5,2.5,4][gs.crew.lawyers.tier]||1)*.5).toFixed(1)}/min</div><div>RUNNERS -${runnerHeat}/min</div><div>FRONTS -${gs.fronts.filter(f=>f.owned).reduce((a,f)=>a+f.heatRed*.5,0).toFixed(1)}/min</div><div>DECAY -${gs.heat.decayRate}/min</div>`;
   document.getElementById('rivals-list').innerHTML=gs.rivals.map(r=>`<div class="card mb-8"><div class="flex justify-between align-center mb-8"><div style="font-family:'Bebas Neue',sans-serif;font-size:13px;">${r.name}</div><div style="font-size:11px;color:var(--text-secondary);">STR ${r.strength}</div></div><div class="rival-bar-wrap"><div class="rival-bar-inner" style="width:${r.strength}%;"></div></div></div>`).join('');
   document.getElementById('event-log').innerHTML=gs.events.slice(0,50).map(e=>`<div class="log-entry ${e.type}"><span class="log-time">${e.time}</span>${e.text}</div>`).join('');
   const unlocked=C.headlines.filter(h=>gs.headlines.includes(h.id));
