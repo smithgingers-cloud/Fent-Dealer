@@ -589,7 +589,7 @@ function processSales(){
   const tm=[0.5,1,1.5,2.5][gs.crew.slingers.tier]||1;
   let sb=gs.meta.prestigeBonus?.id==='streetking'?1.25:1;
   const price=gs.market.playerSetPrice,base=12+gs.lab.formulaLevel*5;
-  const pf=price>base*3?0.5:price<base*0.5?1.5:1.0;
+  const pf=Math.min(1.5,Math.pow(base/price,2.2));
   let gpm=gs.crew.slingers.count*tm*gs.market.demandMultiplier*pf*sb;
   if(gs.crew.distributors.count>0)gpm*=(1+gs.crew.distributors.count*.15);
   const sold=Math.min(gs.fent,Math.max(0.1,gpm));
@@ -1258,8 +1258,8 @@ function renderStreet(){
   document.getElementById('st-revenue').textContent='$'+sessionSales.revenue.toFixed(0);
   const tm=[.5,1,1.5,2.5][gs.crew.slingers.tier]||1;
   const _base=12+gs.lab.formulaLevel*5;
-  const _pf=gs.market.playerSetPrice>_base*3?0.5:gs.market.playerSetPrice<_base*0.5?1.5:1.0;
-  const _rl=_pf<1?' (HIGH PRICE)':_pf>1?' (LOW PRICE)':'';
+  const _pf=Math.min(1.5,Math.pow(_base/gs.market.playerSetPrice,2.2));
+  const _rl=_pf<0.5?' ▼▼ OVERPRICED':_pf<0.85?' ▼ HIGH':_pf>1.2?' ▲ LOW PRICE':' OPTIMAL';
   document.getElementById('st-sell-rate').textContent=(gs.crew.slingers.count*tm*gs.market.demandMultiplier*_pf).toFixed(1)+'g/min'+_rl;
   document.getElementById('sale-feed').innerHTML=saleFeed.slice(0,18).map(s=>`<div class="sale-entry">${s}</div>`).join('');
 }
