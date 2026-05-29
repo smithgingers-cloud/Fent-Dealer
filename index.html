@@ -122,24 +122,25 @@ input[type=text],input[type=number]{background:var(--bg-secondary);border:1px so
 </style>
 </head>
 <body>
+<div id="toast" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:var(--bg-card);border:1px solid var(--accent-primary);color:var(--accent-primary);font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;padding:12px 28px;z-index:99999;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;"></div>
 <div id="newgame-overlay">
   <div id="newgame-title">FENT DEALER</div>
   <div id="newgame-sub">You know what you're doing. Get to work.</div>
   <input type="text" id="ng-name" placeholder="What do they call you?" maxlength="24">
   <div id="ng-prestige-info" class="prestige-info" style="display:none;"></div>
-  <button class="btn" onclick="startNewGame()" style="min-width:140px;padding:12px 20px;font-size:13px;letter-spacing:3px;margin-top:6px;">BEGIN</button>
+  <button class="btn" id="btn-start-game" style="min-width:140px;padding:12px 20px;font-size:13px;letter-spacing:3px;margin-top:6px;">BEGIN</button>
 </div>
 <div id="raid-overlay">
   <div id="raid-title">RAID</div>
   <div id="raid-text" style="font-size:12px;color:#e8e0d0;text-align:center;max-width:360px;line-height:1.8;font-family:'IBM Plex Mono',monospace;"></div>
-  <button class="btn btn-danger" onclick="closeRaid()" style="margin-top:12px;">ACKNOWLEDGE</button>
+  <button class="btn btn-danger" id="btn-close-raid" style="margin-top:12px;">ACKNOWLEDGE</button>
 </div>
 <div id="victory-overlay">
   <div id="victory-title">THE EMPIRE</div>
   <div style="color:var(--text-secondary);font-size:12px;max-width:400px;line-height:1.8;text-align:center;">The operation is complete. You built it from nothing.<br>Now burn it down and do it right.</div>
   <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
-    <button class="btn" onclick="closeVictory()">CONTINUE</button>
-    <button class="btn btn-warn" onclick="triggerPrestige()">PRESTIGE</button>
+    <button class="btn" id="btn-close-victory">CONTINUE</button>
+    <button class="btn btn-warn" id="btn-trigger-prestige">PRESTIGE</button>
   </div>
 </div>
 <div id="prestige-overlay" class="modal-overlay">
@@ -160,7 +161,7 @@ input[type=text],input[type=number]{background:var(--bg-secondary);border:1px so
   <div class="modal-box">
     <div class="modal-title">SAVE CODE</div>
     <textarea id="export-text" style="width:100%;height:90px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;font-size:10px;padding:8px;resize:none;" readonly></textarea>
-    <div style="margin-top:10px;display:flex;gap:8px;"><button class="btn btn-sm" onclick="copyExport()">COPY</button><button class="btn btn-danger btn-sm" onclick="closeModal('export-modal')">CLOSE</button></div>
+    <div style="margin-top:10px;display:flex;gap:8px;"><button class="btn btn-sm" id="btn-copy-export">COPY</button><button class="btn btn-danger btn-sm" id="btn-close-export">CLOSE</button></div>
   </div>
 </div>
 <div id="reset-confirm-modal" class="modal-overlay">
@@ -168,8 +169,8 @@ input[type=text],input[type=number]{background:var(--bg-secondary);border:1px so
     <div class="modal-title">RESET GAME?</div>
     <div class="modal-body">This wipes everything. Cash, crew, turf, progress — gone. Drip stays. Cannot be undone.</div>
     <div class="modal-options" style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="btn btn-danger" onclick="confirmReset()">YES, RESET</button>
-      <button class="btn" onclick="closeModal('reset-confirm-modal')">CANCEL</button>
+      <button class="btn btn-danger" id="btn-confirm-reset">YES, RESET</button>
+      <button class="btn" id="btn-cancel-reset">CANCEL</button>
     </div>
   </div>
 </div>
@@ -177,7 +178,7 @@ input[type=text],input[type=number]{background:var(--bg-secondary);border:1px so
   <div class="modal-box">
     <div class="modal-title">LOAD SAVE CODE</div>
     <textarea id="import-text" style="width:100%;height:90px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;font-size:10px;padding:8px;resize:none;"></textarea>
-    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-sm" onclick="doImport()">LOAD</button><button class="btn btn-danger btn-sm" onclick="closeModal('import-modal')">CANCEL</button><button class="btn btn-warn btn-sm" onclick="closeModal('import-modal');openModal('reset-confirm-modal')">RESET</button></div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-sm" id="btn-do-import">LOAD</button><button class="btn btn-danger btn-sm" id="btn-cancel-import">CANCEL</button><button class="btn btn-warn btn-sm" id="btn-open-reset">RESET</button></div>
   </div>
 </div>
 <div id="xp-bar-wrap" style="position:fixed;top:44px;left:0;right:0;height:3px;background:var(--bg-primary);z-index:999;"><div id="xp-bar-inner" style="height:100%;background:var(--accent-primary);transition:width .5s;width:0%;"></div></div>
@@ -191,9 +192,9 @@ input[type=text],input[type=number]{background:var(--bg-secondary);border:1px so
   </div>
   <div id="topbar-actions">
     <span id="save-flash">✓</span>
-    <button class="topbar-btn" onclick="manualSave()">SAVE</button>
-    <button class="topbar-btn" onclick="openExport()">EXP</button>
-    <button class="topbar-btn" onclick="openModal('import-modal')">IMP</button>
+    <button class="topbar-btn" id="btn-manual-save">SAVE</button>
+    <button class="topbar-btn" id="btn-open-export">EXP</button>
+    <button class="topbar-btn" id="btn-open-import">IMP</button>
   </div>
 </div>
 <div id="scene-wrap"><canvas id="scene-canvas"></canvas><div id="tap-reward"></div></div>
@@ -204,7 +205,7 @@ input[type=text],input[type=number]{background:var(--bg-secondary);border:1px so
     <div class="panel"><div class="label mb-8">SYNTHESIS STATUS</div><div id="ops-synth-status" style="color:var(--text-muted);font-size:11px;">NO COOK IN PROGRESS</div><div id="synth-progress-wrap"><div id="synth-progress-bar"></div></div></div>
     <div class="panel"><div class="label mb-8">HEAT LEVEL</div><div id="heat-bar-outer"><div id="heat-bar-inner"></div></div><div class="flex justify-between mt-8"><span id="ops-heat-num" style="font-size:11px;color:var(--text-secondary);">0/100</span><span id="ops-heat-state" style="font-size:10px;letter-spacing:1px;color:var(--text-muted);">COLD</span></div></div>
     <div class="panel"><div class="label mb-8">QUICK STATS</div><div class="flex flex-col gap-8"><div class="flex justify-between"><span class="label">CASH/MIN</span><span id="ops-cpm" class="value positive">$0</span></div><div class="flex justify-between"><span class="label">STOCK</span><span id="ops-stock" class="value">0g</span></div><div class="flex justify-between"><span class="label">SLINGERS</span><span id="ops-slingers" class="value">0</span></div><div class="flex justify-between"><span class="label">TURF</span><span id="ops-turf" class="value">0</span></div><div class="flex justify-between"><span class="label">MARKET</span><span id="ops-market" class="value gold">NORMAL</span></div><div class="flex justify-between"><span class="label">PURITY</span><span id="ops-purity" class="value">20%</span></div></div></div>
-    <div class="panel" id="ops-advance-panel" style="display:none;"><div class="label mb-8">TIER ADVANCEMENT READY</div><div id="ops-advance-text" style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;"></div><button class="btn" onclick="advanceTier()">ADVANCE TIER</button></div>
+    <div class="panel" id="ops-advance-panel" style="display:none;"><div class="label mb-8">TIER ADVANCEMENT READY</div><div id="ops-advance-text" style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;"></div><button class="btn" id="btn-advance-tier">ADVANCE TIER</button></div>
     <div class="panel"><div class="label mb-8">RECENT ACTIVITY</div><div id="ops-log" style="max-height:180px;overflow-y:auto;"></div></div>
   </div>
   <div id="tab-lab" class="tab-panel">
@@ -215,17 +216,17 @@ input[type=text],input[type=number]{background:var(--bg-secondary);border:1px so
     <div class="panel"><div class="flex justify-between align-center mb-8"><div class="label">SYNTHESIS</div><div id="lab-synth-time" style="font-size:11px;color:var(--text-secondary);"></div></div>
       <div style="height:8px;background:var(--bg-secondary);border:1px solid var(--border);overflow:hidden;"><div id="synth-bar2-inner" style="height:100%;background:var(--accent-primary);transition:width .5s;width:0%;"></div></div>
       <div class="flex justify-between mt-8"><div style="font-size:11px;color:var(--text-secondary);">BATCH: <span id="lab-batch-size" class="gold">50g</span></div><div style="font-size:11px;color:var(--text-secondary);">STOCK: <span id="lab-storage-used" class="gold">0</span>/<span id="lab-storage-cap">500</span>g</div></div>
-      <button id="cook-btn" class="btn w100 mt-10" onclick="startCook()">START COOK</button>
+      <button id="cook-btn" class="btn w100 mt-10" id="cook-btn">START COOK</button>
       <div id="lab-last-batch" style="font-size:10px;color:var(--text-muted);margin-top:8px;"></div></div>
-    <div class="panel"><div class="label mb-8">HARDWARE</div><div id="hw-upgrade-info"></div><button id="hw-upgrade-btn" class="btn btn-sm mt-8" onclick="upgradeHardware()">UPGRADE</button></div>
-    <div class="panel"><div class="label mb-8">FORMULA</div><div id="formula-upgrade-info"></div><button id="formula-upgrade-btn" class="btn btn-sm mt-8" onclick="upgradeFormula()">UPGRADE</button></div>
-    <div class="panel"><div class="label mb-8">SOURCING</div><div id="sourcing-upgrade-info"></div><button id="sourcing-upgrade-btn" class="btn btn-sm mt-8" onclick="upgradeSourcing()">UPGRADE</button></div>
-    <div class="panel"><div class="label mb-8">STASH CAPACITY</div><div id="storage-upgrade-info"></div><button id="storage-upgrade-btn" class="btn btn-sm mt-8" onclick="upgradeStorage()">EXPAND</button></div>
+    <div class="panel"><div class="label mb-8">HARDWARE</div><div id="hw-upgrade-info"></div><button id="hw-upgrade-btn" class="btn btn-sm mt-8" >UPGRADE</button></div>
+    <div class="panel"><div class="label mb-8">FORMULA</div><div id="formula-upgrade-info"></div><button id="formula-upgrade-btn" class="btn btn-sm mt-8" >UPGRADE</button></div>
+    <div class="panel"><div class="label mb-8">SOURCING</div><div id="sourcing-upgrade-info"></div><button id="sourcing-upgrade-btn" class="btn btn-sm mt-8" >UPGRADE</button></div>
+    <div class="panel"><div class="label mb-8">STASH CAPACITY</div><div id="storage-upgrade-info"></div><button id="storage-upgrade-btn" class="btn btn-sm mt-8" >EXPAND</button></div>
   </div>
   <div id="tab-street" class="tab-panel">
     <div class="section-title">STREET OPERATIONS</div>
     <div class="panel"><div class="label mb-8">MARKET DEMAND</div><div id="demand-display" style="font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:3px;color:var(--accent-primary);">NORMAL</div><div id="demand-sub" style="font-size:10px;color:var(--text-muted);margin-top:2px;">1.0x MULTIPLIER</div></div>
-    <div class="panel"><div class="label mb-8">PRICING — <span id="price-display" class="gold">$12/g</span></div><input type="range" id="price-slider" min="1" max="500" value="12" oninput="updatePrice(this.value)"><div id="price-advice" style="font-size:10px;color:var(--text-muted);margin-top:4px;"></div></div>
+    <div class="panel"><div class="label mb-8">PRICING — <span id="price-display" class="gold">$12/g</span></div><input type="range" id="price-slider" min="1" max="500" value="12"><div id="price-advice" style="font-size:10px;color:var(--text-muted);margin-top:4px;"></div></div>
     <div class="panel"><div class="flex flex-col gap-8"><div class="flex justify-between"><span class="label">GRAMS MOVED</span><span id="st-grams-moved" class="value">0g</span></div><div class="flex justify-between"><span class="label">REVENUE</span><span id="st-revenue" class="value positive">$0</span></div><div class="flex justify-between"><span class="label">SELL RATE</span><span id="st-sell-rate" class="value">0g/min</span></div></div></div>
     <div class="panel"><div class="label mb-8">TRANSACTION FEED</div><div id="sale-feed" style="max-height:200px;overflow-y:auto;"></div></div>
   </div>
@@ -247,7 +248,7 @@ input[type=text],input[type=number]{background:var(--bg-secondary);border:1px so
   </div>
   <div id="tab-intel" class="tab-panel">
     <div class="section-title">INTEL</div>
-    <div class="panel"><div class="flex justify-between align-center mb-8"><div class="label">HEAT</div><div id="heat-num" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--heat-color);">0</div></div><div id="heat-bar-outer2"><div id="heat-bar-inner2"></div></div><div id="heat-sources" style="margin-top:8px;font-size:10px;color:var(--text-muted);line-height:1.8;"></div><button class="btn btn-warn btn-sm mt-10" onclick="layLow()">LAY LOW</button></div>
+    <div class="panel"><div class="flex justify-between align-center mb-8"><div class="label">HEAT</div><div id="heat-num" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--heat-color);">0</div></div><div id="heat-bar-outer2"><div id="heat-bar-inner2"></div></div><div id="heat-sources" style="margin-top:8px;font-size:10px;color:var(--text-muted);line-height:1.8;"></div><button class="btn btn-warn btn-sm mt-10" id="btn-lay-low">LAY LOW</button></div>
     <div class="panel"><div class="label mb-8">RIVAL CREWS</div><div id="rivals-list"></div></div>
     <div class="panel" style="max-height:240px;overflow-y:auto;"><div class="label mb-8">EVENT LOG</div><div id="event-log"></div></div>
     <div class="panel"><div class="label mb-8">INTEL REPORTS</div><div id="headlines-list"></div></div>
@@ -263,14 +264,14 @@ input[type=text],input[type=number]{background:var(--bg-secondary);border:1px so
   </div>
 </div>
 <div id="bottom-nav">
-  <button class="tab-btn active" onclick="switchTab('operations')" data-tab="operations"><span class="tab-icon">◉</span>OPS</button>
-  <button class="tab-btn" onclick="switchTab('lab')" data-tab="lab"><span class="tab-icon">⚗</span>LAB</button>
-  <button class="tab-btn" onclick="switchTab('street')" data-tab="street"><span class="tab-icon">◈</span>STREET</button>
-  <button class="tab-btn" onclick="switchTab('crew')" data-tab="crew"><span class="tab-icon">◎</span>CREW</button>
-  <button class="tab-btn" onclick="switchTab('turf')" data-tab="turf"><span class="tab-icon">▣</span>TURF</button>
-  <button class="tab-btn" onclick="switchTab('finances')" data-tab="finances"><span class="tab-icon">$</span>FIN</button>
-  <button class="tab-btn" onclick="switchTab('intel')" data-tab="intel"><span class="tab-icon">◐</span>INTEL</button>
-  <button class="tab-btn" onclick="switchTab('drip')" data-tab="drip"><span class="tab-icon">👕</span>DRIP</button>
+  <button class="tab-btn active"  data-tab="operations"><span class="tab-icon">◉</span>OPS</button>
+  <button class="tab-btn"  data-tab="lab"><span class="tab-icon">⚗</span>LAB</button>
+  <button class="tab-btn"  data-tab="street"><span class="tab-icon">◈</span>STREET</button>
+  <button class="tab-btn"  data-tab="crew"><span class="tab-icon">◎</span>CREW</button>
+  <button class="tab-btn"  data-tab="turf"><span class="tab-icon">▣</span>TURF</button>
+  <button class="tab-btn"  data-tab="finances"><span class="tab-icon">$</span>FIN</button>
+  <button class="tab-btn"  data-tab="intel"><span class="tab-icon">◐</span>INTEL</button>
+  <button class="tab-btn"  data-tab="drip"><span class="tab-icon">👕</span>DRIP</button>
 </div>
 <div id="ticker"><div id="ticker-inner">STANDING BY...</div></div>
 <script>
@@ -1072,9 +1073,9 @@ function renderDrip(){
         </div>
         <div style="text-align:right;min-width:64px;">
           ${isEquipped?'<div class="drip-item-equipped">✓ ON</div>':
-            owned?`<button class="btn btn-sm" style="font-size:9px;" onclick="equipDrip('${item.id}')">WEAR</button>`:
+            owned?`<button class="btn btn-sm" style="font-size:9px;" data-action="equip" data-id="${item.id}">WEAR</button>`:
             `<div class="drip-item-price">${item.price>0?'$'+item.price.toLocaleString():'FREE'}</div>
-             <button class="btn btn-sm" style="font-size:9px;margin-top:4px;" onclick="buyDrip('${item.id}')" ${gs.cash<item.price?'disabled':''}>BUY</button>`}
+             <button class="btn btn-sm" style="font-size:9px;margin-top:4px;" data-action="buy" data-id="${item.id}" ${gs.cash<item.price?'disabled':''}>BUY</button>`}
         </div>`;
       container.appendChild(row);
     });
@@ -1095,7 +1096,18 @@ function openExport(){const enc=safeEncode(gs);if(enc){document.getElementById('
 function copyExport(){const ta=document.getElementById('export-text');ta.select();try{document.execCommand('copy');}catch(e){}flashMessage("COPIED");}
 function confirmReset(){const oldDrip=gs.drip;gs=defaultState();gs.drip=oldDrip;gs.gameStarted=true;localStorage.removeItem('fentDealer_save');closeModal('reset-confirm-modal');startGameLoop();renderAll();flashMessage("RESET");addEvent("Fresh start.",'neu');}
 function doImport(){const code=document.getElementById('import-text').value.trim();const loaded=safeDecode(code);if(loaded&&loaded.cash!==undefined){gs=ensureDefaults(loaded);closeModal('import-modal');startGameLoop();renderAll();flashMessage("LOADED");}else{alert('Invalid save code.');}}
-function flashMessage(msg){const el=document.getElementById('save-flash');el.textContent=msg;el.style.opacity='1';setTimeout(()=>el.style.opacity='0',1500);}
+function flashMessage(msg){
+  try{const el=document.getElementById('save-flash');if(el){el.textContent=msg;el.style.opacity='1';setTimeout(()=>el.style.opacity='0',1500);}}catch(e){}
+  showToast(msg);
+}
+function showToast(msg){
+  try{
+    const t=document.getElementById('toast');if(!t)return;
+    t.textContent=msg;t.style.opacity='1';t.style.transform='translate(-50%,-50%) scale(1)';
+    clearTimeout(t._tid);
+    t._tid=setTimeout(()=>{t.style.opacity='0';t.style.transform='translate(-50%,-50%) scale(0.8)';},1200);
+  }catch(e){}
+}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
@@ -1247,9 +1259,9 @@ function renderCrew(){
     <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">${def.desc}</div>
     ${c.maxSlots===0?'<div class="tier-req">LOCKED</div>':''}
     <div class="flex gap-8 flex-wrap">
-      <button class="btn btn-sm" onclick="recruitCrew('${role}')" ${c.count>=c.maxSlots||c.maxSlots===0?'disabled':''}>+$${rCost.toLocaleString()}</button>
-      ${c.count>0?`<button class="btn btn-danger btn-sm" onclick="fireCrew('${role}')">CUT</button>`:''}
-      ${canUp&&c.count>0?`<button class="btn btn-warn btn-sm" onclick="upgradeCrew('${role}')" ${gs.cash<uCost?'disabled':''}>UP $${uCost.toLocaleString()}</button>`:''}
+      <button class="btn btn-sm" data-action="recruit" data-role="${role}" ${c.count>=c.maxSlots||c.maxSlots===0?'disabled':''}>+$${rCost.toLocaleString()}</button>
+      ${c.count>0?`<button class="btn btn-danger btn-sm" data-action="fire" data-role="${role}">CUT</button>`:''}
+      ${canUp&&c.count>0?`<button class="btn btn-warn btn-sm" data-action="upgrade-crew" data-role="${role}" ${gs.cash<uCost?'disabled':''}>UP $${uCost.toLocaleString()}</button>`:''}
     </div>`;
     container.appendChild(div);
   });
@@ -1270,8 +1282,8 @@ function renderTurf(){
     card.innerHTML=`<span class="turf-status ${sc}">${st}</span>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1px;margin-bottom:3px;">${t.name}</div>
       <div class="flex justify-between mb-8"><span class="tier-req">$${t.income}/min</span><span class="tier-req">${t.heat>.5?'🔥':t.heat>.3?'⚠':'✓'}</span></div>
-      ${t.owned?`<div class="tier-req">RIVAL ${t.rivalPct.toFixed(0)}%</div><div class="rival-bar-wrap mb-8" style="margin-top:3px;"><div class="rival-bar-inner" style="width:${t.rivalPct}%;"></div></div><button class="btn btn-warn btn-sm" onclick="sendEnforcers('${t.id}')">ENFORCERS $${gs.meta.prestigeBonus?.id==='muscle'?375:500}</button>`:
-        avail?`<button class="btn btn-sm" onclick="buyTurf('${t.id}')">$${t.cost.toLocaleString()}</button>`:
+      ${t.owned?`<div class="tier-req">RIVAL ${t.rivalPct.toFixed(0)}%</div><div class="rival-bar-wrap mb-8" style="margin-top:3px;"><div class="rival-bar-inner" style="width:${t.rivalPct}%;"></div></div><button class="btn btn-warn btn-sm" data-action="enforcers" data-id="${t.id}">ENFORCERS $${gs.meta.prestigeBonus?.id==='muscle'?375:500}</button>`:
+        avail?`<button class="btn btn-sm" data-action="buy-turf" data-id="${t.id}">$${t.cost.toLocaleString()}</button>`:
         `<div class="tier-req">TIER ${t.minTier}</div>`}`;
     grid.appendChild(card);
   });
@@ -1297,7 +1309,7 @@ function renderFinances(){
     div.innerHTML=`<div class="flex justify-between align-center">
       <div><div style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:${f.owned?'var(--accent-primary)':'var(--text-primary)'};">${f.name}</div>
       <div class="tier-req">${f.desc} | -${f.heatRed}heat | +$${f.cashPerMin}/min</div></div>
-      <div>${f.owned?'<span style="color:#4a9a6a;font-size:10px;">ACTIVE</span>':gs.empireTier>=f.minTier?`<button class="btn btn-sm" onclick="buyFront('${f.id}')">$${f.cost.toLocaleString()}</button>`:`<span class="tier-req">T${f.minTier}</span>`}</div>
+      <div>${f.owned?'<span style="color:#4a9a6a;font-size:10px;">ACTIVE</span>':gs.empireTier>=f.minTier?`<button class="btn btn-sm" data-action="buy-front" data-id="${f.id}">$${f.cost.toLocaleString()}</button>`:`<span class="tier-req">T${f.minTier}</span>`}</div>
     </div>`;fl.appendChild(div);
   });
   document.getElementById('txn-log').innerHTML=txns.slice(0,20).map(t=>`<div class="txn-entry"><span style="color:var(--text-muted);font-size:9px;">${t.time}</span><span style="flex:1;padding:0 6px;font-size:10px;">${t.desc}</span><span class="${t.amount>=0?'positive':'negative'}">${t.amount>=0?'+':''}$${Math.abs(t.amount).toFixed(0)}</span></div>`).join('');
@@ -1313,6 +1325,60 @@ function renderIntel(){
   const unlocked=C.headlines.filter(h=>gs.headlines.includes(h.id));
   document.getElementById('headlines-list').innerHTML=unlocked.length===0?'<div style="color:var(--text-muted);font-size:11px;">NO REPORTS ON FILE.</div>':[...unlocked].reverse().map(h=>`<div class="headline-card"><div class="headline-source">█ ${h.source} █</div><div class="headline-text">${h.text}</div></div>`).join('');
 }
+
+// ── Static button event listeners (CSP-safe, no inline onclick) ──
+document.addEventListener('DOMContentLoaded', function() {
+  function btn(id, fn){ const el=document.getElementById(id); if(el) el.addEventListener('click', fn); }
+
+  btn('btn-start-game',    () => startNewGame());
+  btn('btn-close-raid',    () => closeRaid());
+  btn('btn-close-victory', () => closeVictory());
+  btn('btn-trigger-prestige', () => triggerPrestige());
+  btn('btn-copy-export',   () => copyExport());
+  btn('btn-close-export',  () => closeModal('export-modal'));
+  btn('btn-confirm-reset', () => confirmReset());
+  btn('btn-cancel-reset',  () => closeModal('reset-confirm-modal'));
+  btn('btn-do-import',     () => doImport());
+  btn('btn-cancel-import', () => closeModal('import-modal'));
+  btn('btn-open-reset',    () => { closeModal('import-modal'); openModal('reset-confirm-modal'); });
+  btn('btn-manual-save',   () => manualSave());
+  btn('btn-open-export',   () => openExport());
+  btn('btn-open-import',   () => openModal('import-modal'));
+  btn('btn-advance-tier',  () => advanceTier());
+  btn('cook-btn',          () => startCook());
+  btn('btn-lay-low',       () => layLow());
+  btn('hw-upgrade-btn',    () => upgradeHardware());
+  btn('formula-upgrade-btn',  () => upgradeFormula());
+  btn('sourcing-upgrade-btn', () => upgradeSourcing());
+  btn('storage-upgrade-btn',  () => upgradeStorage());
+
+  // Tab buttons
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.addEventListener('click', () => switchTab(b.dataset.tab));
+  });
+  // Price slider
+  const ps = document.getElementById('price-slider');
+  if(ps) ps.addEventListener('input', function(){ updatePrice(this.value); });
+
+  // Event delegation for dynamically rendered buttons
+  document.addEventListener('click', function(e) {
+    const el = e.target.closest('[data-action]');
+    if(!el || el.disabled) return;
+    const action = el.dataset.action;
+    const id = el.dataset.id;
+    const role = el.dataset.role;
+    switch(action) {
+      case 'recruit':       recruitCrew(role); break;
+      case 'fire':          fireCrew(role); break;
+      case 'upgrade-crew':  upgradeCrew(role); break;
+      case 'buy-turf':      buyTurf(id); break;
+      case 'enforcers':     sendEnforcers(id); break;
+      case 'buy-front':     buyFront(id); break;
+      case 'buy':           buyDrip(id); break;
+      case 'equip':         equipDrip(id); break;
+    }
+  });
+});
 </script>
 </body>
 </html>
