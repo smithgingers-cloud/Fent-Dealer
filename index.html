@@ -1002,7 +1002,7 @@ function upgradeSourcing(){const n=gs.lab.sourcingLevel+1;if(n>=C.sourcing.lengt
 function upgradeStorage(){const n=gs.storage.upgrades+1;if(n>=C.storage.length)return;const cost=C.storage[n].cost;if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;gs.storage.upgrades=n;gs.storage.capacity=C.storage[n].cap;addTxn(-cost,"Stash expansion");addEvent(`Stash: ${C.storage[n].cap.toLocaleString()}g.`,'pos');renderLab();updateTopBar();}
 
 // ===== CREW/TURF/FRONTS/PRICE =====
-function recruitCrew(role){if(!gs||!gs.gameStarted)return;const c=gs.crew[role],def=C.crewRoles[role];if(!c||!def)return;if(c.count>=c.maxSlots){addEvent("No open slots.",'neg');return;}let cost=def.costs[c.tier]||def.costs[0];if(role==='enforcers'&&gs.meta?.prestigeBonus?.id==='muscle')cost=Math.floor(cost*.75);if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;c.count++;addTxn(-cost,`Recruited ${def.tiers[c.tier]||def.label}`);addEvent(`Recruited ${def.tiers[c.tier]||def.label}.`,'pos');autoSave();renderCrew();updateTopBar();}
+function recruitCrew(role){if(!gs||!gs.gameStarted)return;const c=gs.crew[role],def=C.crewRoles[role];if(!c||!def)return;if(c.count>=c.maxSlots){addEvent("No open slots.",'neg');return;}let cost=def.costs[0];if(role==='enforcers'&&gs.meta?.prestigeBonus?.id==='muscle')cost=Math.floor(cost*.75);if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;c.count++;addTxn(-cost,`Recruited ${def.tiers[c.tier]||def.label}`);addEvent(`Recruited ${def.tiers[c.tier]||def.label}.`,'pos');autoSave();renderCrew();updateTopBar();}
 function upgradeCrew(role){const c=gs.crew[role],def=C.crewRoles[role];if(!def)return;const nt=c.tier+1;if(nt>=def.costs.length)return;const cost=def.costs[nt]*Math.max(1,c.count);if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;c.tier=nt;addTxn(-cost,`Upgraded ${def.label}`);addEvent(`${def.label} → ${def.tiers[nt]}.`,'pos');renderCrew();}
 function fireCrew(role){const c=gs.crew[role];if(c.count<=0)return;c.count--;addEvent(`Cut a ${C.crewRoles[role]?.label||role}.`,'neg');renderCrew();updateTopBar();}
 function buyTurf(id){const t=gs.turf.find(t=>t.id===id);if(!t||t.owned)return;if(gs.empireTier<t.minTier){addEvent(`Need Tier ${t.minTier}.`,'neg');return;}if(gs.cash<t.cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=t.cost;t.owned=true;addTxn(-t.cost,`Turf: ${t.name}`);addEvent(`Acquired: ${t.name}.`,'pos');addXP(200);gs.heat.level=Math.min(100,gs.heat.level+10);renderTurf();updateTopBar();}
@@ -1272,7 +1272,7 @@ function renderCrew(){
     const c=gs.crew[role],def=C.crewRoles[role];if(!def)return;
     const tn=def.tiers[c.tier]||def.label;const nt=c.tier+1;const canUp=nt<def.costs.length;
     const uCost=canUp?def.costs[nt]*Math.max(1,c.count):0;
-    let rCost=def.costs[c.tier]||def.costs[0];if(role==='enforcers'&&gs.meta.prestigeBonus?.id==='muscle')rCost=Math.floor(rCost*.75);
+    let rCost=def.costs[0];if(role==='enforcers'&&gs.meta.prestigeBonus?.id==='muscle')rCost=Math.floor(rCost*.75);
     const div=document.createElement('div');div.className='card';
     div.innerHTML=`<div class="flex justify-between align-center mb-8">
       <div><div style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--accent-primary);">${def.label}</div><div class="tier-req">${tn}</div></div>
