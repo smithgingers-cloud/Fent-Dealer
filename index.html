@@ -489,14 +489,15 @@ function ensureDefaults(s){
 window.onload=function(){
   const saved=localStorage.getItem('fentDealer_save');
   if(saved){
-    try{
-      gs=ensureDefaults(JSON.parse(decodeURIComponent(escape(atob(saved)))));
+    const loaded=safeDecode(saved);
+    if(loaded&&loaded.cash!==undefined){
+      gs=ensureDefaults(loaded);
       if(gs.gameStarted){
         if(gs.lastSave){const om=Math.min((Date.now()-gs.lastSave)/60000,10);if(om>0.5)catchUpOffline(om);}
         document.getElementById('newgame-overlay').style.display='none';
         startGameLoop();renderAll();flashMessage("RESUMED");
-      }else showNewGame();
-    }catch(e){gs=defaultState();showNewGame();}
+      }else{gs.gameStarted=true;document.getElementById('newgame-overlay').style.display='none';startGameLoop();renderAll();}
+    }else{gs=defaultState();showNewGame();}
   }else{gs=defaultState();showNewGame();}
   initScene();
   setupVisibilityHandlers();
@@ -1000,14 +1001,14 @@ function upgradeSourcing(){const n=gs.lab.sourcingLevel+1;if(n>=C.sourcing.lengt
 function upgradeStorage(){const n=gs.storage.upgrades+1;if(n>=C.storage.length)return;const cost=C.storage[n].cost;if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;gs.storage.upgrades=n;gs.storage.capacity=C.storage[n].cap;addTxn(-cost,"Stash expansion");addEvent(`Stash: ${C.storage[n].cap.toLocaleString()}g.`,'pos');renderLab();updateTopBar();}
 
 // ===== CREW/TURF/FRONTS/PRICE =====
-function recruitCrew(role){const c=gs.crew[role],def=C.crewRoles[role];if(!def)return;if(c.count>=c.maxSlots){addEvent("No open slots.",'neg');return;}let cost=def.costs[c.tier]||def.costs[0];if(role==='enforcers'&&gs.meta.prestigeBonus?.id==='muscle')cost=Math.floor(cost*.75);if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;c.count++;addTxn(-cost,`Recruited ${def.tiers[c.tier]||def.label}`);addEvent(`Recruited ${def.tiers[c.tier]||def.label}.`,'pos');renderCrew();updateTopBar();}
+function recruitCrew(role){if(!gs||!gs.gameStarted)return;const c=gs.crew[role],def=C.crewRoles[role];if(!c||!def)return;if(c.count>=c.maxSlots){addEvent("No open slots.",'neg');return;}let cost=def.costs[c.tier]||def.costs[0];if(role==='enforcers'&&gs.meta?.prestigeBonus?.id==='muscle')cost=Math.floor(cost*.75);if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;c.count++;addTxn(-cost,`Recruited ${def.tiers[c.tier]||def.label}`);addEvent(`Recruited ${def.tiers[c.tier]||def.label}.`,'pos');autoSave();renderCrew();updateTopBar();}
 function upgradeCrew(role){const c=gs.crew[role],def=C.crewRoles[role];if(!def)return;const nt=c.tier+1;if(nt>=def.costs.length)return;const cost=def.costs[nt]*Math.max(1,c.count);if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;c.tier=nt;addTxn(-cost,`Upgraded ${def.label}`);addEvent(`${def.label} → ${def.tiers[nt]}.`,'pos');renderCrew();}
 function fireCrew(role){const c=gs.crew[role];if(c.count<=0)return;c.count--;addEvent(`Cut a ${C.crewRoles[role]?.label||role}.`,'neg');renderCrew();updateTopBar();}
 function buyTurf(id){const t=gs.turf.find(t=>t.id===id);if(!t||t.owned)return;if(gs.empireTier<t.minTier){addEvent(`Need Tier ${t.minTier}.`,'neg');return;}if(gs.cash<t.cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=t.cost;t.owned=true;addTxn(-t.cost,`Turf: ${t.name}`);addEvent(`Acquired: ${t.name}.`,'pos');addXP(200);gs.heat.level=Math.min(100,gs.heat.level+10);renderTurf();updateTopBar();}
 function sendEnforcers(id){const t=gs.turf.find(t=>t.id===id);if(!t||!t.owned)return;const cost=gs.meta.prestigeBonus?.id==='muscle'?375:500;if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;t.rivalPct=Math.max(0,t.rivalPct-30);addTxn(-cost,`Enforcers: ${t.name}`);addEvent(`Enforcers → ${t.name}.`,'pos');renderTurf();}
 function buyFront(id){const f=gs.fronts.find(f=>f.id===id);if(!f||f.owned)return;if(gs.empireTier<f.minTier){addEvent(`Need Tier ${f.minTier}.`,'neg');return;}if(gs.cash<f.cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=f.cost;f.owned=true;addTxn(-f.cost,`Front: ${f.name}`);addEvent(`Front: ${f.name}.`,'pos');renderFinances();updateTopBar();}
 function updatePrice(val){val=Math.max(1,Math.min(500,parseInt(val)||12));gs.market.playerSetPrice=val;document.getElementById('price-display').textContent=`$${val}/g`;const base=12+gs.lab.formulaLevel*5;document.getElementById('price-advice').textContent=val>base*3?'PRICE TOO HIGH — volume drops':val<base*0.5?'UNDERCUTTING — good volume':'IN RANGE';}
-function layLow(){const cost=[500,1000,2000,3500,6000,10000,20000][gs.empireTier]||500;if(gs.cash<cost){addEvent("Not enough bread.",'neg');return;}gs.cash-=cost;const r=20+gs.crew.lawyers.count*5;gs.heat.level=Math.max(0,gs.heat.level-r);addTxn(-cost,"Lay low");addEvent(`Went quiet. Heat -${r}.`,'pos');renderIntel();updateTopBar();}
+function layLow(){if(!gs||!gs.gameStarted)return;const cost=[500,1000,2000,3500,6000,10000,20000][gs.empireTier]||500;if(gs.cash<cost){addEvent("Not enough bread.","neg");renderIntel();return;}gs.cash-=cost;const lawyers=gs.crew&&gs.crew.lawyers?gs.crew.lawyers.count:0;const r=20+lawyers*5;gs.heat.level=Math.max(0,gs.heat.level-r);addTxn(-cost,"Lay low");addEvent(`Went quiet. Heat -${r}. Cost $${cost}.`,'pos');autoSave();renderAll();}
 
 // ===== DRIP =====
 function buyDrip(id){
@@ -1082,12 +1083,18 @@ function renderDrip(){
 }
 
 // ===== SAVE/LOAD =====
-function autoSave(){try{gs.lastSave=Date.now();localStorage.setItem('fentDealer_save',btoa(unescape(encodeURIComponent(JSON.stringify(gs)))));flashMessage("✓");}catch(e){}}
+function safeEncode(obj){try{return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));}catch(e){return null;}}
+function safeDecode(str){try{return JSON.parse(decodeURIComponent(escape(atob(str))));}catch(e1){try{return JSON.parse(atob(str));}catch(e2){return null;}}}
+function autoSave(){
+  if(!gs||!gs.gameStarted)return;
+  try{gs.lastSave=Date.now();const enc=safeEncode(gs);if(enc){localStorage.setItem('fentDealer_save',enc);flashMessage("✓");}else{flashMessage("ERR");}}
+  catch(e){flashMessage("ERR");}
+}
 function manualSave(){autoSave();}
-function openExport(){try{document.getElementById('export-text').value=btoa(unescape(encodeURIComponent(JSON.stringify(gs))));openModal('export-modal');}catch(e){}}
+function openExport(){const enc=safeEncode(gs);if(enc){document.getElementById('export-text').value=enc;openModal('export-modal');}else{flashMessage('ERR');}}
 function copyExport(){const ta=document.getElementById('export-text');ta.select();try{document.execCommand('copy');}catch(e){}flashMessage("COPIED");}
 function confirmReset(){const oldDrip=gs.drip;gs=defaultState();gs.drip=oldDrip;gs.gameStarted=true;localStorage.removeItem('fentDealer_save');closeModal('reset-confirm-modal');startGameLoop();renderAll();flashMessage("RESET");addEvent("Fresh start.",'neu');}
-function doImport(){try{gs=ensureDefaults(JSON.parse(decodeURIComponent(escape(atob(document.getElementById('import-text').value.trim())))));closeModal('import-modal');startGameLoop();renderAll();flashMessage("LOADED");}catch(e){alert('Invalid save code.');}}
+function doImport(){const code=document.getElementById('import-text').value.trim();const loaded=safeDecode(code);if(loaded&&loaded.cash!==undefined){gs=ensureDefaults(loaded);closeModal('import-modal');startGameLoop();renderAll();flashMessage("LOADED");}else{alert('Invalid save code.');}}
 function flashMessage(msg){const el=document.getElementById('save-flash');el.textContent=msg;el.style.opacity='1';setTimeout(()=>el.style.opacity='0',1500);}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
