@@ -589,7 +589,7 @@ function processSales(){
   const tm=[0.5,1,1.5,2.5][gs.crew.slingers.tier]||1;
   let sb=gs.meta.prestigeBonus?.id==='streetking'?1.25:1;
   const price=gs.market.playerSetPrice,base=12+gs.lab.formulaLevel*5;
-  const pf=Math.min(1.5,Math.pow(base/price,2.2));
+  const pf=Math.min(1.3,Math.pow(base*1.5/price,1.3));
   let gpm=gs.crew.slingers.count*tm*gs.market.demandMultiplier*pf*sb;
   if(gs.crew.distributors.count>0)gpm*=(1+gs.crew.distributors.count*.15);
   const sold=Math.min(gs.fent,Math.max(0.1,gpm));
@@ -1199,7 +1199,7 @@ function renderOperations(){
   document.getElementById('ops-heat-num').textContent=`${Math.floor(gs.heat.level)}/100`;
   document.getElementById('ops-heat-state').textContent=['COLD','WARM','HOT','CRITICAL'][gs.heat.level<30?0:gs.heat.level<60?1:gs.heat.level<85?2:3];
   let cpm=0;
-  if(gs.crew.slingers.count>0){const tm=[.5,1,1.5,2.5][gs.crew.slingers.tier];cpm+=gs.crew.slingers.count*tm*gs.market.demandMultiplier*gs.market.playerSetPrice*(1+(gs.fentPurity-.2)*2);}
+  if(gs.crew.slingers.count>0){const tm=[.5,1,1.5,2.5][gs.crew.slingers.tier];const cpmBase=12+gs.lab.formulaLevel*5;const cpmPf=Math.min(1.3,Math.pow(cpmBase*1.5/gs.market.playerSetPrice,1.3));cpm+=gs.crew.slingers.count*tm*gs.market.demandMultiplier*cpmPf*gs.market.playerSetPrice*(1+(gs.fentPurity-.2)*2);}
   gs.turf.forEach(t=>{if(t.owned)cpm+=t.income*(1-(t.rivalPct/100)*.7);});
   gs.fronts.forEach(f=>{if(f.owned)cpm+=f.cashPerMin;});
   document.getElementById('ops-cpm').textContent='$'+cpm.toFixed(1);
@@ -1258,7 +1258,7 @@ function renderStreet(){
   document.getElementById('st-revenue').textContent='$'+sessionSales.revenue.toFixed(0);
   const tm=[.5,1,1.5,2.5][gs.crew.slingers.tier]||1;
   const _base=12+gs.lab.formulaLevel*5;
-  const _pf=Math.min(1.5,Math.pow(_base/gs.market.playerSetPrice,2.2));
+  const _pf=Math.min(1.3,Math.pow(_base*1.5/gs.market.playerSetPrice,1.3));
   const _rl=_pf<0.5?' ▼▼ OVERPRICED':_pf<0.85?' ▼ HIGH':_pf>1.2?' ▲ LOW PRICE':' OPTIMAL';
   document.getElementById('st-sell-rate').textContent=(gs.crew.slingers.count*tm*gs.market.demandMultiplier*_pf).toFixed(1)+'g/min'+_rl;
   document.getElementById('sale-feed').innerHTML=saleFeed.slice(0,18).map(s=>`<div class="sale-entry">${s}</div>`).join('');
@@ -1315,7 +1315,7 @@ function renderFinances(){
   if(!gs)return;
   document.getElementById('fin-cash').textContent='$'+Math.floor(gs.cash).toLocaleString();
   let cpm=0;
-  if(gs.crew.slingers.count>0){const tm=[.5,1,1.5,2.5][gs.crew.slingers.tier];cpm+=gs.crew.slingers.count*tm*gs.market.demandMultiplier*gs.market.playerSetPrice*(1+(gs.fentPurity-.2)*2);}
+  if(gs.crew.slingers.count>0){const tm=[.5,1,1.5,2.5][gs.crew.slingers.tier];const cpmBase=12+gs.lab.formulaLevel*5;const cpmPf=Math.min(1.3,Math.pow(cpmBase*1.5/gs.market.playerSetPrice,1.3));cpm+=gs.crew.slingers.count*tm*gs.market.demandMultiplier*cpmPf*gs.market.playerSetPrice*(1+(gs.fentPurity-.2)*2);}
   gs.turf.forEach(t=>{if(t.owned)cpm+=t.income*(1-(t.rivalPct/100)*.7);});
   gs.fronts.forEach(f=>{if(f.owned)cpm+=f.cashPerMin;});
   const ov=calcPayroll(gs)/300;
