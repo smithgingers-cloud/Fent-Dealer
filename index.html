@@ -490,7 +490,7 @@ window.onload=function(){
   const saved=localStorage.getItem('fentDealer_save');
   if(saved){
     try{
-      gs=ensureDefaults(JSON.parse(atob(saved)));
+      gs=ensureDefaults(JSON.parse(decodeURIComponent(escape(atob(saved)))));
       if(gs.gameStarted){
         if(gs.lastSave){const om=Math.min((Date.now()-gs.lastSave)/60000,10);if(om>0.5)catchUpOffline(om);}
         document.getElementById('newgame-overlay').style.display='none';
@@ -1082,12 +1082,12 @@ function renderDrip(){
 }
 
 // ===== SAVE/LOAD =====
-function autoSave(){try{gs.lastSave=Date.now();localStorage.setItem('fentDealer_save',btoa(JSON.stringify(gs)));flashMessage("✓");}catch(e){}}
+function autoSave(){try{gs.lastSave=Date.now();localStorage.setItem('fentDealer_save',btoa(unescape(encodeURIComponent(JSON.stringify(gs)))));flashMessage("✓");}catch(e){}}
 function manualSave(){autoSave();}
-function openExport(){try{document.getElementById('export-text').value=btoa(JSON.stringify(gs));openModal('export-modal');}catch(e){}}
+function openExport(){try{document.getElementById('export-text').value=btoa(unescape(encodeURIComponent(JSON.stringify(gs))));openModal('export-modal');}catch(e){}}
 function copyExport(){const ta=document.getElementById('export-text');ta.select();try{document.execCommand('copy');}catch(e){}flashMessage("COPIED");}
 function confirmReset(){const oldDrip=gs.drip;gs=defaultState();gs.drip=oldDrip;gs.gameStarted=true;localStorage.removeItem('fentDealer_save');closeModal('reset-confirm-modal');startGameLoop();renderAll();flashMessage("RESET");addEvent("Fresh start.",'neu');}
-function doImport(){try{gs=ensureDefaults(JSON.parse(atob(document.getElementById('import-text').value.trim())));closeModal('import-modal');startGameLoop();renderAll();flashMessage("LOADED");}catch(e){alert('Invalid save code.');}}
+function doImport(){try{gs=ensureDefaults(JSON.parse(decodeURIComponent(escape(atob(document.getElementById('import-text').value.trim())))));closeModal('import-modal');startGameLoop();renderAll();flashMessage("LOADED");}catch(e){alert('Invalid save code.');}}
 function flashMessage(msg){const el=document.getElementById('save-flash');el.textContent=msg;el.style.opacity='1';setTimeout(()=>el.style.opacity='0',1500);}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
